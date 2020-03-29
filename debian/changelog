@@ -1,3 +1,9 @@
+libidn2 (2.0.5-1+deb10u1pexip1) pexip; urgency=medium
+
+  * Prepare Pexip packaging
+
+ -- Vincent Sanders <vince@pexip.com>  Sun, 29 Mar 2020 23:32:42 +0100
+
 libidn2 (2.0.5-1+deb10u1) buster-security; urgency=high
 
   * Non-maintainer upload by the Security Team.

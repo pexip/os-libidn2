@@ -1,7 +1,8 @@
 Source: libidn2
 Section: libs
-Maintainer: Debian Libidn team <help-libidn@gnu.org>
-Uploaders: Simon Josefsson <simon@josefsson.org>,
+Maintainer: Pexip AS <packaging@pexip.com>
+XSBC-Pexip-Original-Maintainer: Debian Libidn team <help-libidn@gnu.org>
+XSBC-Pexip-Original-Uploaders: Simon Josefsson <simon@josefsson.org>,
            Ondřej Surý <ondrej@debian.org>
 Build-Depends: debhelper (>= 9),
                dh-autoreconf,
@@ -20,6 +21,7 @@ Priority: optional
 Homepage: https://www.gnu.org/software/libidn/#libidn2
 Vcs-Browser: https://salsa.debian.org/debian/libidn2
 Vcs-Git: https://salsa.debian.org/debian/libidn2.git
+XS-Pexip-Upstream: http://ftp.debian.org/debian/ buster
 
 Package: libidn2-0
 Architecture: any
