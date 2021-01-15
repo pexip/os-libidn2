@@ -1,7 +1,9 @@
 libidn2.so.0 libidn2-0 #MINVER#
+* Build-Depends-Package: libidn2-dev
  IDN2_0.0.0@IDN2_0.0.0 0.6
  _idn2_punycode_decode@IDN2_0.0.0 0.6
  _idn2_punycode_encode@IDN2_0.0.0 0.6
+ IDN2_2.1.0@IDN2_2.1.0 2.2.0
  idn2_check_version@IDN2_0.0.0 0.6
  idn2_free@IDN2_0.0.0 0.6
  idn2_lookup_u8@IDN2_0.0.0 0.6
@@ -20,3 +22,4 @@ libidn2.so.0 libidn2-0 #MINVER#
  idn2_to_unicode_8z8z@IDN2_0.0.0 2.0.0
  idn2_to_unicode_8zlz@IDN2_0.0.0 2.0.0
  idn2_to_unicode_lzlz@IDN2_0.0.0 2.0.0
+ idn2_to_ascii_4i2@IDN2_2.1.0 2.2.0

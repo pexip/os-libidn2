@@ -68,7 +68,8 @@
 #define punycode_success IDN2_OK
 #define punycode_overflow IDN2_PUNYCODE_OVERFLOW
 #define punycode_big_output IDN2_PUNYCODE_BIG_OUTPUT
-#define punycode_encode _idn2_punycode_encode
+#define punycode_bad_input IDN2_PUNYCODE_BAD_INPUT
+#define punycode_encode _idn2_punycode_encode_internal
 
 /**********************************************************/
 /* Implementation (would normally go in its own .c file): */
@@ -158,8 +159,8 @@ int punycode_encode(
       if (max_out - out < 2) return punycode_big_output;
       output[out++] = (char) input[j];
     }
-    /* else if (input[j] < n) return punycode_bad_input; */
-    /* (not needed for Punycode with unsigned code points) */
+    else if (input[j] > 0x10FFFF || (input[j] >= 0xD800 && input[j] <= 0xDBFF))
+      return punycode_bad_input;
   }
 
   h = b = (punycode_uint) out;
@@ -221,3 +222,12 @@ int punycode_encode(
   *output_length = out;
   return punycode_success;
 }
+
+/* Create a compatibility symbol if supported.  Hidden references make
+   the target symbol hidden, hence the alias.  */
+#ifdef HAVE_SYMVER_ALIAS_SUPPORT
+__typeof__ (_idn2_punycode_encode_internal) _idn2_punycode_encode
+   __attribute__ ((visibility ("default"),
+                   alias ("_idn2_punycode_encode_internal")));
+__asm__ (".symver _idn2_punycode_encode, _idn2_punycode_encode@IDN2_0.0.0");
+#endif

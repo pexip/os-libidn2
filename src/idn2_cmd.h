@@ -50,6 +50,8 @@ struct gengetopt_args_info
   const char *no_tr46_help; /**< @brief Disable TR46 processing help description.  */
   int usestd3asciirules_flag;	/**< @brief Enable STD3 ASCII rules (default=off).  */
   const char *usestd3asciirules_help; /**< @brief Enable STD3 ASCII rules help description.  */
+  int no_alabelroundtrip_flag;	/**< @brief Disable ALabel roundtrip for lookups (default=off).  */
+  const char *no_alabelroundtrip_help; /**< @brief Disable ALabel roundtrip for lookups help description.  */
   int debug_flag;	/**< @brief Print debugging information (default=off).  */
   const char *debug_help; /**< @brief Print debugging information help description.  */
   int quiet_flag;	/**< @brief Silent operation (default=off).  */
@@ -64,6 +66,7 @@ struct gengetopt_args_info
   unsigned int tr46nt_given ;	/**< @brief Whether tr46nt was given.  */
   unsigned int no_tr46_given ;	/**< @brief Whether no-tr46 was given.  */
   unsigned int usestd3asciirules_given ;	/**< @brief Whether usestd3asciirules was given.  */
+  unsigned int no_alabelroundtrip_given ;	/**< @brief Whether no-alabelroundtrip was given.  */
   unsigned int debug_given ;	/**< @brief Whether debug was given.  */
   unsigned int quiet_given ;	/**< @brief Whether quiet was given.  */
 

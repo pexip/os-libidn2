@@ -14,13 +14,17 @@ must be encoded in UTF-8 and be in Unicode NFC form.
 Pass @code{IDN2_NFC_INPUT}  in  @code{flags} to convert input to NFC form before
 further processing.  @code{IDN2_TRANSITIONAL}  and @code{IDN2_NONTRANSITIONAL} 
 do already imply @code{IDN2_NFC_INPUT} .
+
 Pass @code{IDN2_ALABEL_ROUNDTRIP}  in  @code{flags} to
 convert any input A-labels to U-labels and perform additional
-testing (not implemented yet).
+testing. This is default since version 2.2.
+To switch this behavior off, pass IDN2_NO_ALABEL_ROUNDTRIP
+
 Pass @code{IDN2_TRANSITIONAL}  to enable Unicode TR46
 transitional processing, and @code{IDN2_NONTRANSITIONAL}  to enable
-Unicode TR46 non-transitional processing.  Multiple flags may be
-specified by binary or:ing them together.
+Unicode TR46 non-transitional processing.
+
+Multiple flags may be specified by binary or:ing them together.
 
 After version 2.0.3: @code{IDN2_USE_STD3_ASCII_RULES}  disabled by default.
 Previously we were eliminating non-STD3 characters from domain strings

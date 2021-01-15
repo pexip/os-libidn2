@@ -220,7 +220,7 @@ const test_t test[] = {
     {
       0x002D, 0x003E, 0x0020, 0x0024, 0x0031, 0
     },
-    IDN2_OK
+    IDN2_PUNYCODE_BAD_INPUT
   },
   {
     "(T) -> $1",
@@ -350,6 +350,23 @@ const test_t test[] = {
     },
     IDN2_OK
   },
+  {
+    "Empty label",
+    "xn---.de",
+    {
+      0x2e, 0x64, 0x65, 0
+    },
+    IDN2_PUNYCODE_BAD_INPUT
+  },
+  {
+    "No ASCII char but delimiter",
+    "xn---tda.de",
+    {
+      0x2e, 0x64, 0x65, 0
+    },
+    IDN2_PUNYCODE_BAD_INPUT
+  },
+
 };
 
 static int debug = 1;
@@ -362,7 +379,7 @@ fail (const char *format, ...)
   va_list arg_ptr;
 
   va_start (arg_ptr, format);
-  vfprintf (stderr, format, arg_ptr);
+  vprintf (format, arg_ptr);
   va_end (arg_ptr);
 
   error_count++;
@@ -383,7 +400,7 @@ ucs4print (const uint32_t * str, size_t len)
     printf ("\n");
 }
 
-static size_t
+static size_t G_GNUC_IDN2_ATTRIBUTE_PURE
 _u32_strlen(const uint32_t *s)
 {
   const uint32_t *e;
@@ -394,7 +411,7 @@ _u32_strlen(const uint32_t *s)
   return e - s;
 }
 
-static size_t
+static size_t G_GNUC_IDN2_ATTRIBUTE_PURE
 _u32_strcmp(const uint32_t *s1, const uint32_t *s2)
 {
   while (*s1 && *s2 && *s1 == *s2)
@@ -408,7 +425,7 @@ _check_4z(const test_t *t, int rc, uint32_t *ucs4, const char *funcname)
 {
   if (rc != t->rc_expected && !(rc == IDN2_ICONV_FAIL && t->rc_expected == IDN2_ENCODING_ERROR))
     {
-      fprintf (stderr, "Test[%u] '%s' failed (got %d, expected %d):\n",
+      printf ("Test[%u] '%s' failed (got %d, expected %d):\n",
         (unsigned) (t - test), t->name, rc, t->rc_expected);
       fail ("  %s(): %s\n", funcname, idn2_strerror (rc));
     }
