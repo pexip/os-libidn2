@@ -6,9 +6,9 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: libidn2 2.0.5\n"
+"Project-Id-Version: libidn2 2.3.0\n"
 "Report-Msgid-Bugs-To: bug-libidn2@gnu.org\n"
-"POT-Creation-Date: 2018-05-18 09:59+0200\n"
+"POT-Creation-Date: 2019-11-14 09:45+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,103 +17,119 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/error.c:56
+#: lib/error.c:53
 msgid "success"
 msgstr ""
 
-#: lib/error.c:60
+#: lib/error.c:54
 msgid "out of memory"
 msgstr ""
 
-#: lib/error.c:64
+#: lib/error.c:55
 msgid "could not determine locale encoding format"
 msgstr ""
 
-#: lib/error.c:68
+#: lib/error.c:56
 msgid "could not convert string to UTF-8"
 msgstr ""
 
-#: lib/error.c:72
+#: lib/error.c:57
 msgid "string encoding error"
 msgstr ""
 
-#: lib/error.c:76
+#: lib/error.c:58
 msgid "string could not be NFC normalized"
 msgstr ""
 
-#: lib/error.c:80
+#: lib/error.c:59
 msgid "string contains invalid punycode data"
 msgstr ""
 
-#: lib/error.c:84
+#: lib/error.c:60
 msgid "punycode encoded data will be too large"
 msgstr ""
 
-#: lib/error.c:88
+#: lib/error.c:61
 msgid "punycode conversion resulted in overflow"
 msgstr ""
 
-#: lib/error.c:92
+#: lib/error.c:62
 msgid "domain name longer than 255 characters"
 msgstr ""
 
-#: lib/error.c:96
+#: lib/error.c:63
 msgid "domain label longer than 63 characters"
 msgstr ""
 
-#: lib/error.c:100
+#: lib/error.c:64
 msgid "input A-label is not valid"
 msgstr ""
 
-#: lib/error.c:104
+#: lib/error.c:65
 msgid "input A-label and U-label does not match"
 msgstr ""
 
-#: lib/error.c:108
+#: lib/error.c:66
 msgid "string is not in Unicode NFC format"
 msgstr ""
 
-#: lib/error.c:112
+#: lib/error.c:67
 msgid "string contains forbidden two hyphens pattern"
 msgstr ""
 
-#: lib/error.c:116
+#: lib/error.c:68
 msgid "string start/ends with forbidden hyphen"
 msgstr ""
 
-#: lib/error.c:120
+#: lib/error.c:69
 msgid "string contains a forbidden leading combining character"
 msgstr ""
 
-#: lib/error.c:124
+#: lib/error.c:70
 msgid "string contains a disallowed character"
 msgstr ""
 
-#: lib/error.c:128
+#: lib/error.c:71
 msgid "string contains a forbidden context-j character"
 msgstr ""
 
-#: lib/error.c:132
+#: lib/error.c:72
 msgid "string contains a context-j character with null rule"
 msgstr ""
 
-#: lib/error.c:136
+#: lib/error.c:73
 msgid "string contains a forbidden context-o character"
 msgstr ""
 
-#: lib/error.c:140
+#: lib/error.c:74
 msgid "string contains a context-o character with null rule"
 msgstr ""
 
-#: lib/error.c:144
+#: lib/error.c:75
 msgid "string contains unassigned code point"
 msgstr ""
 
-#: lib/error.c:148
+#: lib/error.c:76
 msgid "string has forbidden bi-directional properties"
 msgstr ""
 
-#: lib/error.c:152
+#: lib/error.c:77
+msgid "domain label has forbidden dot (TR46)"
+msgstr ""
+
+#: lib/error.c:78
+msgid "domain label has character forbidden in transitional mode (TR46)"
+msgstr ""
+
+#: lib/error.c:79
+msgid "domain label has character forbidden in non-transitional mode (TR46)"
+msgstr ""
+
+#: lib/error.c:80
+msgid "Alabel roundtrip failed"
+msgstr ""
+
+#: lib/error.c:81
 msgid "Unknown error"
 msgstr ""
 
@@ -148,42 +164,43 @@ msgstr ""
 
 #: src/idn2.c:80
 msgid ""
-"  -h, --help               Print help and exit\n"
-"  -V, --version            Print version and exit\n"
+"  -h, --help                Print help and exit\n"
+"  -V, --version             Print version and exit\n"
 msgstr ""
 
 #: src/idn2.c:84
 msgid ""
-"  -d, --decode             Decode (punycode) domain name\n"
-"  -l, --lookup             Lookup domain name (default)\n"
-"  -r, --register           Register label\n"
+"  -d, --decode              Decode (punycode) domain name\n"
+"  -l, --lookup              Lookup domain name (default)\n"
+"  -r, --register            Register label\n"
 msgstr ""
 
 #: src/idn2.c:89
 msgid ""
-"  -T, --tr46t              Enable TR46 transitional processing\n"
-"  -N, --tr46nt             Enable TR46 non-transitional processing\n"
-"      --no-tr46            Disable TR46 processing\n"
+"  -T, --tr46t               Enable TR46 transitional processing\n"
+"  -N, --tr46nt              Enable TR46 non-transitional processing\n"
+"      --no-tr46             Disable TR46 processing\n"
 msgstr ""
 
 #: src/idn2.c:94
 msgid ""
-"      --usestd3asciirules  Enable STD3 ASCII rules\n"
-"      --debug              Print debugging information\n"
-"      --quiet              Silent operation\n"
+"      --usestd3asciirules   Enable STD3 ASCII rules\n"
+"      --no-alabelroundtrip  Disable ALabel rountrip for lookups\n"
+"      --debug               Print debugging information\n"
+"      --quiet               Silent operation\n"
 msgstr ""
 
-#: src/idn2.c:216
+#: src/idn2.c:217
 #, c-format
 msgid "Charset: %s\n"
 msgstr ""
 
-#: src/idn2.c:220
+#: src/idn2.c:221
 msgid ""
 "Type each input string on a line by itself, terminated by a newline "
 "character.\n"
 msgstr ""
 
-#: src/idn2.c:248
+#: src/idn2.c:252
 msgid "input error"
 msgstr ""

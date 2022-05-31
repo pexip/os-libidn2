@@ -5,9 +5,11 @@
 
 @var{inlen}: number of elements in  @code{input} .
 
-@var{output}: pointer to newly allocated zero-terminated output string.
+@var{output}: output zero terminated string that must have room for at least 63 characters plus the terminating zero.
 
 @var{flags}: optional @code{idn2_flags}  to modify behaviour.
+
+THIS FUNCTION HAS BEEN DEPRECATED DUE TO A DESIGN FLAW. USE @code{idn2_to_ascii_4i2()}  INSTEAD !
 
 The ToASCII operation takes a sequence of Unicode code points that make
 up one domain label and transforms it into a sequence of code points in
@@ -28,7 +30,7 @@ effect as applying it just once.
 
 The default behavior of this function (when flags are zero) is to apply
 the IDNA2008 rules without the TR46 amendments. As the TR46
-non-transitional processing is nowdays ubiquitous, when unsure, it is
+non-transitional processing is nowadays ubiquitous, when unsure, it is
 recommended to call this function with the @code{IDN2_NONTRANSITIONAL} 
 and the @code{IDN2_NFC_INPUT}  flags for compatibility with other software.
 

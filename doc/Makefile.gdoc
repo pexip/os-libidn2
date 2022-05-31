@@ -119,6 +119,17 @@ man/idn2_to_ascii_4i.3: ../lib/lookup.c
 	mkdir -p `dirname $@`
 	$(PERL) $(top_srcdir)/doc/gdoc -man $(GDOC_MAN_EXTRA_ARGS) -function idn2_to_ascii_4i $< > $@
 
+# lookup.c: idn2_to_ascii_4i2
+gdoc_TEXINFOS += texi/idn2_to_ascii_4i2.texi
+texi/idn2_to_ascii_4i2.texi: ../lib/lookup.c
+	mkdir -p `dirname $@`
+	$(PERL) $(top_srcdir)/doc/gdoc -texinfo $(GDOC_TEXI_EXTRA_ARGS) -function idn2_to_ascii_4i2 $< > $@
+
+gdoc_MANS += man/idn2_to_ascii_4i2.3
+man/idn2_to_ascii_4i2.3: ../lib/lookup.c
+	mkdir -p `dirname $@`
+	$(PERL) $(top_srcdir)/doc/gdoc -man $(GDOC_MAN_EXTRA_ARGS) -function idn2_to_ascii_4i2 $< > $@
+
 # lookup.c: idn2_to_ascii_4z
 gdoc_TEXINFOS += texi/idn2_to_ascii_4z.texi
 texi/idn2_to_ascii_4z.texi: ../lib/lookup.c

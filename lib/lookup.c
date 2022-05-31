@@ -30,18 +30,76 @@
 
 #include "idn2.h"
 
-#include <errno.h>		/* errno */
-#include <stdlib.h>		/* malloc, free */
+#include <errno.h>      /* errno */
+#include <stdlib.h>     /* malloc, free */
 
 #include "punycode.h"
 
 #include <unitypes.h>
-#include <uniconv.h>		/* u8_strconv_from_locale */
-#include <uninorm.h>		/* u32_normalize */
-#include <unistr.h>		/* u8_to_u32 */
+#include <uniconv.h>    /* u8_strconv_from_locale */
+#include <uninorm.h>    /* u32_normalize */
+#include <unistr.h>     /* u8_to_u32 */
 
-#include "idna.h"		/* _idn2_label_test */
-#include "tr46map.h"		/* defintion for tr46map.c */
+#include "idna.h"       /* _idn2_label_test */
+#include "tr46map.h"    /* definition for tr46map.c */
+
+#ifdef HAVE_LIBUNISTRING
+/* copied from gnulib */
+#include <limits.h>
+#define _C_CTYPE_LOWER_N(N) \
+   case 'a' + (N): case 'b' + (N): case 'c' + (N): case 'd' + (N): \
+   case 'e' + (N): case 'f' + (N): \
+   case 'g' + (N): case 'h' + (N): case 'i' + (N): case 'j' + (N): \
+   case 'k' + (N): case 'l' + (N): case 'm' + (N): case 'n' + (N): \
+   case 'o' + (N): case 'p' + (N): case 'q' + (N): case 'r' + (N): \
+   case 's' + (N): case 't' + (N): case 'u' + (N): case 'v' + (N): \
+   case 'w' + (N): case 'x' + (N): case 'y' + (N): case 'z' + (N)
+#define _C_CTYPE_UPPER _C_CTYPE_LOWER_N ('A' - 'a')
+static inline int
+c_tolower (int c)
+{
+  switch (c)
+    {
+    _C_CTYPE_UPPER:
+      return c - 'A' + 'a';
+    default:
+      return c;
+    }
+}
+static int
+c_strncasecmp (const char *s1, const char *s2, size_t n)
+{
+  register const unsigned char *p1 = (const unsigned char *) s1;
+  register const unsigned char *p2 = (const unsigned char *) s2;
+  unsigned char c1, c2;
+
+  if (p1 == p2 || n == 0)
+    return 0;
+
+  do
+    {
+      c1 = c_tolower (*p1);
+      c2 = c_tolower (*p2);
+
+      if (--n == 0 || c1 == '\0')
+        break;
+
+      ++p1;
+      ++p2;
+    }
+  while (c1 == c2);
+
+  if (UCHAR_MAX <= INT_MAX)
+    return c1 - c2;
+  else
+    /* On machines where 'char' and 'int' are types of the same size, the
+       difference of two 'unsigned char' values - including the sign bit -
+       doesn't fit in an 'int'.  */
+    return (c1 > c2 ? 1 : c1 < c2 ? -1 : 0);
+}
+#else
+#include <c-strcase.h>
+#endif
 
 static int set_default_flags(int *flags)
 {
@@ -49,6 +107,9 @@ static int set_default_flags(int *flags)
     return IDN2_INVALID_FLAGS;
 
   if (((*flags) & (IDN2_TRANSITIONAL|IDN2_NONTRANSITIONAL)) && ((*flags) & IDN2_NO_TR46))
+    return IDN2_INVALID_FLAGS;
+
+  if (((*flags) & IDN2_ALABEL_ROUNDTRIP) && ((*flags) & IDN2_NO_ALABEL_ROUNDTRIP))
     return IDN2_INVALID_FLAGS;
 
   if (!((*flags) & (IDN2_NO_TR46|IDN2_TRANSITIONAL)))
@@ -63,23 +124,39 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t * dstlen,
 {
   size_t plen;
   uint32_t *p;
-  int rc;
-  size_t tmpl;
+  const uint8_t *src_org = NULL;
+  uint8_t *src_allocated = NULL;
+  int rc, check_roundtrip = 0;
+  size_t tmpl, srclen_org = 0;
+  uint32_t label_u32[IDN2_LABEL_MAX_LENGTH];
+  size_t label32_len = IDN2_LABEL_MAX_LENGTH;
 
-  if (_idn2_ascii_p (src, srclen))
-    {
-      if (flags & IDN2_ALABEL_ROUNDTRIP)
-	/* FIXME implement this MAY:
+  if (_idn2_ascii_p (src, srclen)) {
+    if (!(flags & IDN2_NO_ALABEL_ROUNDTRIP) && srclen >= 4 && memcmp (src, "xn--", 4) == 0) {
+      /*
+	 If the input to this procedure appears to be an A-label
+	 (i.e., it starts in "xn--", interpreted
+	 case-insensitively), the lookup application MAY attempt to
+	 convert it to a U-label, first ensuring that the A-label is
+	 entirely in lowercase (converting it to lowercase if
+	 necessary), and apply the tests of Section 5.4 and the
+	 conversion of Section 5.5 to that form. */
+      rc = _idn2_punycode_decode_internal (srclen - 4, (char *) src + 4, &label32_len, label_u32);
+      if (rc)
+	return rc;
 
-	   If the input to this procedure appears to be an A-label
-	   (i.e., it starts in "xn--", interpreted
-	   case-insensitively), the lookup application MAY attempt to
-	   convert it to a U-label, first ensuring that the A-label is
-	   entirely in lowercase (converting it to lowercase if
-	   necessary), and apply the tests of Section 5.4 and the
-	   conversion of Section 5.5 to that form. */
-	return IDN2_INVALID_FLAGS;
+      check_roundtrip = 1;
+      src_org = src;
+      srclen_org = srclen;
 
+      srclen = IDN2_LABEL_MAX_LENGTH;
+      src = src_allocated = u32_to_u8 (label_u32, label32_len, NULL, &srclen);
+      if (!src) {
+	if (errno == ENOMEM)
+	  return IDN2_MALLOC;
+	return IDN2_ENCODING_ERROR;
+      }
+    } else {
       if (srclen > IDN2_LABEL_MAX_LENGTH)
 	return IDN2_TOO_BIG_LABEL;
       if (srclen > *dstlen)
@@ -89,10 +166,11 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t * dstlen,
       *dstlen = srclen;
       return IDN2_OK;
     }
+  }
 
   rc = _idn2_u8_to_u32_nfc (src, srclen, &p, &plen, flags & IDN2_NFC_INPUT);
   if (rc != IDN2_OK)
-    return rc;
+    goto out;
 
   if (!(flags & IDN2_TRANSITIONAL))
     {
@@ -110,8 +188,8 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t * dstlen,
 
       if (rc != IDN2_OK)
 	{
-	  free(p);
-	  return rc;
+	  free (p);
+	  goto out;
 	}
     }
 
@@ -121,14 +199,28 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t * dstlen,
   dst[3] = '-';
 
   tmpl = *dstlen - 4;
-  rc = _idn2_punycode_encode (plen, p, &tmpl, (char *) dst + 4);
+  rc = _idn2_punycode_encode_internal (plen, p, &tmpl, (char *) dst + 4);
   free (p);
   if (rc != IDN2_OK)
-    return rc;
+    goto out;
+
 
   *dstlen = 4 + tmpl;
 
-  return IDN2_OK;
+  if (check_roundtrip)
+    {
+      if (srclen_org != *dstlen || c_strncasecmp ((char *) src_org, (char *) dst, srclen_org))
+      {
+        rc = IDN2_ALABEL_ROUNDTRIP_FAILED;
+	goto out;
+      }
+    }
+
+  rc = IDN2_OK;
+
+out:
+  free (src_allocated);
+  return rc;
 }
 
 #define TR46_TRANSITIONAL_CHECK \
@@ -207,6 +299,14 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
 	      len2 += map.nmappings;
 	    }
         }
+    }
+
+  /* Exit early if result is too long.
+   * This avoids excessive CPU usage in punycode encoding, which is O(N^2). */
+  if (len2 >= IDN2_DOMAIN_MAX_LENGTH)
+    {
+      free (domain_u32);
+      return IDN2_TOO_BIG_DOMAIN;
     }
 
   uint32_t *tmp = (uint32_t *) malloc ((len2 + 1) * sizeof (uint32_t));
@@ -301,8 +401,8 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
 	      return IDN2_ENCODING_ERROR;
 	    }
 
-	  rc =
-	    _idn2_punycode_decode (ace_len, (char *) ace, &name_len, name_u32);
+	  rc = _idn2_punycode_decode_internal (ace_len, (char *) ace,
+					       &name_len, name_u32);
 
 	  free (ace);
 
@@ -371,13 +471,17 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
  * Pass %IDN2_NFC_INPUT in @flags to convert input to NFC form before
  * further processing.  %IDN2_TRANSITIONAL and %IDN2_NONTRANSITIONAL
  * do already imply %IDN2_NFC_INPUT.
+ *
  * Pass %IDN2_ALABEL_ROUNDTRIP in @flags to
  * convert any input A-labels to U-labels and perform additional
- * testing (not implemented yet).
+ * testing. This is default since version 2.2.
+ * To switch this behavior off, pass IDN2_NO_ALABEL_ROUNDTRIP
+ *
  * Pass %IDN2_TRANSITIONAL to enable Unicode TR46
  * transitional processing, and %IDN2_NONTRANSITIONAL to enable
- * Unicode TR46 non-transitional processing.  Multiple flags may be
- * specified by binary or:ing them together.
+ * Unicode TR46 non-transitional processing.
+ *
+ * Multiple flags may be specified by binary or:ing them together.
  *
  * After version 2.0.3: %IDN2_USE_STD3_ASCII_RULES disabled by default.
  * Previously we were eliminating non-STD3 characters from domain strings
@@ -495,14 +599,19 @@ idn2_lookup_u8 (const uint8_t * src, uint8_t ** lookupname, int flags)
  * to be encoded in the locale's default coding system, and will be
  * transcoded to UTF-8 and NFC normalized by this function.
  *
- * Pass %IDN2_ALABEL_ROUNDTRIP in @flags to convert any input A-labels
- * to U-labels and perform additional testing.  Pass
- * %IDN2_TRANSITIONAL to enable Unicode TR46 transitional processing,
+ * Pass %IDN2_ALABEL_ROUNDTRIP in @flags to
+ * convert any input A-labels to U-labels and perform additional
+ * testing. This is default since version 2.2.
+ * To switch this behavior off, pass IDN2_NO_ALABEL_ROUNDTRIP
+ *
+ * Pass %IDN2_TRANSITIONAL to enable Unicode TR46 transitional processing,
  * and %IDN2_NONTRANSITIONAL to enable Unicode TR46 non-transitional
- * processing.  Multiple flags may be specified by binary or:ing them
- * together, for example %IDN2_ALABEL_ROUNDTRIP |
- * %IDN2_NONTRANSITIONAL.  The %IDN2_NFC_INPUT in @flags is always
- * enabled in this function.
+ * processing.
+ *
+ * Multiple flags may be specified by binary or:ing them together, for
+ * example %IDN2_ALABEL_ROUNDTRIP | %IDN2_NONTRANSITIONAL.
+ *
+ * The %IDN2_NFC_INPUT in @flags is always enabled in this function.
  *
  * After version 0.11: @lookupname may be NULL to test lookup of @src
  * without allocating memory.
@@ -547,6 +656,71 @@ idn2_lookup_ul (const char * src, char ** lookupname, int flags)
  * idn2_to_ascii_4i:
  * @input: zero terminated input Unicode (UCS-4) string.
  * @inlen: number of elements in @input.
+ * @output: output zero terminated string that must have room for at least 63 characters plus the terminating zero.
+ * @flags: optional #idn2_flags to modify behaviour.
+ *
+ * THIS FUNCTION HAS BEEN DEPRECATED DUE TO A DESIGN FLAW. USE idn2_to_ascii_4i2() INSTEAD !
+ *
+ * The ToASCII operation takes a sequence of Unicode code points that make
+ * up one domain label and transforms it into a sequence of code points in
+ * the ASCII range (0..7F). If ToASCII succeeds, the original sequence and
+ * the resulting sequence are equivalent labels.
+ *
+ * It is important to note that the ToASCII operation can fail.
+ * ToASCII fails if any step of it fails. If any step of the
+ * ToASCII operation fails on any label in a domain name, that domain
+ * name MUST NOT be used as an internationalized domain name.
+ * The method for dealing with this failure is application-specific.
+ *
+ * The inputs to ToASCII are a sequence of code points.
+ *
+ * ToASCII never alters a sequence of code points that are all in the ASCII
+ * range to begin with (although it could fail). Applying the ToASCII operation multiple
+ * effect as applying it just once.
+ *
+ * The default behavior of this function (when flags are zero) is to apply
+ * the IDNA2008 rules without the TR46 amendments. As the TR46
+ * non-transitional processing is nowadays ubiquitous, when unsure, it is
+ * recommended to call this function with the %IDN2_NONTRANSITIONAL
+ * and the %IDN2_NFC_INPUT flags for compatibility with other software.
+ *
+ * Return value: Returns %IDN2_OK on success, or error code.
+ *
+ * Since: 2.0.0
+ **/
+int
+idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char * output, int flags)
+{
+  char *out;
+  int rc;
+
+  if (!input)
+    {
+      if (output)
+	*output = 0;
+      return IDN2_OK;
+    }
+
+  rc = idn2_to_ascii_4i2 (input, inlen, &out, flags);
+  if (rc == IDN2_OK)
+  {
+	  size_t len = strlen(out);
+
+	  if (len > 63)
+		  rc = IDN2_TOO_BIG_DOMAIN;
+	  else if (output)
+		  memcpy (output, out, len);
+
+	  free (out);
+  }
+
+  return rc;
+}
+
+/**
+ * idn2_to_ascii_4i:
+ * @input: zero terminated input Unicode (UCS-4) string.
+ * @inlen: number of elements in @input.
  * @output: pointer to newly allocated zero-terminated output string.
  * @flags: optional #idn2_flags to modify behaviour.
  *
@@ -569,16 +743,16 @@ idn2_lookup_ul (const char * src, char ** lookupname, int flags)
  *
  * The default behavior of this function (when flags are zero) is to apply
  * the IDNA2008 rules without the TR46 amendments. As the TR46
- * non-transitional processing is nowdays ubiquitous, when unsure, it is
+ * non-transitional processing is nowadays ubiquitous, when unsure, it is
  * recommended to call this function with the %IDN2_NONTRANSITIONAL
  * and the %IDN2_NFC_INPUT flags for compatibility with other software.
  *
  * Return value: Returns %IDN2_OK on success, or error code.
  *
- * Since: 2.0.0
+ * Since: 2.1.1
  **/
 int
-idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char * output, int flags)
+idn2_to_ascii_4i2 (const uint32_t * input, size_t inlen, char ** output, int flags)
 {
   uint32_t *input_u32;
   uint8_t *input_u8, *output_u8;
@@ -588,7 +762,7 @@ idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char * output, int flags
   if (!input)
     {
       if (output)
-	*output = 0;
+	*output = NULL;
       return IDN2_OK;
     }
 
@@ -613,15 +787,12 @@ idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char * output, int flags
 
   if (rc == IDN2_OK)
     {
-      /* wow, this is ugly, but libidn manpage states:
-       * char * out  output zero terminated string that must have room for at
-       * least 63 characters plus the terminating zero.
-       */
       if (output)
-	strcpy (output, (const char *) output_u8);
+	*output = (char *) output_u8;
+		else
+	free (output_u8);
     }
 
-  free(output_u8);
   return rc;
 }
 
@@ -637,7 +808,7 @@ idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char * output, int flags
  *
  * The default behavior of this function (when flags are zero) is to apply
  * the IDNA2008 rules without the TR46 amendments. As the TR46
- * non-transitional processing is nowdays ubiquitous, when unsure, it is
+ * non-transitional processing is nowadays ubiquitous, when unsure, it is
  * recommended to call this function with the %IDN2_NONTRANSITIONAL
  * and the %IDN2_NFC_INPUT flags for compatibility with other software.
  *
@@ -685,7 +856,7 @@ idn2_to_ascii_4z (const uint32_t * input, char ** output, int flags)
  *
  * The default behavior of this function (when flags are zero) is to apply
  * the IDNA2008 rules without the TR46 amendments. As the TR46
- * non-transitional processing is nowdays ubiquitous, when unsure, it is
+ * non-transitional processing is nowadays ubiquitous, when unsure, it is
  * recommended to call this function with the %IDN2_NONTRANSITIONAL
  * and the %IDN2_NFC_INPUT flags for compatibility with other software.
  *
@@ -711,7 +882,7 @@ idn2_to_ascii_8z (const char * input, char ** output, int flags)
  *
  * The default behavior of this function (when flags are zero) is to apply
  * the IDNA2008 rules without the TR46 amendments. As the TR46
- * non-transitional processing is nowdays ubiquitous, when unsure, it is
+ * non-transitional processing is nowadays ubiquitous, when unsure, it is
  * recommended to call this function with the %IDN2_NONTRANSITIONAL
  * and the %IDN2_NFC_INPUT flags for compatibility with other software.
  *

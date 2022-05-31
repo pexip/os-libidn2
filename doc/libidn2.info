@@ -1,7 +1,7 @@
-This is libidn2.info, produced by makeinfo version 6.5 from
+This is libidn2.info, produced by makeinfo version 6.7 from
 libidn2.texi.
 
-This manual is for Libidn2 (version 2.0.5, 16 May 2018), an
+This manual is for Libidn2 (version 2.3.0, 24 July 2019), an
 implementation of IDNA2008/TR46 internationalized domain names.
 
    Copyright © 2011-2017 Simon Josefsson
@@ -21,7 +21,7 @@ File: libidn2.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Libidn2
 *******
 
-This manual is for Libidn2 (version 2.0.5, 16 May 2018), an
+This manual is for Libidn2 (version 2.3.0, 24 July 2019), an
 implementation of IDNA2008/TR46 internationalized domain names.
 
    Copyright © 2011-2017 Simon Josefsson
@@ -107,7 +107,7 @@ idn2_to_ascii_8z
 
      The default behavior of this function (when flags are zero) is to
      apply the IDNA2008 rules without the TR46 amendments.  As the TR46
-     non-transitional processing is nowdays ubiquitous, when unsure, it
+     non-transitional processing is nowadays ubiquitous, when unsure, it
      is recommended to call this function with the
      ‘IDN2_NONTRANSITIONAL’ and the ‘IDN2_NFC_INPUT’ flags for
      compatibility with other software.
@@ -125,7 +125,7 @@ idn2_to_unicode_8z8z
 
      OUTPUT: Newly allocated UTF-8 output string.
 
-     FLAGS: optional ‘idn2_flags’ to modify behaviour.
+     FLAGS: Currently unused.
 
      Converts a possibly ACE encoded domain name in UTF-8 format into a
      UTF-8 string (punycode decoding).  The output buffer will be
@@ -155,13 +155,18 @@ idn2_lookup_u8
 
      Pass ‘IDN2_NFC_INPUT’ in ‘flags’ to convert input to NFC form
      before further processing.  ‘IDN2_TRANSITIONAL’ and
-     ‘IDN2_NONTRANSITIONAL’ do already imply ‘IDN2_NFC_INPUT’ .  Pass
-     ‘IDN2_ALABEL_ROUNDTRIP’ in ‘flags’ to convert any input A-labels to
-     U-labels and perform additional testing (not implemented yet).
+     ‘IDN2_NONTRANSITIONAL’ do already imply ‘IDN2_NFC_INPUT’ .
+
+     Pass ‘IDN2_ALABEL_ROUNDTRIP’ in ‘flags’ to convert any input
+     A-labels to U-labels and perform additional testing.  This is
+     default since version 2.2.  To switch this behavior off, pass
+     IDN2_NO_ALABEL_ROUNDTRIP
+
      Pass ‘IDN2_TRANSITIONAL’ to enable Unicode TR46 transitional
      processing, and ‘IDN2_NONTRANSITIONAL’ to enable Unicode TR46
-     non-transitional processing.  Multiple flags may be specified by
-     binary or:ing them together.
+     non-transitional processing.
+
+     Multiple flags may be specified by binary or:ing them together.
 
      After version 2.0.3: ‘IDN2_USE_STD3_ASCII_RULES’ disabled by
      default.  Previously we were eliminating non-STD3 characters from
@@ -244,7 +249,7 @@ idn2_to_ascii_lz
 
      The default behavior of this function (when flags are zero) is to
      apply the IDNA2008 rules without the TR46 amendments.  As the TR46
-     non-transitional processing is nowdays ubiquitous, when unsure, it
+     non-transitional processing is nowadays ubiquitous, when unsure, it
      is recommended to call this function with the
      ‘IDN2_NONTRANSITIONAL’ and the ‘IDN2_NFC_INPUT’ flags for
      compatibility with other software.
@@ -264,7 +269,7 @@ idn2_to_unicode_8zlz
      OUTPUT: Newly allocated output string in current locale’s character
      set.
 
-     FLAGS: optional ‘idn2_flags’ to modify behaviour.
+     FLAGS: Currently unused.
 
      Converts a possibly ACE encoded domain name in UTF-8 format into a
      string encoded in the current locale’s character set (punycode
@@ -287,7 +292,7 @@ idn2_to_unicode_lzlz
      OUTPUT: Newly allocated output string in current locale’s character
      set.
 
-     FLAGS: optional ‘idn2_flags’ to modify behaviour.
+     FLAGS: Currently unused.
 
      Converts a possibly ACE encoded domain name in the locale’s
      character set into a string encoded in the current locale’s
@@ -317,13 +322,18 @@ idn2_lookup_ul
      transcoded to UTF-8 and NFC normalized by this function.
 
      Pass ‘IDN2_ALABEL_ROUNDTRIP’ in ‘flags’ to convert any input
-     A-labels to U-labels and perform additional testing.  Pass
-     ‘IDN2_TRANSITIONAL’ to enable Unicode TR46 transitional processing,
-     and ‘IDN2_NONTRANSITIONAL’ to enable Unicode TR46 non-transitional
-     processing.  Multiple flags may be specified by binary or:ing them
-     together, for example ‘IDN2_ALABEL_ROUNDTRIP’ |
-     ‘IDN2_NONTRANSITIONAL’ .  The ‘IDN2_NFC_INPUT’ in ‘flags’ is always
-     enabled in this function.
+     A-labels to U-labels and perform additional testing.  This is
+     default since version 2.2.  To switch this behavior off, pass
+     IDN2_NO_ALABEL_ROUNDTRIP
+
+     Pass ‘IDN2_TRANSITIONAL’ to enable Unicode TR46 transitional
+     processing, and ‘IDN2_NONTRANSITIONAL’ to enable Unicode TR46
+     non-transitional processing.
+
+     Multiple flags may be specified by binary or:ing them together, for
+     example ‘IDN2_ALABEL_ROUNDTRIP’ | ‘IDN2_NONTRANSITIONAL’ .
+
+     The ‘IDN2_NFC_INPUT’ in ‘flags’ is always enabled in this function.
 
      After version 0.11: ‘lookupname’ may be NULL to test lookup of
      ‘src’ without allocating memory.
@@ -429,7 +439,7 @@ idn2_strerror_name
 2.6 Return Codes
 ================
 
-The functions normally return 0 on sucess or a negative error code.
+The functions normally return 0 on success or a negative error code.
 
  -- Return code: idn2_rc IDN2_OK
      Successful return.
@@ -601,10 +611,12 @@ libidn2, for switching to IDNA2008.
 libidn                        libidn2
                               
 ------------------------------------------------------------
-rc = idna_to_ascii_8z (buf, &p, 0 /* any flags */);/* The flag IDN2_NONTRANSITIONAL is the default under
-if (rc != IDNA_SUCCESS)        * libidn2 2.0.5 or later; we specify it explicitly
-                               * for earlier versions. */
-                              rc = idn2_to_ascii_8z (buf, &p, IDN2_NONTRANSITIONAL);
+rc = idna_to_ascii_8z (buf, &p, IDNA_USE_STD3_ASCII_RULES);rc = idn2_to_ascii_8z (buf, &p, IDN2_USE_STD3_ASCII_RULES);
+if (rc != IDNA_SUCCESS)       if (rc != IDN2_OK)
+                              
+rc = idna_to_ascii_8z (buf, &p, 0 /* any other flags */);/* we recommend to use the default flags (0), so that
+if (rc != IDNA_SUCCESS)        * the default behavior of libidn2 applies. */
+                              rc = idn2_to_ascii_8z (buf, &p, 0);
                               if (rc != IDN2_OK)
                               
 rc = idna_to_unicode_8z8z (buf, &p, 0 /* any flags */);rc = idn2_to_unicode_8z8z (buf, &p, 0);
@@ -1106,19 +1118,19 @@ Interface Index
  [index ]
 * Menu:
 
-* idn2_check_version:                    Library Functions.   (line 474)
-* idn2_free:                             Library Functions.   (line 453)
+* idn2_check_version:                    Library Functions.   (line 484)
+* idn2_free:                             Library Functions.   (line 463)
 * idn2_lookup_u8:                        Library Functions.   (line  71)
-* idn2_lookup_ul:                        Library Functions.   (line 234)
-* idn2_register_u8:                      Library Functions.   (line 116)
-* idn2_register_ul:                      Library Functions.   (line 271)
-* idn2_strerror:                         Library Functions.   (line 335)
-* idn2_strerror_name:                    Library Functions.   (line 346)
+* idn2_lookup_ul:                        Library Functions.   (line 239)
+* idn2_register_u8:                      Library Functions.   (line 121)
+* idn2_register_ul:                      Library Functions.   (line 281)
+* idn2_strerror:                         Library Functions.   (line 345)
+* idn2_strerror_name:                    Library Functions.   (line 356)
 * idn2_to_ascii_8z:                      Library Functions.   (line  25)
-* idn2_to_ascii_lz:                      Library Functions.   (line 161)
+* idn2_to_ascii_lz:                      Library Functions.   (line 166)
 * idn2_to_unicode_8z8z:                  Library Functions.   (line  51)
-* idn2_to_unicode_8zlz:                  Library Functions.   (line 189)
-* idn2_to_unicode_lzlz:                  Library Functions.   (line 211)
+* idn2_to_unicode_8zlz:                  Library Functions.   (line 194)
+* idn2_to_unicode_lzlz:                  Library Functions.   (line 216)
 
 
 File: libidn2.info,  Node: Concept Index,  Prev: Interface Index,  Up: Top
@@ -1140,31 +1152,31 @@ Concept Index
 
 
 Tag Table:
-Node: Top561
-Node: Introduction1115
-Node: Library Functions2361
-Ref: idn2_to_ascii_8z2928
-Ref: idn2_to_unicode_8z8z3898
-Ref: idn2_lookup_u84499
-Ref: idn2_register_u86501
-Ref: idn2_to_ascii_lz8386
-Ref: idn2_to_unicode_8zlz9435
-Ref: idn2_to_unicode_lzlz10130
-Ref: idn2_lookup_ul10876
-Ref: idn2_register_ul12490
-Ref: idn2_strerror15022
-Ref: idn2_strerror_name15366
-Ref: idn2_free18421
-Ref: idn2_check_version19154
-Node: Converting from libidn20374
-Node: Examples24302
-Node: ToASCII24749
-Node: ToUnicode26277
-Node: Lookup27803
-Node: Register28936
-Node: Invoking idn230062
-Node: Interface Index37039
-Node: Concept Index38143
+Node: Top562
+Node: Introduction1117
+Node: Library Functions2363
+Ref: idn2_to_ascii_8z2930
+Ref: idn2_to_unicode_8z8z3901
+Ref: idn2_lookup_u84473
+Ref: idn2_register_u86560
+Ref: idn2_to_ascii_lz8445
+Ref: idn2_to_unicode_8zlz9495
+Ref: idn2_to_unicode_lzlz10161
+Ref: idn2_lookup_ul10878
+Ref: idn2_register_ul12598
+Ref: idn2_strerror15130
+Ref: idn2_strerror_name15474
+Ref: idn2_free18530
+Ref: idn2_check_version19263
+Node: Converting from libidn20483
+Node: Examples24534
+Node: ToASCII24981
+Node: ToUnicode26509
+Node: Lookup28035
+Node: Register29168
+Node: Invoking idn230294
+Node: Interface Index37271
+Node: Concept Index38375
 
 End Tag Table
 

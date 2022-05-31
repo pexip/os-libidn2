@@ -1,129 +1,138 @@
-# Swedish translation for libidn
-# Copyright © xxxx - 2016 Free Software Foundation, Inc.
-# This file is distributed under the same license as the libidn package.
+# Swedish translation for libidn2
+# Copyright © 2016, 2018, 2019 Free Software Foundation, Inc.
+# This file is distributed under the same license as the libidn2 package.
 # Josef Andersson <josef.andersson@fripost.org>, 2016.
+# Sebastian Rasmussen <sebras@gmail.com>, 2018, 2019.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libidn 1.29\n"
+"Project-Id-Version: libidn2 2.1.1\n"
 "Report-Msgid-Bugs-To: bug-libidn2@gnu.org\n"
-"POT-Creation-Date: 2018-05-18 09:59+0200\n"
-"PO-Revision-Date: 2016-07-16 19:36+0100\n"
-"Last-Translator: Josef Andersson <josef.andersson@fripost.org>\n"
+"POT-Creation-Date: 2019-11-14 09:45+0100\n"
+"PO-Revision-Date: 2019-02-13 22:51+0100\n"
+"Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.2.1\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/error.c:56
-#, fuzzy
+#: lib/error.c:53
 msgid "success"
-msgstr "Lyckades"
+msgstr "lyckades"
+
+#: lib/error.c:54
+msgid "out of memory"
+msgstr "kan inte allokera minne"
+
+#: lib/error.c:55
+msgid "could not determine locale encoding format"
+msgstr "det gick inte att avgöra lokalt kodningsformat"
+
+#: lib/error.c:56
+msgid "could not convert string to UTF-8"
+msgstr "kunde inte konvertera sträng till UTF-8"
+
+#: lib/error.c:57
+msgid "string encoding error"
+msgstr "strängkodningsfel"
+
+#: lib/error.c:58
+msgid "string could not be NFC normalized"
+msgstr "sträng kunde inte NFC-normaliseras"
+
+#: lib/error.c:59
+msgid "string contains invalid punycode data"
+msgstr "sträng innehåller ogiltig punycode-data"
 
 #: lib/error.c:60
-#, fuzzy
-msgid "out of memory"
-msgstr "Kan inte allokera minne"
+msgid "punycode encoded data will be too large"
+msgstr "punycode-kodad data kommer att bli för stor"
+
+#: lib/error.c:61
+msgid "punycode conversion resulted in overflow"
+msgstr "punycode-konvertering resulterade i överspill"
+
+#: lib/error.c:62
+msgid "domain name longer than 255 characters"
+msgstr "domännamn längre än 255 tecken"
+
+#: lib/error.c:63
+msgid "domain label longer than 63 characters"
+msgstr "domänetikett längre än 63 tecken"
 
 #: lib/error.c:64
-#, fuzzy
-msgid "could not determine locale encoding format"
-msgstr "Det gick inte att konvertera strängen till lokal kodning"
+msgid "input A-label is not valid"
+msgstr "indata A-etikett är inte giltig"
+
+#: lib/error.c:65
+msgid "input A-label and U-label does not match"
+msgstr "indata A-etikett och U-etikett matchar inte"
+
+#: lib/error.c:66
+msgid "string is not in Unicode NFC format"
+msgstr "strängen är inte i Unicode NFC-format"
+
+#: lib/error.c:67
+msgid "string contains forbidden two hyphens pattern"
+msgstr "sträng innehåller förbjudet tvåstrecksmönster"
 
 #: lib/error.c:68
-#, fuzzy
-msgid "could not convert string to UTF-8"
-msgstr "kunde inte konvertera från %s till UTF-8"
+msgid "string start/ends with forbidden hyphen"
+msgstr "sträng börjar/slutar med förbjudet bindestreck"
+
+#: lib/error.c:69
+msgid "string contains a forbidden leading combining character"
+msgstr "sträng innehåller ett förbjudet inledande kombineringstecken"
+
+#: lib/error.c:70
+msgid "string contains a disallowed character"
+msgstr "sträng innehåller ett otillåtet tecken"
+
+#: lib/error.c:71
+msgid "string contains a forbidden context-j character"
+msgstr "sträng innehåller ett förbjudet kontext-j-tecken"
 
 #: lib/error.c:72
-msgid "string encoding error"
-msgstr ""
+msgid "string contains a context-j character with null rule"
+msgstr "sträng innehåller ett kontext-j-tecken med nullregel"
+
+#: lib/error.c:73
+msgid "string contains a forbidden context-o character"
+msgstr "sträng innehåller ett förbjudet kontext-o-tecken"
+
+#: lib/error.c:74
+msgid "string contains a context-o character with null rule"
+msgstr "sträng innehåller ett kontext-o-tecken med nullregel"
+
+#: lib/error.c:75
+msgid "string contains unassigned code point"
+msgstr "sträng innehåller otilldelade kodpunkter"
 
 #: lib/error.c:76
-#, fuzzy
-msgid "string could not be NFC normalized"
-msgstr "kunde inte genomföra NFKC-normalisering"
+msgid "string has forbidden bi-directional properties"
+msgstr "sträng har förbjudna dubbelriktade egenskaper"
+
+#: lib/error.c:77
+msgid "domain label has forbidden dot (TR46)"
+msgstr "domänetikett har förbjuden punkt (TR46)"
+
+#: lib/error.c:78
+msgid "domain label has character forbidden in transitional mode (TR46)"
+msgstr "domänetikett har förbjudet tecken i övergångsläge (TR46)"
+
+#: lib/error.c:79
+msgid "domain label has character forbidden in non-transitional mode (TR46)"
+msgstr "domänetikett har förbjudet tecken i icke-övergångsläge (TR46)"
 
 #: lib/error.c:80
-msgid "string contains invalid punycode data"
+msgid "Alabel roundtrip failed"
 msgstr ""
 
-#: lib/error.c:84
-msgid "punycode encoded data will be too large"
-msgstr ""
-
-#: lib/error.c:88
-msgid "punycode conversion resulted in overflow"
-msgstr ""
-
-#: lib/error.c:92
-msgid "domain name longer than 255 characters"
-msgstr ""
-
-#: lib/error.c:96
-msgid "domain label longer than 63 characters"
-msgstr ""
-
-#: lib/error.c:100
-msgid "input A-label is not valid"
-msgstr ""
-
-#: lib/error.c:104
-msgid "input A-label and U-label does not match"
-msgstr ""
-
-#: lib/error.c:108
-#, fuzzy
-msgid "string is not in Unicode NFC format"
-msgstr "Strängen inte idempotent under Unicode NFKC-normalisering"
-
-#: lib/error.c:112
-msgid "string contains forbidden two hyphens pattern"
-msgstr ""
-
-#: lib/error.c:116
-msgid "string start/ends with forbidden hyphen"
-msgstr ""
-
-#: lib/error.c:120
-msgid "string contains a forbidden leading combining character"
-msgstr ""
-
-#: lib/error.c:124
-msgid "string contains a disallowed character"
-msgstr ""
-
-#: lib/error.c:128
-msgid "string contains a forbidden context-j character"
-msgstr ""
-
-#: lib/error.c:132
-msgid "string contains a context-j character with null rule"
-msgstr ""
-
-#: lib/error.c:136
-msgid "string contains a forbidden context-o character"
-msgstr ""
-
-#: lib/error.c:140
-msgid "string contains a context-o character with null rule"
-msgstr ""
-
-#: lib/error.c:144
-#, fuzzy
-msgid "string contains unassigned code point"
-msgstr "Förbjudna otilldelade kodpunkter i indata"
-
-#: lib/error.c:148
-#, fuzzy
-msgid "string has forbidden bi-directional properties"
-msgstr "Motsägelsefulla dubbelriktade egenskaper i indata"
-
-#: lib/error.c:152
+#: lib/error.c:81
 msgid "Unknown error"
 msgstr "Okänt fel"
 
@@ -138,18 +147,16 @@ msgid "Usage: %s [OPTION]... [STRINGS]...\n"
 msgstr "Användning: %s [FLAGGA]… [STRÄNGAR]…\n"
 
 #: src/idn2.c:66
-#, fuzzy
 msgid ""
 "Internationalized Domain Name (IDNA2008) convert STRINGS, or standard "
 "input.\n"
 "\n"
 msgstr ""
-"Internationaliserat domännamn (IDN) konverterar STRÄNGAR, eller standard "
-"in.\n"
+"Internationaliserat domännamn (IDNA2008) konverterar STRÄNGAR, eller "
+"standard in.\n"
 "\n"
 
 #: src/idn2.c:70
-#, fuzzy
 msgid ""
 "Command line interface to the Libidn2 implementation of IDNA2008.\n"
 "\n"
@@ -160,13 +167,9 @@ msgid ""
 "\n"
 "Mandatory arguments to long options are mandatory for short options too.\n"
 msgstr ""
-"Kommandoradsgränssnitt till biblioteket för internationaliserade domännamn.\n"
+"Kommandoradsgränssnitt till Libidn2-implementationen av IDNA2008.\n"
 "\n"
-"Alla strängar förväntas vara kodade i den teckenuppsättning din lokal\n"
-"använder. Använd ”--debug” för att ta reda på vad denna teckenuppsättning "
-"är. Du\n"
-"kan åsidosätta den använda teckenuppsättningen genom att sätta "
-"miljövariabeln CHARSET.\n"
+"Alla strängar förväntas vara kodade i den lokala teckenuppsättningen.\n"
 "\n"
 "För att bearbeta en sträng som börjar med ”-”, till exempel ”-foo”, använd "
 "”--”\n"
@@ -176,50 +179,61 @@ msgstr ""
 "flaggor.\n"
 
 #: src/idn2.c:80
+#, fuzzy
 msgid ""
-"  -h, --help               Print help and exit\n"
-"  -V, --version            Print version and exit\n"
+"  -h, --help                Print help and exit\n"
+"  -V, --version             Print version and exit\n"
 msgstr ""
 "  -h, --help               Skriv ut hjälp och avsluta\n"
 "  -V, --version            Skriv ut version och avsluta\n"
 
 #: src/idn2.c:84
+#, fuzzy
 msgid ""
-"  -d, --decode             Decode (punycode) domain name\n"
-"  -l, --lookup             Lookup domain name (default)\n"
-"  -r, --register           Register label\n"
+"  -d, --decode              Decode (punycode) domain name\n"
+"  -l, --lookup              Lookup domain name (default)\n"
+"  -r, --register            Register label\n"
 msgstr ""
+"  -d, --decode             Avkoda (punycode) domännamn\n"
+"  -l, --lookup             Slå upp domännamn (standard)\n"
+"  -r, --register           Registrera etikett\n"
 
 #: src/idn2.c:89
+#, fuzzy
 msgid ""
-"  -T, --tr46t              Enable TR46 transitional processing\n"
-"  -N, --tr46nt             Enable TR46 non-transitional processing\n"
-"      --no-tr46            Disable TR46 processing\n"
+"  -T, --tr46t               Enable TR46 transitional processing\n"
+"  -N, --tr46nt              Enable TR46 non-transitional processing\n"
+"      --no-tr46             Disable TR46 processing\n"
 msgstr ""
+"  -T, --tr46t              Aktivera TR46-övergångshantering\n"
+"  -N, --tr46nt             Aktivera TR46-ickeövergångshantering\n"
+"      --no-tr46            Inaktivera TR46-hantering\n"
 
 #: src/idn2.c:94
 #, fuzzy
 msgid ""
-"      --usestd3asciirules  Enable STD3 ASCII rules\n"
-"      --debug              Print debugging information\n"
-"      --quiet              Silent operation\n"
+"      --usestd3asciirules   Enable STD3 ASCII rules\n"
+"      --no-alabelroundtrip  Disable ALabel rountrip for lookups\n"
+"      --debug               Print debugging information\n"
+"      --quiet               Silent operation\n"
 msgstr ""
+"      --usestd3asciirules  Aktivera STD3 ASCII-regler\n"
 "      --debug              Skriv ut felsökningsinformation\n"
 "      --quiet              Tyst åtgärd\n"
 
-#: src/idn2.c:216
-#, fuzzy, c-format
+#: src/idn2.c:217
+#, c-format
 msgid "Charset: %s\n"
-msgstr "Teckenuppsättning ”%s”.\n"
+msgstr "Teckenuppsättning: %s\n"
 
-#: src/idn2.c:220
+#: src/idn2.c:221
 msgid ""
 "Type each input string on a line by itself, terminated by a newline "
 "character.\n"
 msgstr ""
 "Skriv varje inmatningssträng på en egen rad, avslutad med nyradstecken.\n"
 
-#: src/idn2.c:248
+#: src/idn2.c:252
 msgid "input error"
 msgstr "indatafel"
 

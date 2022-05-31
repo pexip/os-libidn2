@@ -1,5 +1,6 @@
 [![build status](https://gitlab.com/libidn/libidn2/badges/master/build.svg)](https://gitlab.com/libidn/libidn2/pipelines)
 [![coverage status](https://gitlab.com/libidn/libidn2/badges/master/coverage.svg)](https://libidn.gitlab.io/libidn2/coverage)
+[![fuzz coverage status](https://libidn.gitlab.io/libidn2/fuzz-coverage/badge.svg)](https://libidn.gitlab.io/libidn2/fuzz-coverage)
 [![Coverity Scan Build Status](https://scan.coverity.com/projects/12080/badge.svg)](https://scan.coverity.com/projects/libidn2)
 
 
@@ -12,7 +13,7 @@ Its purpose is to encode and decode internationalized domain names.
  * [RFC 5891](https://tools.ietf.org/html/rfc5891)
  * [RFC 5892](https://tools.ietf.org/html/rfc5892)
  * [RFC 5893](https://tools.ietf.org/html/rfc5893)
- * [TR46](http://www.unicode.org/reports/tr46/)
+ * [TR46](https://www.unicode.org/reports/tr46/)
 
 The library contains functionality to convert internationalized domain names
 to and from ASCII Compatible Encoding (ACE), following the IDNA2008 and TR46
@@ -34,6 +35,9 @@ library.
 Libidn2 is believed to be a complete IDNA2008 and TR46 implementation,
 it contains an extensive test-suite, and is included in the continuous
 fuzzing project [OSS-Fuzz](https://bugs.chromium.org/p/oss-fuzz/issues/list?q=libidn2).
+
+You can check the current test code coverage [here](https://libidn.gitlab.io/libidn2/coverage/index.html)
+and the current fuzzing code coverage [here](https://libidn.gitlab.io/libidn2/fuzz-coverage/index.html).
 
 
 # License
@@ -96,9 +100,9 @@ usual way (i.e., ./configure && make).
  * [Texlive & epsf](https://www.tug.org/texlive/) (for PDF manual)
  * [GTK-DOC](https://www.gtk.org/gtk-doc/) (for API manual)
  * [Git](https://git-scm.com/)
- * [Perl](https://www.cpan.org/) (HTTPS: www.cpan.org uses an invalid security certificate)
+ * [Perl](https://www.cpan.org/)
  * [Valgrind](http://valgrind.org/) (optional) (No HTTPS at all)
- * [abi-compliance-checker]
+ * [abi-compliance-checker](https://github.com/lvc/abi-compliance-checker)
  * [ronn](https://rtomayko.github.io/ronn/)
 
 The software is typically distributed with your operating system, and
@@ -120,7 +124,7 @@ See [the contributing document](CONTRIBUTING.md).
 # Estimating code coverage
 
 Dependencies:
- * [lcov](https://linux-test-project.github.io/) (for code coverage)
+ * [lcov](https://github.com/linux-test-project/lcov) (for code coverage)
 
 To test the code coverage of the test suite use the following:
 ```
@@ -129,6 +133,15 @@ $ make && make check && make code-coverage-capture
 ```
 
 The current coverage report can be found [here](https://libidn.gitlab.io/libidn2/coverage/).
+
+
+# Fuzzing
+
+Libidn2 is being continuously fuzzed by [OSS-Fuzz](https://github.com/google/oss-fuzz).
+
+Of course you can do local fuzzing on your own, see `fuzz/README.md` for instructions.
+
+The code coverage of our fuzzers can be found [here](https://libidn.gitlab.io/libidn2/fuzz-coverage/).
 
 
 # Cross-compiling
