@@ -85,14 +85,14 @@ idn2_register_u8 (const uint8_t * ulabel, const uint8_t * alabel,
 
   if (alabel)
     {
-      size_t alabellen = u8_strlen (alabel), u32len =
+      size_t alabellen = strlen ((char *) alabel), u32len =
 	IDN2_LABEL_MAX_LENGTH * 4;
       uint32_t u32[IDN2_DOMAIN_MAX_LENGTH * 4];
       uint8_t *tmp;
       uint8_t u8[IDN2_DOMAIN_MAX_LENGTH + 1];
       size_t u8len;
 
-      if (alabellen >= IDN2_LABEL_MAX_LENGTH)
+      if (alabellen > IDN2_LABEL_MAX_LENGTH)
 	return IDN2_TOO_BIG_LABEL;
 
       if (alabellen <= 4)
@@ -104,8 +104,8 @@ idn2_register_u8 (const uint8_t * ulabel, const uint8_t * alabel,
       if (!_idn2_ascii_p (alabel, alabellen))
 	return IDN2_INVALID_ALABEL;
 
-      rc = _idn2_punycode_decode (alabellen - 4, (char*)alabel + 4,
-				  &u32len, u32);
+      rc = _idn2_punycode_decode_internal (alabellen - 4, (char*)alabel + 4,
+					   &u32len, u32);
       if (rc != IDN2_OK)
 	return rc;
 
@@ -146,11 +146,11 @@ idn2_register_u8 (const uint8_t * ulabel, const uint8_t * alabel,
       size_t tmpl;
       uint8_t tmp[IDN2_LABEL_MAX_LENGTH + 1];
 
-      if (ulabel && ulabellen >= IDN2_LABEL_MAX_LENGTH)
-	return IDN2_TOO_BIG_LABEL;
-
       if (_idn2_ascii_p (ulabel, ulabellen))
 	{
+	  if (ulabellen > IDN2_LABEL_MAX_LENGTH)
+	    return IDN2_TOO_BIG_LABEL;
+
 	  if (insertname)
 	    {
 	      uint8_t *m = (uint8_t *)strdup ((char*)ulabel);
@@ -186,7 +186,7 @@ idn2_register_u8 (const uint8_t * ulabel, const uint8_t * alabel,
       tmp[3] = '-';
 
       tmpl = IDN2_LABEL_MAX_LENGTH - 4;
-      rc = _idn2_punycode_encode (u32len, u32, &tmpl, (char*)tmp + 4);
+      rc = _idn2_punycode_encode_internal (u32len, u32, &tmpl, (char*)tmp + 4);
       free (u32);
       if (rc != IDN2_OK)
 	return rc;

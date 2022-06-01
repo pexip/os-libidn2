@@ -12,14 +12,19 @@ described in section 5 of RFC 5891.  Note that the input is assumed
 to be encoded in the locale's default coding system, and will be
 transcoded to UTF-8 and NFC normalized by this function.
 
-Pass @code{IDN2_ALABEL_ROUNDTRIP}  in  @code{flags} to convert any input A-labels
-to U-labels and perform additional testing.  Pass
-@code{IDN2_TRANSITIONAL}  to enable Unicode TR46 transitional processing,
+Pass @code{IDN2_ALABEL_ROUNDTRIP}  in  @code{flags} to
+convert any input A-labels to U-labels and perform additional
+testing. This is default since version 2.2.
+To switch this behavior off, pass IDN2_NO_ALABEL_ROUNDTRIP
+
+Pass @code{IDN2_TRANSITIONAL}  to enable Unicode TR46 transitional processing,
 and @code{IDN2_NONTRANSITIONAL}  to enable Unicode TR46 non-transitional
-processing.  Multiple flags may be specified by binary or:ing them
-together, for example @code{IDN2_ALABEL_ROUNDTRIP}  |
-@code{IDN2_NONTRANSITIONAL} .  The @code{IDN2_NFC_INPUT}  in  @code{flags} is always
-enabled in this function.
+processing.
+
+Multiple flags may be specified by binary or:ing them together, for
+example @code{IDN2_ALABEL_ROUNDTRIP}  | @code{IDN2_NONTRANSITIONAL} .
+
+The @code{IDN2_NFC_INPUT}  in  @code{flags} is always enabled in this function.
 
 After version 0.11:  @code{lookupname} may be NULL to test lookup of  @code{src} without allocating memory.
 

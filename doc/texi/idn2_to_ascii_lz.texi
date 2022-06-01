@@ -13,7 +13,7 @@ The output buffer must be deallocated by the caller.
 
 The default behavior of this function (when flags are zero) is to apply
 the IDNA2008 rules without the TR46 amendments. As the TR46
-non-transitional processing is nowdays ubiquitous, when unsure, it is
+non-transitional processing is nowadays ubiquitous, when unsure, it is
 recommended to call this function with the @code{IDN2_NONTRANSITIONAL} 
 and the @code{IDN2_NFC_INPUT}  flags for compatibility with other software.
 

@@ -1,5 +1,5 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2017 Free Software Foundation, Inc.
+# Copyright (C) 2002-2019 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this file.  If not, see <http://www.gnu.org/licenses/>.
+# along with this file.  If not, see <https://www.gnu.org/licenses/>.
 #
 # As a special exception to the GNU General Public License,
 # this file may be distributed as part of a program that
@@ -49,7 +49,6 @@ AC_DEFUN([unistring_EARLY],
   # Code from module c-ctype:
   # Code from module c-strcase:
   # Code from module c-strcaseeq:
-  # Code from module configmake:
   # Code from module extensions:
   # Code from module extern-inline:
   # Code from module gperf:
@@ -134,7 +133,6 @@ AC_DEFUN([unistring_INIT],
   gl_COMMON
   gl_source_base='unistring'
   gl_FUNC_ALLOCA
-  gl_CONFIGMAKE_PREP
   AC_REQUIRE([gl_EXTERN_INLINE])
   AM_ICONV
   m4_ifdef([gl_ICONV_MODULE_INDICATOR],
@@ -152,7 +150,8 @@ AC_DEFUN([unistring_INIT],
   gl_LIBUNISTRING
   gl_LIMITS_H
   gl_LOCALCHARSET
-  LOCALCHARSET_TESTS_ENVIRONMENT="CHARSETALIASDIR=\"\$(abs_top_builddir)/$gl_source_base\""
+  dnl For backward compatibility. Some packages still use this.
+  LOCALCHARSET_TESTS_ENVIRONMENT=
   AC_SUBST([LOCALCHARSET_TESTS_ENVIRONMENT])
   gl_MALLOCA
   gl_MULTIARCH
@@ -172,24 +171,24 @@ AC_DEFUN([unistring_INIT],
   gl_LIBUNISTRING_MODULE([0.9], [uniconv/u8-strconv-to-enc])
   gl_LIBUNISTRING_MODULE([0.9], [uniconv/u8-strconv-to-locale])
   gl_LIBUNISTRING_LIBHEADER([0.9.4], [unictype.h])
-  gl_LIBUNISTRING_MODULE([0.9.6], [unictype/bidiclass-of])
-  gl_LIBUNISTRING_MODULE([0.9.6], [unictype/category-M])
-  gl_LIBUNISTRING_MODULE([0.9.5], [unictype/category-none])
+  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/bidiclass-of])
+  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/category-M])
+  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/category-none])
   AC_REQUIRE([AC_C_INLINE])
-  gl_LIBUNISTRING_MODULE([0.9.6], [unictype/category-of])
+  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/category-of])
   AC_REQUIRE([AC_C_INLINE])
-  gl_LIBUNISTRING_MODULE([0.9.5], [unictype/category-test])
-  gl_LIBUNISTRING_MODULE([0.9.6], [unictype/combining-class])
-  gl_LIBUNISTRING_MODULE([0.9.6], [unictype/joiningtype-of])
-  gl_LIBUNISTRING_MODULE([0.9.6], [unictype/scripts])
+  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/category-test])
+  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/combining-class])
+  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/joiningtype-of])
+  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/scripts])
   gl_LIBUNISTRING_LIBHEADER([0.9.4], [uninorm.h])
-  gl_LIBUNISTRING_MODULE([0.9.6], [uninorm/canonical-decomposition])
-  gl_LIBUNISTRING_MODULE([0.9.6], [uninorm/composition])
+  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/canonical-decomposition])
+  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/composition])
   AC_REQUIRE([AC_C_INLINE])
-  gl_LIBUNISTRING_MODULE([0.9.6], [uninorm/nfc])
-  gl_LIBUNISTRING_MODULE([0.9.6], [uninorm/nfd])
+  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/nfc])
+  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/nfd])
   gl_MODULE_INDICATOR_FOR_TESTS([uninorm/u32-normalize])
-  gl_LIBUNISTRING_MODULE([0.9.6], [uninorm/u32-normalize])
+  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/u32-normalize])
   gl_LIBUNISTRING_LIBHEADER([0.9.4], [unistr.h])
   gl_LIBUNISTRING_MODULE([0.9], [unistr/u32-cpy])
   gl_LIBUNISTRING_MODULE([0.9], [unistr/u32-cpy-alloc])
@@ -360,7 +359,6 @@ AC_DEFUN([unistring_FILE_LIST], [
   lib/c-strcasecmp.c
   lib/c-strcaseeq.h
   lib/c-strncasecmp.c
-  lib/config.charset
   lib/iconv.c
   lib/iconv.in.h
   lib/iconv_close.c
@@ -377,9 +375,6 @@ AC_DEFUN([unistring_FILE_LIST], [
   lib/localcharset.h
   lib/malloca.c
   lib/malloca.h
-  lib/malloca.valgrind
-  lib/ref-add.sin
-  lib/ref-del.sin
   lib/stdbool.in.h
   lib/stdint.in.h
   lib/striconveh.c
@@ -457,13 +452,11 @@ AC_DEFUN([unistring_FILE_LIST], [
   m4/absolute-header.m4
   m4/alloca.m4
   m4/codeset.m4
-  m4/configmake.m4
   m4/eealloc.m4
   m4/extensions.m4
   m4/extern-inline.m4
-  m4/fcntl-o.m4
-  m4/glibc21.m4
   m4/gnulib-common.m4
+  m4/host-cpu-c-abi.m4
   m4/iconv.m4
   m4/iconv_h.m4
   m4/iconv_open.m4
@@ -480,7 +473,6 @@ AC_DEFUN([unistring_FILE_LIST], [
   m4/malloca.m4
   m4/multiarch.m4
   m4/off_t.m4
-  m4/onceonly.m4
   m4/ssize_t.m4
   m4/stdbool.m4
   m4/stdint.m4

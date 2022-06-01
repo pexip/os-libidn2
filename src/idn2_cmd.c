@@ -34,17 +34,18 @@ const char *gengetopt_args_info_versiontext = "";
 const char *gengetopt_args_info_description = "";
 
 const char *gengetopt_args_info_help[] = {
-  "  -h, --help               Print help and exit",
-  "  -V, --version            Print version and exit",
-  "  -d, --decode             Decode (punycode) domain name",
-  "  -l, --lookup             Lookup domain name (default)",
-  "  -r, --register           Register label",
-  "  -T, --tr46t              Enable TR46 transitional processing  (default=off)",
-  "  -N, --tr46nt             Enable TR46 non-transitional processing\n                             (default=off)",
-  "      --no-tr46            Disable TR46 processing  (default=off)",
-  "      --usestd3asciirules  Enable STD3 ASCII rules  (default=off)",
-  "      --debug              Print debugging information  (default=off)",
-  "      --quiet              Silent operation  (default=off)",
+  "  -h, --help                Print help and exit",
+  "  -V, --version             Print version and exit",
+  "  -d, --decode              Decode (punycode) domain name",
+  "  -l, --lookup              Lookup domain name (default)",
+  "  -r, --register            Register label",
+  "  -T, --tr46t               Enable TR46 transitional processing  (default=off)",
+  "  -N, --tr46nt              Enable TR46 non-transitional processing\n                              (default=off)",
+  "      --no-tr46             Disable TR46 processing  (default=off)",
+  "      --usestd3asciirules   Enable STD3 ASCII rules  (default=off)",
+  "      --no-alabelroundtrip  Disable ALabel roundtrip for lookups  (default=off)",
+  "      --debug               Print debugging information  (default=off)",
+  "      --quiet               Silent operation  (default=off)",
     0
 };
 
@@ -77,6 +78,7 @@ void clear_given (struct gengetopt_args_info *args_info)
   args_info->tr46nt_given = 0 ;
   args_info->no_tr46_given = 0 ;
   args_info->usestd3asciirules_given = 0 ;
+  args_info->no_alabelroundtrip_given = 0 ;
   args_info->debug_given = 0 ;
   args_info->quiet_given = 0 ;
 }
@@ -89,6 +91,7 @@ void clear_args (struct gengetopt_args_info *args_info)
   args_info->tr46nt_flag = 0;
   args_info->no_tr46_flag = 0;
   args_info->usestd3asciirules_flag = 0;
+  args_info->no_alabelroundtrip_flag = 0;
   args_info->debug_flag = 0;
   args_info->quiet_flag = 0;
   
@@ -108,8 +111,9 @@ void init_args_info(struct gengetopt_args_info *args_info)
   args_info->tr46nt_help = gengetopt_args_info_help[6] ;
   args_info->no_tr46_help = gengetopt_args_info_help[7] ;
   args_info->usestd3asciirules_help = gengetopt_args_info_help[8] ;
-  args_info->debug_help = gengetopt_args_info_help[9] ;
-  args_info->quiet_help = gengetopt_args_info_help[10] ;
+  args_info->no_alabelroundtrip_help = gengetopt_args_info_help[9] ;
+  args_info->debug_help = gengetopt_args_info_help[10] ;
+  args_info->quiet_help = gengetopt_args_info_help[11] ;
   
 }
 
@@ -240,6 +244,8 @@ cmdline_parser_dump(FILE *outfile, struct gengetopt_args_info *args_info)
     write_into_file(outfile, "no-tr46", 0, 0 );
   if (args_info->usestd3asciirules_given)
     write_into_file(outfile, "usestd3asciirules", 0, 0 );
+  if (args_info->no_alabelroundtrip_given)
+    write_into_file(outfile, "no-alabelroundtrip", 0, 0 );
   if (args_info->debug_given)
     write_into_file(outfile, "debug", 0, 0 );
   if (args_info->quiet_given)
@@ -484,6 +490,7 @@ cmdline_parser_internal (
         { "tr46nt",	0, NULL, 'N' },
         { "no-tr46",	0, NULL, 0 },
         { "usestd3asciirules",	0, NULL, 0 },
+        { "no-alabelroundtrip",	0, NULL, 0 },
         { "debug",	0, NULL, 0 },
         { "quiet",	0, NULL, 0 },
         { 0,  0, 0, 0 }
@@ -601,6 +608,18 @@ cmdline_parser_internal (
             if (update_arg((void *)&(args_info->usestd3asciirules_flag), 0, &(args_info->usestd3asciirules_given),
                 &(local_args_info.usestd3asciirules_given), optarg, 0, 0, ARG_FLAG,
                 check_ambiguity, override, 1, 0, "usestd3asciirules", '-',
+                additional_error))
+              goto failure;
+          
+          }
+          /* Disable ALabel roundtrip for lookups.  */
+          else if (strcmp (long_options[option_index].name, "no-alabelroundtrip") == 0)
+          {
+          
+          
+            if (update_arg((void *)&(args_info->no_alabelroundtrip_flag), 0, &(args_info->no_alabelroundtrip_given),
+                &(local_args_info.no_alabelroundtrip_given), optarg, 0, 0, ARG_FLAG,
+                check_ambiguity, override, 1, 0, "no-alabelroundtrip", '-',
                 additional_error))
               goto failure;
           

@@ -5,7 +5,7 @@
 
 @var{output}: Newly allocated output string in current locale's character set.
 
-@var{flags}: optional @code{idn2_flags}  to modify behaviour.
+@var{flags}: Currently unused.
 
 Converts a possibly ACE encoded domain name in the locale's character
 set into a string encoded in the current locale's character set (punycode

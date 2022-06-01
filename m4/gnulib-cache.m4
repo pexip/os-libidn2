@@ -1,4 +1,4 @@
-# Copyright (C) 2002-2017 Free Software Foundation, Inc.
+# Copyright (C) 2002-2019 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this file.  If not, see <http://www.gnu.org/licenses/>.
+# along with this file.  If not, see <https://www.gnu.org/licenses/>.
 #
 # As a special exception to the GNU General Public License,
 # this file may be distributed as part of a program that
@@ -27,7 +27,34 @@
 
 
 # Specification in the form of a command-line invocation:
-#   gnulib-tool --import --local-dir=gl/override --lib=libgnu --source-base=gl --m4-base=m4 --doc-base=doc --tests-base=tests --aux-dir=build-aux --no-conditional-dependencies --libtool --macro-prefix=gl error gendocs getline getopt-gnu gettext-h gnupload lib-symbol-versions lib-symbol-visibility maintainer-makefile manywarnings progname stdio strchrnul strverscmp update-copyright valgrind-tests version-etc
+# gnulib-tool --import --local-dir=gl/override \
+#  --lib=libgnu \
+#  --source-base=gl \
+#  --m4-base=m4 \
+#  --doc-base=doc \
+#  --tests-base=gl/tests \
+#  --aux-dir=build-aux \
+#  --no-conditional-dependencies \
+#  --libtool \
+#  --macro-prefix=gl \
+#  error \
+#  gendocs \
+#  getline \
+#  getopt-gnu \
+#  gettext-h \
+#  gnupload \
+#  inline \
+#  lib-symbol-versions \
+#  lib-symbol-visibility \
+#  maintainer-makefile \
+#  manywarnings \
+#  progname \
+#  stdio \
+#  strchrnul \
+#  strverscmp \
+#  update-copyright \
+#  valgrind-tests \
+#  version-etc
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
 gl_LOCAL_DIR([gl/override])
@@ -38,6 +65,7 @@ gl_MODULES([
   getopt-gnu
   gettext-h
   gnupload
+  inline
   lib-symbol-versions
   lib-symbol-visibility
   maintainer-makefile
@@ -55,7 +83,7 @@ gl_SOURCE_BASE([gl])
 gl_M4_BASE([m4])
 gl_PO_BASE([])
 gl_DOC_BASE([doc])
-gl_TESTS_BASE([tests])
+gl_TESTS_BASE([gl/tests])
 gl_LIB([libgnu])
 gl_MAKEFILE_NAME([])
 gl_LIBTOOL

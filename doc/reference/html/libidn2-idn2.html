@@ -40,6 +40,12 @@
 </colgroup>
 <tbody>
 <tr>
+<td class="define_keyword">#define</td>
+<td class="function_name">
+<a class="link" href="libidn2-idn2.html#GCC-VERSION-AT-LEAST:CAPS" title="GCC_VERSION_AT_LEAST()">GCC_VERSION_AT_LEAST</a><span class="c_punctuation">()</span>
+</td>
+</tr>
+<tr>
 <td class="function_type">
 <span class="returnvalue">int</span>
 </td>
@@ -76,7 +82,7 @@
 <span class="returnvalue">int</span>
 </td>
 <td class="function_name">
-<a class="link" href="libidn2-idn2.html#idn2-to-ascii-4i" title="idn2_to_ascii_4i ()">idn2_to_ascii_4i</a> <span class="c_punctuation">()</span>
+<a class="link" href="libidn2-idn2.html#idn2-to-ascii-4i2" title="idn2_to_ascii_4i2 ()">idn2_to_ascii_4i2</a> <span class="c_punctuation">()</span>
 </td>
 </tr>
 <tr>
@@ -152,27 +158,6 @@
 </td>
 </tr>
 <tr>
-<td class="function_type">const <span class="returnvalue">char</span> *
-</td>
-<td class="function_name">
-<a class="link" href="libidn2-idn2.html#idn2-strerror" title="idn2_strerror ()">idn2_strerror</a> <span class="c_punctuation">()</span>
-</td>
-</tr>
-<tr>
-<td class="function_type">const <span class="returnvalue">char</span> *
-</td>
-<td class="function_name">
-<a class="link" href="libidn2-idn2.html#idn2-strerror-name" title="idn2_strerror_name ()">idn2_strerror_name</a> <span class="c_punctuation">()</span>
-</td>
-</tr>
-<tr>
-<td class="function_type">const <span class="returnvalue">char</span> *
-</td>
-<td class="function_name">
-<a class="link" href="libidn2-idn2.html#idn2-check-version" title="idn2_check_version ()">idn2_check_version</a> <span class="c_punctuation">()</span>
-</td>
-</tr>
-<tr>
 <td class="function_type">
 <span class="returnvalue">void</span>
 </td>
@@ -222,6 +207,10 @@
 <tr>
 <td class="define_keyword">#define</td>
 <td class="function_name"><a class="link" href="libidn2-idn2.html#G-GNUC-IDN2-ATTRIBUTE-CONST:CAPS" title="G_GNUC_IDN2_ATTRIBUTE_CONST">G_GNUC_IDN2_ATTRIBUTE_CONST</a></td>
+</tr>
+<tr>
+<td class="define_keyword">#define</td>
+<td class="function_name"><a class="link" href="libidn2-idn2.html#G-GNUC-DEPRECATED:CAPS" title="G_GNUC_DEPRECATED">G_GNUC_DEPRECATED</a></td>
 </tr>
 <tr>
 <td class="define_keyword">#define</td>
@@ -312,6 +301,35 @@
 <div class="refsect1">
 <a name="libidn2-idn2.functions_details"></a><h2>Functions</h2>
 <div class="refsect2">
+<a name="GCC-VERSION-AT-LEAST:CAPS"></a><h3>GCC_VERSION_AT_LEAST()</h3>
+<pre class="programlisting"># define GCC_VERSION_AT_LEAST(major, minor) ((__GNUC__ &gt; (major)) || (__GNUC__ == (major) &amp;&amp; __GNUC_MINOR__ &gt;= (minor)))
+</pre>
+<p>Pre-processor symbol to check the gcc version.</p>
+<div class="refsect3">
+<a name="GCC-VERSION-AT-LEAST.parameters"></a><h4>Parameters</h4>
+<div class="informaltable"><table class="informaltable" width="100%" border="0">
+<colgroup>
+<col width="150px" class="parameters_name">
+<col class="parameters_description">
+<col width="200px" class="parameters_annotations">
+</colgroup>
+<tbody>
+<tr>
+<td class="parameter_name"><p>major</p></td>
+<td class="parameter_description"><p>gcc major version number to compare with</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+<tr>
+<td class="parameter_name"><p>minor</p></td>
+<td class="parameter_description"><p>gcc minor version number to compare with</p></td>
+<td class="parameter_annotations"> </td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+<hr>
+<div class="refsect2">
 <a name="idn2-lookup-u8"></a><h3>idn2_lookup_u8 ()</h3>
 <pre class="programlisting"><span class="returnvalue">int</span>
 idn2_lookup_u8 (<em class="parameter"><code>const <span class="type">uint8_t</span> *src</code></em>,
@@ -324,15 +342,16 @@ must be encoded in UTF-8 and be in Unicode NFC form.</p>
 <p>Pass <a class="link" href="libidn2-idn2.html#IDN2-NFC-INPUT:CAPS"><code class="literal">IDN2_NFC_INPUT</code></a> in <em class="parameter"><code>flags</code></em>
  to convert input to NFC form before
 further processing.  <a class="link" href="libidn2-idn2.html#IDN2-TRANSITIONAL:CAPS"><code class="literal">IDN2_TRANSITIONAL</code></a> and <a class="link" href="libidn2-idn2.html#IDN2-NONTRANSITIONAL:CAPS"><code class="literal">IDN2_NONTRANSITIONAL</code></a>
-do already imply <a class="link" href="libidn2-idn2.html#IDN2-NFC-INPUT:CAPS"><code class="literal">IDN2_NFC_INPUT</code></a>.
-Pass <a class="link" href="libidn2-idn2.html#IDN2-ALABEL-ROUNDTRIP:CAPS"><code class="literal">IDN2_ALABEL_ROUNDTRIP</code></a> in <em class="parameter"><code>flags</code></em>
+do already imply <a class="link" href="libidn2-idn2.html#IDN2-NFC-INPUT:CAPS"><code class="literal">IDN2_NFC_INPUT</code></a>.</p>
+<p>Pass <a class="link" href="libidn2-idn2.html#IDN2-ALABEL-ROUNDTRIP:CAPS"><code class="literal">IDN2_ALABEL_ROUNDTRIP</code></a> in <em class="parameter"><code>flags</code></em>
  to
 convert any input A-labels to U-labels and perform additional
-testing (not implemented yet).
-Pass <a class="link" href="libidn2-idn2.html#IDN2-TRANSITIONAL:CAPS"><code class="literal">IDN2_TRANSITIONAL</code></a> to enable Unicode TR46
+testing. This is default since version 2.2.
+To switch this behavior off, pass IDN2_NO_ALABEL_ROUNDTRIP</p>
+<p>Pass <a class="link" href="libidn2-idn2.html#IDN2-TRANSITIONAL:CAPS"><code class="literal">IDN2_TRANSITIONAL</code></a> to enable Unicode TR46
 transitional processing, and <a class="link" href="libidn2-idn2.html#IDN2-NONTRANSITIONAL:CAPS"><code class="literal">IDN2_NONTRANSITIONAL</code></a> to enable
-Unicode TR46 non-transitional processing.  Multiple flags may be
-specified by binary or:ing them together.</p>
+Unicode TR46 non-transitional processing.</p>
+<p>Multiple flags may be specified by binary or:ing them together.</p>
 <p>After version 2.0.3: <a class="link" href="libidn2-idn2.html#IDN2-USE-STD3-ASCII-RULES:CAPS"><code class="literal">IDN2_USE_STD3_ASCII_RULES</code></a> disabled by default.
 Previously we were eliminating non-STD3 characters from domain strings
 such as _443._tcp.example.com, or IPs 1.2.3.4/24 provided to libidn2
@@ -466,15 +485,17 @@ described in section 5 of RFC 5891.  Note that the input is assumed
 to be encoded in the locale's default coding system, and will be
 transcoded to UTF-8 and NFC normalized by this function.</p>
 <p>Pass <a class="link" href="libidn2-idn2.html#IDN2-ALABEL-ROUNDTRIP:CAPS"><code class="literal">IDN2_ALABEL_ROUNDTRIP</code></a> in <em class="parameter"><code>flags</code></em>
- to convert any input A-labels
-to U-labels and perform additional testing.  Pass
-<a class="link" href="libidn2-idn2.html#IDN2-TRANSITIONAL:CAPS"><code class="literal">IDN2_TRANSITIONAL</code></a> to enable Unicode TR46 transitional processing,
+ to
+convert any input A-labels to U-labels and perform additional
+testing. This is default since version 2.2.
+To switch this behavior off, pass IDN2_NO_ALABEL_ROUNDTRIP</p>
+<p>Pass <a class="link" href="libidn2-idn2.html#IDN2-TRANSITIONAL:CAPS"><code class="literal">IDN2_TRANSITIONAL</code></a> to enable Unicode TR46 transitional processing,
 and <a class="link" href="libidn2-idn2.html#IDN2-NONTRANSITIONAL:CAPS"><code class="literal">IDN2_NONTRANSITIONAL</code></a> to enable Unicode TR46 non-transitional
-processing.  Multiple flags may be specified by binary or:ing them
-together, for example <a class="link" href="libidn2-idn2.html#IDN2-ALABEL-ROUNDTRIP:CAPS"><code class="literal">IDN2_ALABEL_ROUNDTRIP</code></a> |
-<a class="link" href="libidn2-idn2.html#IDN2-NONTRANSITIONAL:CAPS"><code class="literal">IDN2_NONTRANSITIONAL</code></a>.  The <a class="link" href="libidn2-idn2.html#IDN2-NFC-INPUT:CAPS"><code class="literal">IDN2_NFC_INPUT</code></a> in <em class="parameter"><code>flags</code></em>
- is always
-enabled in this function.</p>
+processing.</p>
+<p>Multiple flags may be specified by binary or:ing them together, for
+example <a class="link" href="libidn2-idn2.html#IDN2-ALABEL-ROUNDTRIP:CAPS"><code class="literal">IDN2_ALABEL_ROUNDTRIP</code></a> | <a class="link" href="libidn2-idn2.html#IDN2-NONTRANSITIONAL:CAPS"><code class="literal">IDN2_NONTRANSITIONAL</code></a>.</p>
+<p>The <a class="link" href="libidn2-idn2.html#IDN2-NFC-INPUT:CAPS"><code class="literal">IDN2_NFC_INPUT</code></a> in <em class="parameter"><code>flags</code></em>
+ is always enabled in this function.</p>
 <p>After version 0.11: <em class="parameter"><code>lookupname</code></em>
  may be NULL to test lookup of <em class="parameter"><code>src</code></em>
 
@@ -592,68 +613,13 @@ locale to UTF-8 conversion failed
 </div>
 <hr>
 <div class="refsect2">
-<a name="idn2-to-ascii-4i"></a><h3>idn2_to_ascii_4i ()</h3>
+<a name="idn2-to-ascii-4i2"></a><h3>idn2_to_ascii_4i2 ()</h3>
 <pre class="programlisting"><span class="returnvalue">int</span>
-idn2_to_ascii_4i (<em class="parameter"><code>const <span class="type">uint32_t</span> *input</code></em>,
-                  <em class="parameter"><code><span class="type">size_t</span> inlen</code></em>,
-                  <em class="parameter"><code><span class="type">char</span> *output</code></em>,
-                  <em class="parameter"><code><span class="type">int</span> flags</code></em>);</pre>
-<p>The ToASCII operation takes a sequence of Unicode code points that make
-up one domain label and transforms it into a sequence of code points in
-the ASCII range (0..7F). If ToASCII succeeds, the original sequence and
-the resulting sequence are equivalent labels.</p>
-<p>It is important to note that the ToASCII operation can fail.
-ToASCII fails if any step of it fails. If any step of the
-ToASCII operation fails on any label in a domain name, that domain
-name MUST NOT be used as an internationalized domain name.
-The method for dealing with this failure is application-specific.</p>
-<p>The inputs to ToASCII are a sequence of code points.</p>
-<p>ToASCII never alters a sequence of code points that are all in the ASCII
-range to begin with (although it could fail). Applying the ToASCII operation multiple
-effect as applying it just once.</p>
-<p>The default behavior of this function (when flags are zero) is to apply
-the IDNA2008 rules without the TR46 amendments. As the TR46
-non-transitional processing is nowdays ubiquitous, when unsure, it is
-recommended to call this function with the <a class="link" href="libidn2-idn2.html#IDN2-NONTRANSITIONAL:CAPS"><code class="literal">IDN2_NONTRANSITIONAL</code></a>
-and the <a class="link" href="libidn2-idn2.html#IDN2-NFC-INPUT:CAPS"><code class="literal">IDN2_NFC_INPUT</code></a> flags for compatibility with other software.</p>
-<div class="refsect3">
-<a name="idn2-to-ascii-4i.parameters"></a><h4>Parameters</h4>
-<div class="informaltable"><table class="informaltable" width="100%" border="0">
-<colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
-</colgroup>
-<tbody>
-<tr>
-<td class="parameter_name"><p>input</p></td>
-<td class="parameter_description"><p>zero terminated input Unicode (UCS-4) string.</p></td>
-<td class="parameter_annotations"> </td>
-</tr>
-<tr>
-<td class="parameter_name"><p>inlen</p></td>
-<td class="parameter_description"><p>number of elements in <em class="parameter"><code>input</code></em>
-.</p></td>
-<td class="parameter_annotations"> </td>
-</tr>
-<tr>
-<td class="parameter_name"><p>output</p></td>
-<td class="parameter_description"><p>pointer to newly allocated zero-terminated output string.</p></td>
-<td class="parameter_annotations"> </td>
-</tr>
-<tr>
-<td class="parameter_name"><p>flags</p></td>
-<td class="parameter_description"><p>optional <a class="link" href="libidn2-idn2.html#idn2-flags" title="enum idn2_flags"><span class="type">idn2_flags</span></a> to modify behaviour.</p></td>
-<td class="parameter_annotations"> </td>
-</tr>
-</tbody>
-</table></div>
-</div>
-<div class="refsect3">
-<a name="idn2-to-ascii-4i.returns"></a><h4>Returns</h4>
-<p> Returns <a class="link" href="libidn2-idn2.html#IDN2-OK:CAPS"><code class="literal">IDN2_OK</code></a> on success, or error code.</p>
-</div>
-<p class="since">Since: 2.0.0</p>
+idn2_to_ascii_4i2 (<em class="parameter"><code>const <span class="type">uint32_t</span> *input</code></em>,
+                   <em class="parameter"><code><span class="type">size_t</span> inlen</code></em>,
+                   <em class="parameter"><code><span class="type">char</span> **output</code></em>,
+                   <em class="parameter"><code><span class="type">int</span> flags</code></em>);</pre>
+<div class="warning"><p><code class="literal">idn2_to_ascii_4i2</code> is deprecated and should not be used in newly-written code.</p></div>
 </div>
 <hr>
 <div class="refsect2">
@@ -667,7 +633,7 @@ rules.  The domain name may contain several labels, separated by dots.
 The output buffer must be deallocated by the caller.</p>
 <p>The default behavior of this function (when flags are zero) is to apply
 the IDNA2008 rules without the TR46 amendments. As the TR46
-non-transitional processing is nowdays ubiquitous, when unsure, it is
+non-transitional processing is nowadays ubiquitous, when unsure, it is
 recommended to call this function with the <a class="link" href="libidn2-idn2.html#IDN2-NONTRANSITIONAL:CAPS"><code class="literal">IDN2_NONTRANSITIONAL</code></a>
 and the <a class="link" href="libidn2-idn2.html#IDN2-NFC-INPUT:CAPS"><code class="literal">IDN2_NFC_INPUT</code></a> flags for compatibility with other software.</p>
 <div class="refsect3">
@@ -715,7 +681,7 @@ rules.  The domain name may contain several labels, separated by dots.
 The output buffer must be deallocated by the caller.</p>
 <p>The default behavior of this function (when flags are zero) is to apply
 the IDNA2008 rules without the TR46 amendments. As the TR46
-non-transitional processing is nowdays ubiquitous, when unsure, it is
+non-transitional processing is nowadays ubiquitous, when unsure, it is
 recommended to call this function with the <a class="link" href="libidn2-idn2.html#IDN2-NONTRANSITIONAL:CAPS"><code class="literal">IDN2_NONTRANSITIONAL</code></a>
 and the <a class="link" href="libidn2-idn2.html#IDN2-NFC-INPUT:CAPS"><code class="literal">IDN2_NFC_INPUT</code></a> flags for compatibility with other software.</p>
 <div class="refsect3">
@@ -763,7 +729,7 @@ rules.  The domain name may contain several labels, separated by dots.
 The output buffer must be deallocated by the caller.</p>
 <p>The default behavior of this function (when flags are zero) is to apply
 the IDNA2008 rules without the TR46 amendments. As the TR46
-non-transitional processing is nowdays ubiquitous, when unsure, it is
+non-transitional processing is nowadays ubiquitous, when unsure, it is
 recommended to call this function with the <a class="link" href="libidn2-idn2.html#IDN2-NONTRANSITIONAL:CAPS"><code class="literal">IDN2_NONTRANSITIONAL</code></a>
 and the <a class="link" href="libidn2-idn2.html#IDN2-NFC-INPUT:CAPS"><code class="literal">IDN2_NFC_INPUT</code></a> flags for compatibility with other software.</p>
 <div class="refsect3">
@@ -834,7 +800,7 @@ and must be deallocated by the caller.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>flags</p></td>
-<td class="parameter_description"><p>optional <a class="link" href="libidn2-idn2.html#idn2-flags" title="enum idn2_flags"><span class="type">idn2_flags</span></a> to modify behaviour.</p></td>
+<td class="parameter_description"><p>Currently unused.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -884,7 +850,7 @@ and must be deallocated by the caller.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>flags</p></td>
-<td class="parameter_description"><p>optional <a class="link" href="libidn2-idn2.html#idn2-flags" title="enum idn2_flags"><span class="type">idn2_flags</span></a> to modify behaviour.</p></td>
+<td class="parameter_description"><p>Currently unused.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -949,7 +915,7 @@ on exit, actual size of output array with UTF-32 code points.</p></td>
 </tr>
 <tr>
 <td class="parameter_name"><p>flags</p></td>
-<td class="parameter_description"><p>optional <a class="link" href="libidn2-idn2.html#idn2-flags" title="enum idn2_flags"><span class="type">idn2_flags</span></a> to modify behaviour.</p></td>
+<td class="parameter_description"><p>Currently unused.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -999,7 +965,7 @@ and must be deallocated by the caller.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>flags</p></td>
-<td class="parameter_description"><p>optional <a class="link" href="libidn2-idn2.html#idn2-flags" title="enum idn2_flags"><span class="type">idn2_flags</span></a> to modify behaviour.</p></td>
+<td class="parameter_description"><p>Currently unused.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -1050,7 +1016,7 @@ deallocated by the caller.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>flags</p></td>
-<td class="parameter_description"><p>optional <a class="link" href="libidn2-idn2.html#idn2-flags" title="enum idn2_flags"><span class="type">idn2_flags</span></a> to modify behaviour.</p></td>
+<td class="parameter_description"><p>Currently unused.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -1101,7 +1067,7 @@ deallocated by the caller.</p>
 </tr>
 <tr>
 <td class="parameter_name"><p>flags</p></td>
-<td class="parameter_description"><p>optional <a class="link" href="libidn2-idn2.html#idn2-flags" title="enum idn2_flags"><span class="type">idn2_flags</span></a> to modify behaviour.</p></td>
+<td class="parameter_description"><p>Currently unused.</p></td>
 <td class="parameter_annotations"> </td>
 </tr>
 </tbody>
@@ -1117,100 +1083,6 @@ deallocated by the caller.</p>
 <a class="link" href="libidn2-idn2.html#IDN2-MALLOC:CAPS"><code class="literal">IDN2_MALLOC</code></a>: Memory allocation failed.</p>
 </div>
 <p class="since">Since: 2.0.0</p>
-</div>
-<hr>
-<div class="refsect2">
-<a name="idn2-strerror"></a><h3>idn2_strerror ()</h3>
-<pre class="programlisting">const <span class="returnvalue">char</span> *
-idn2_strerror (<em class="parameter"><code><span class="type">int</span> rc</code></em>);</pre>
-<p>Convert internal libidn2 error code to a humanly readable string.
-The returned pointer must not be de-allocated by the caller.</p>
-<div class="refsect3">
-<a name="idn2-strerror.parameters"></a><h4>Parameters</h4>
-<div class="informaltable"><table class="informaltable" width="100%" border="0">
-<colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
-</colgroup>
-<tbody><tr>
-<td class="parameter_name"><p>rc</p></td>
-<td class="parameter_description"><p>return code from another libidn2 function.</p></td>
-<td class="parameter_annotations"> </td>
-</tr></tbody>
-</table></div>
-</div>
-<div class="refsect3">
-<a name="idn2-strerror.returns"></a><h4>Returns</h4>
-<p> A humanly readable string describing error.</p>
-</div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="idn2-strerror-name"></a><h3>idn2_strerror_name ()</h3>
-<pre class="programlisting">const <span class="returnvalue">char</span> *
-idn2_strerror_name (<em class="parameter"><code><span class="type">int</span> rc</code></em>);</pre>
-<p>Convert internal libidn2 error code to a string corresponding to
-internal header file symbols.  For example,
-idn2_strerror_name(IDN2_MALLOC) will return the string
-"IDN2_MALLOC".</p>
-<p>The caller must not attempt to de-allocate the returned string.</p>
-<div class="refsect3">
-<a name="idn2-strerror-name.parameters"></a><h4>Parameters</h4>
-<div class="informaltable"><table class="informaltable" width="100%" border="0">
-<colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
-</colgroup>
-<tbody><tr>
-<td class="parameter_name"><p>rc</p></td>
-<td class="parameter_description"><p>return code from another libidn2 function.</p></td>
-<td class="parameter_annotations"> </td>
-</tr></tbody>
-</table></div>
-</div>
-<div class="refsect3">
-<a name="idn2-strerror-name.returns"></a><h4>Returns</h4>
-<p> A string corresponding to error code symbol.</p>
-</div>
-</div>
-<hr>
-<div class="refsect2">
-<a name="idn2-check-version"></a><h3>idn2_check_version ()</h3>
-<pre class="programlisting">const <span class="returnvalue">char</span> *
-idn2_check_version (<em class="parameter"><code>const <span class="type">char</span> *req_version</code></em>);</pre>
-<p>Check IDN2 library version.  This function can also be used to read
-out the version of the library code used.  See <a class="link" href="libidn2-idn2.html#IDN2-VERSION:CAPS" title="IDN2_VERSION"><code class="literal">IDN2_VERSION</code></a> for a
-suitable <em class="parameter"><code>req_version</code></em>
- string, it corresponds to the idn2.h header
-file version.  Normally these two version numbers match, but if you
-are using an application built against an older libidn2 with a
-newer libidn2 shared library they will be different.</p>
-<div class="refsect3">
-<a name="idn2-check-version.parameters"></a><h4>Parameters</h4>
-<div class="informaltable"><table class="informaltable" width="100%" border="0">
-<colgroup>
-<col width="150px" class="parameters_name">
-<col class="parameters_description">
-<col width="200px" class="parameters_annotations">
-</colgroup>
-<tbody><tr>
-<td class="parameter_name"><p>req_version</p></td>
-<td class="parameter_description"><p>version string to compare with, or NULL.</p></td>
-<td class="parameter_annotations"> </td>
-</tr></tbody>
-</table></div>
-</div>
-<div class="refsect3">
-<a name="idn2-check-version.returns"></a><h4>Returns</h4>
-<p> Check that the version of the library is at
-minimum the one given as a string in <em class="parameter"><code>req_version</code></em>
-and return the
-actual version string of the library; return NULL if the
-condition is not met.  If NULL is passed to this function no
-check is done and only the version string is returned.</p>
-</div>
 </div>
 <hr>
 <div class="refsect2">
@@ -1266,16 +1138,23 @@ happens on Windows when the library is a separate DLL.</p>
 <a name="libidn2-idn2.other_details"></a><h2>Types and Values</h2>
 <div class="refsect2">
 <a name="G-GNUC-IDN2-ATTRIBUTE-PURE:CAPS"></a><h3>G_GNUC_IDN2_ATTRIBUTE_PURE</h3>
-<pre class="programlisting"># define G_GNUC_IDN2_ATTRIBUTE_PURE __attribute__ ((__pure__))
+<pre class="programlisting"># define G_GNUC_IDN2_ATTRIBUTE_PURE __attribute__ ((pure))
 </pre>
 <p>Function attribute: Function is a pure function.</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="G-GNUC-IDN2-ATTRIBUTE-CONST:CAPS"></a><h3>G_GNUC_IDN2_ATTRIBUTE_CONST</h3>
-<pre class="programlisting"># define G_GNUC_IDN2_ATTRIBUTE_CONST __attribute__ ((__const__))
+<pre class="programlisting"># define G_GNUC_IDN2_ATTRIBUTE_CONST __attribute__ ((const))
 </pre>
 <p>Function attribute: Function is a const function.</p>
+</div>
+<hr>
+<div class="refsect2">
+<a name="G-GNUC-DEPRECATED:CAPS"></a><h3>G_GNUC_DEPRECATED</h3>
+<pre class="programlisting"># define G_GNUC_DEPRECATED __attribute__((deprecated))
+</pre>
+<p>Function attribute: Function is deprecated.</p>
 </div>
 <hr>
 <div class="refsect2">
@@ -1287,16 +1166,16 @@ happens on Windows when the library is a separate DLL.</p>
 <hr>
 <div class="refsect2">
 <a name="IDN2-VERSION:CAPS"></a><h3>IDN2_VERSION</h3>
-<pre class="programlisting">#define IDN2_VERSION "2.0.5"
+<pre class="programlisting">#define IDN2_VERSION "2.3.0"
 </pre>
 <p>Pre-processor symbol with a string that describe the header file
-version number.  Used together with <a class="link" href="libidn2-idn2.html#idn2-check-version" title="idn2_check_version ()"><code class="function">idn2_check_version()</code></a> to verify
+version number.  Used together with <code class="function">idn2_check_version()</code> to verify
 header file and run-time library consistency.</p>
 </div>
 <hr>
 <div class="refsect2">
 <a name="IDN2-VERSION-NUMBER:CAPS"></a><h3>IDN2_VERSION_NUMBER</h3>
-<pre class="programlisting">#define IDN2_VERSION_NUMBER 0x02000005
+<pre class="programlisting">#define IDN2_VERSION_NUMBER 0x02030000
 </pre>
 <p>Pre-processor symbol with a hexadecimal value describing the header
 file version number.  For example, when the header version is
@@ -1315,7 +1194,7 @@ The version scheme is major.minor.patchlevel.</p>
 <hr>
 <div class="refsect2">
 <a name="IDN2-VERSION-MINOR:CAPS"></a><h3>IDN2_VERSION_MINOR</h3>
-<pre class="programlisting">#define IDN2_VERSION_MINOR 0
+<pre class="programlisting">#define IDN2_VERSION_MINOR 3
 </pre>
 <p>Pre-processor symbol for the minor version number (decimal).
 The version scheme is major.minor.patchlevel.</p>
@@ -1323,7 +1202,7 @@ The version scheme is major.minor.patchlevel.</p>
 <hr>
 <div class="refsect2">
 <a name="IDN2-VERSION-PATCH:CAPS"></a><h3>IDN2_VERSION_PATCH</h3>
-<pre class="programlisting">#define IDN2_VERSION_PATCH 5
+<pre class="programlisting">#define IDN2_VERSION_PATCH 0
 </pre>
 <p>Pre-processor symbol for the patch level number (decimal).
 The version scheme is major.minor.patchlevel.</p>
@@ -1371,7 +1250,7 @@ only 0 if you want the default behaviour.</p>
 <tr>
 <td class="enum_member_name"><p><a name="IDN2-ALABEL-ROUNDTRIP:CAPS"></a>IDN2_ALABEL_ROUNDTRIP</p></td>
 <td class="enum_member_description">
-<p>Perform optional IDNA2008 lookup roundtrip check (not implemented yet).</p>
+<p>Perform optional IDNA2008 lookup roundtrip check (default).</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -1385,7 +1264,7 @@ only 0 if you want the default behaviour.</p>
 <tr>
 <td class="enum_member_name"><p><a name="IDN2-NONTRANSITIONAL:CAPS"></a>IDN2_NONTRANSITIONAL</p></td>
 <td class="enum_member_description">
-<p>Perform Unicode TR46 non-transitional processing.</p>
+<p>Perform Unicode TR46 non-transitional processing (default).</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -1410,7 +1289,14 @@ This is a <span class="type">TR46</span> only flag, and will be ignored when set
 <tr>
 <td class="enum_member_name"><p><a name="IDN2-NO-TR46:CAPS"></a>IDN2_NO_TR46</p></td>
 <td class="enum_member_description">
-<p>Disable Unicode TR46 processing (default).</p>
+<p>Disable Unicode TR46 processing.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
+<tr>
+<td class="enum_member_name"><p><a name="IDN2-NO-ALABEL-ROUNDTRIP:CAPS"></a>IDN2_NO_ALABEL_ROUNDTRIP</p></td>
+<td class="enum_member_description">
+<p>Disable ALabel lookup roundtrip check.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
@@ -1631,6 +1517,13 @@ to include new return codes.</p>
 </td>
 <td class="enum_member_annotations"> </td>
 </tr>
+<tr>
+<td class="enum_member_name"><p><a name="IDN2-ALABEL-ROUNDTRIP-FAILED:CAPS"></a>IDN2_ALABEL_ROUNDTRIP_FAILED</p></td>
+<td class="enum_member_description">
+<p>ALabel -&gt; Ulabel -&gt; ALabel result differs from input.</p>
+</td>
+<td class="enum_member_annotations"> </td>
+</tr>
 </tbody>
 </table></div>
 </div>
@@ -1638,6 +1531,9 @@ to include new return codes.</p>
 <hr>
 <div class="refsect2">
 <a name="Idna-rc"></a><h3>enum Idna_rc</h3>
+<p>Return codes for transition to / compatibility with libidn2.</p>
+<p>Please be aware that return codes from idna_ functions might be unexpected
+when linked / built with libidn2.</p>
 <div class="refsect3">
 <a name="Idna-rc.members"></a><h4>Members</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -1649,68 +1545,94 @@ to include new return codes.</p>
 <tbody>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-SUCCESS:CAPS"></a>IDNA_SUCCESS</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-OK:CAPS"><code class="literal">IDN2_OK</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-STRINGPREP-ERROR:CAPS"></a>IDNA_STRINGPREP_ERROR</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-ENCODING-ERROR:CAPS"><code class="literal">IDN2_ENCODING_ERROR</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-PUNYCODE-ERROR:CAPS"></a>IDNA_PUNYCODE_ERROR</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-PUNYCODE-BAD-INPUT:CAPS"><code class="literal">IDN2_PUNYCODE_BAD_INPUT</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-CONTAINS-NON-LDH:CAPS"></a>IDNA_CONTAINS_NON_LDH</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-ENCODING-ERROR:CAPS"><code class="literal">IDN2_ENCODING_ERROR</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-CONTAINS-LDH:CAPS"></a>IDNA_CONTAINS_LDH</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDNA-CONTAINS-NON-LDH:CAPS"><code class="literal">IDNA_CONTAINS_NON_LDH</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-CONTAINS-MINUS:CAPS"></a>IDNA_CONTAINS_MINUS</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-ENCODING-ERROR:CAPS"><code class="literal">IDN2_ENCODING_ERROR</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-INVALID-LENGTH:CAPS"></a>IDNA_INVALID_LENGTH</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-DISALLOWED:CAPS"><code class="literal">IDN2_DISALLOWED</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-NO-ACE-PREFIX:CAPS"></a>IDNA_NO_ACE_PREFIX</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-ENCODING-ERROR:CAPS"><code class="literal">IDN2_ENCODING_ERROR</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-ROUNDTRIP-VERIFY-ERROR:CAPS"></a>IDNA_ROUNDTRIP_VERIFY_ERROR</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-ENCODING-ERROR:CAPS"><code class="literal">IDN2_ENCODING_ERROR</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-CONTAINS-ACE-PREFIX:CAPS"></a>IDNA_CONTAINS_ACE_PREFIX</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-ENCODING-ERROR:CAPS"><code class="literal">IDN2_ENCODING_ERROR</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-ICONV-ERROR:CAPS"></a>IDNA_ICONV_ERROR</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-ENCODING-ERROR:CAPS"><code class="literal">IDN2_ENCODING_ERROR</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-MALLOC-ERROR:CAPS"></a>IDNA_MALLOC_ERROR</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-MALLOC:CAPS"><code class="literal">IDN2_MALLOC</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-DLOPEN-ERROR:CAPS"></a>IDNA_DLOPEN_ERROR</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-MALLOC:CAPS"><code class="literal">IDN2_MALLOC</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>
@@ -1719,6 +1641,7 @@ to include new return codes.</p>
 <hr>
 <div class="refsect2">
 <a name="Idna-flags"></a><h3>enum Idna_flags</h3>
+<p>Flags for transition to / compatibility with libidn2.</p>
 <div class="refsect3">
 <a name="Idna-flags.members"></a><h4>Members</h4>
 <div class="informaltable"><table class="informaltable" width="100%" border="0">
@@ -1730,13 +1653,17 @@ to include new return codes.</p>
 <tbody>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-ALLOW-UNASSIGNED:CAPS"></a>IDNA_ALLOW_UNASSIGNED</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-ALLOW-UNASSIGNED:CAPS"><code class="literal">IDN2_ALLOW_UNASSIGNED</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 <tr>
 <td class="enum_member_name"><p><a name="IDNA-USE-STD3-ASCII-RULES:CAPS"></a>IDNA_USE_STD3_ASCII_RULES</p></td>
-<td> </td>
-<td> </td>
+<td class="enum_member_description">
+<p>Same as <a class="link" href="libidn2-idn2.html#IDN2-USE-STD3-ASCII-RULES:CAPS"><code class="literal">IDN2_USE_STD3_ASCII_RULES</code></a></p>
+</td>
+<td class="enum_member_annotations"> </td>
 </tr>
 </tbody>
 </table></div>

@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([libidn2], [2.0.5], [help-libidn@gnu.org],,
+AC_INIT([libidn2], [2.3.0], [help-libidn@gnu.org],,
   [https://www.gnu.org/software/libidn/#libidn2])
 
 # Library code modified:                              REVISION++
@@ -21,7 +21,7 @@ AC_INIT([libidn2], [2.0.5], [help-libidn@gnu.org],,
 # Interfaces added:                             AGE++
 # Interfaces removed:                           AGE=0
 AC_SUBST(LT_CURRENT, 3)
-AC_SUBST(LT_REVISION, 4)
+AC_SUBST(LT_REVISION, 7)
 AC_SUBST(LT_AGE, 3)
 
 #
@@ -41,12 +41,35 @@ AC_CANONICAL_HOST
 AC_PROG_CC
 AM_CONDITIONAL(cross_compiling,[test "$cross_compiling" = yes])
 AX_PROG_CC_FOR_BUILD
+AC_USE_SYSTEM_EXTENSIONS
 gl_EARLY
 unistring_EARLY
 m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
 LT_INIT([win32-dll])
 gl_INIT
 unistring_INIT
+
+# Detect the target system
+case "${host_os}" in
+    linux-gnu)
+        build_linux_gnu=yes
+esac
+AM_CONDITIONAL([TEST_GLIBC], [test "$build_linux_gnu" = "yes"])
+
+dnl Ideally, this should attempt a link, but this requires a separate
+dnl version file, so we only check for compiler support here.
+AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
+__attribute__((visibility("hidden")))
+int
+versioned_symbol_internal (void)
+{
+}
+__typeof__ (versioned_symbol_internal) versioned_symbol
+   __attribute__ ((visibility ("default"),
+                   alias ("versioned_symbol_internal")));
+__asm__ (".symver versioned_symbol, versioned_symbol@IDN2_0.0.0");
+])], [AC_DEFINE([HAVE_SYMVER_ALIAS_SUPPORT], [1],
+     [The toolchain supports aliases and .symver.])])
 
 #
 # check for gtk-doc
@@ -92,6 +115,7 @@ if test "$gl_gcc_warnings" = yes; then
   nw="$nw -Wtraditional-conversion" # Too many complaints for now.
   nw="$nw -Wunreachable-code"     # gcc bug 40412
   nw="$nw -Wswitch-default"       # Nothing wrong with default-less switch?
+  nw="$nw -Wmissing-field-initializers" # Avoid spamming in tests/ directory
 
   gl_MANYWARN_COMPLEMENT([warnings], [$warnings], [$nw])
   for w in $warnings; do
@@ -99,7 +123,8 @@ if test "$gl_gcc_warnings" = yes; then
   done
 
   gl_WARN_ADD([-fdiagnostics-show-option])
-  gl_WARN_ADD([-fdiagnostics-color=always]) # colors even when using ccache
+  gl_WARN_ADD([-fdiagnostics-color=always])      # colors even when using ccache
+  gl_WARN_ADD([-Wno-missing-field-initializers]) # # Avoid spamming in tests/ directory
 fi
 
 AC_ARG_ENABLE(doc,

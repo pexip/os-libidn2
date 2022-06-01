@@ -1,3 +1,83 @@
+libidn2 (2.3.0-5) unstable; urgency=medium
+
+  * Move texinfo from B-D to B-D-I.
+  * Handle FTBFS with autoconf 2.70.  Closes: #978850.
+  * Drop README.source.
+  * Drop debian/source/options extend-diff-ignore=doc/idn2.1.
+  * Drop already default ./configure --enable-ld-version-script parameter.
+
+ -- Simon Josefsson <simon@josefsson.org>  Fri, 15 Jan 2021 11:19:14 +0100
+
+libidn2 (2.3.0-4) unstable; urgency=medium
+
+  * Add autopkgtest.
+  * Improve lintian-overrides.
+  * Update d/source/options.
+  * Rebuild libidn2.pdf from source (fixes --twice FTBFS).
+  * Update standards version to 4.5.1.
+
+ -- Simon Josefsson <simon@josefsson.org>  Mon, 16 Nov 2020 16:14:21 +0100
+
+libidn2 (2.3.0-3) unstable; urgency=medium
+
+  * Fix doc-base-file-references-missing-file.
+  * Update watch file to version 4.
+
+ -- Simon Josefsson <simon@josefsson.org>  Tue, 10 Nov 2020 21:30:02 +0100
+
+libidn2 (2.3.0-2) unstable; urgency=medium
+
+  [ Simon Josefsson ]
+  * Debhelper-Compat 13.
+  * Add Rules-Requires-Root: no.
+  * Improve upstream/metadata.
+
+  [ Debian Janitor <janitor@jelmer.uk> ]
+  * Set debhelper-compat version in Build-Depends.
+  * Set upstream metadata fields: Bug-Submit (from ./configure).
+  * Update standards version to 4.5.0, no changes needed.
+
+ -- Simon Josefsson <simon@josefsson.org>  Sun, 01 Nov 2020 18:29:18 +0100
+
+libidn2 (2.3.0-1) unstable; urgency=medium
+
+  * Move texinfo from Build-Depends-Indep to Build-Depends (Closes: #949705)
+  * New upstream version 2.3.0
+
+ -- Ondřej Surý <ondrej@debian.org>  Mon, 02 Mar 2020 10:23:23 +0100
+
+libidn2 (2.2.0-2) unstable; urgency=medium
+
+  * Normalize d/ with wrap-and-sort -a
+  * Correctly bump the library interface after removing the interfaces
+  * Restore exporting _idn2_punycode_decode@IDN2_0.0.0 0.6 and
+    _idn2_punycode_encode@IDN2_0.0.0 0.6 to retain ABI compatibility
+
+ -- Ondřej Surý <ondrej@sury.org>  Wed, 11 Sep 2019 08:58:12 +0200
+
+libidn2 (2.2.0-1) unstable; urgency=medium
+
+  [ Simon Josefsson ]
+  * New upstream version 2.2.0.
+  * Update libidn2-0.symbols.
+  * Standards-Version 4.4.0.
+  * Compat 12.
+    - Drop dh --fail-missing (now default).
+    - Drop --parallel and --with autoreconf.
+    - Drop Build-Depends on dh-autoreconf.
+  * Add Build-Depends-Package to symbols file.
+  * Drop help2man b-d.  Closes: #929879.
+  * Ignore idn2.1 diff.
+  * Make libidn2-doc Multi-Arch: foreign.
+
+  [ Ondřej Nový ]
+  * d/copyright: Use https protocol in Format field
+
+  [ Bernhard Schmidt ]
+  * Update and cleanup upstream signing keys.  Closes: #882581.
+
+ -- Simon Josefsson <simon@josefsson.org>  Sat, 20 Jul 2019 22:35:12 +0200
+
 libidn2 (2.0.5-1+deb10u1pexip2) pexip; urgency=medium
 
   * Rebuild in buster environment
@@ -9,18 +89,6 @@ libidn2 (2.0.5-1+deb10u1pexip1) pexip; urgency=medium
   * Prepare Pexip packaging
 
  -- Vincent Sanders <vince@pexip.com>  Sun, 29 Mar 2020 23:32:42 +0100
-
-libidn2 (2.0.5-1+deb10u1) buster-security; urgency=high
-
-  * Non-maintainer upload by the Security Team.
-  * Fix free of random (stack) value in idn2_to_ascii_4i()
-  * idn2_to_ascii_4i(): Restrict output length to 63 (CVE-2019-18224)
-    (Closes: #942895)
-  * Fail make if 'ronn' doesn't exist when building docs
-  * Fix generation of idn2.1 man page file
-  * Move texinfo from Build-Depends-Indep to Build-Depends (Closes: #949705)
-
- -- Salvatore Bonaccorso <carnil@debian.org>  Thu, 30 Jan 2020 23:15:38 +0100
 
 libidn2 (2.0.5-1) unstable; urgency=medium
 
