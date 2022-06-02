@@ -1,3 +1,9 @@
+libidn2 (2.3.0-5pexip1) pexip; urgency=medium
+
+  * Initial bullseye build
+
+ -- Mark Hymers <mark.hymers@pexip.com>  Thu, 02 Jun 2022 14:42:25 +0100
+
 libidn2 (2.3.0-5) unstable; urgency=medium
 
   * Move texinfo from B-D to B-D-I.
