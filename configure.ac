@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2017 Simon Josefsson
+# Copyright (C) 2011-2022 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,41 +13,45 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([libidn2], [2.3.0], [help-libidn@gnu.org],,
-  [https://www.gnu.org/software/libidn/#libidn2])
+AC_INIT([Libidn2],
+        m4_esyscmd([build-aux/git-version-gen .tarball-version]),
+        [help-libidn@gnu.org],,
+        [https://www.gnu.org/software/libidn/#libidn2])
 
 # Library code modified:                              REVISION++
 # Interfaces changed/added/removed:   CURRENT++       REVISION=0
 # Interfaces added:                             AGE++
 # Interfaces removed:                           AGE=0
 AC_SUBST(LT_CURRENT, 3)
-AC_SUBST(LT_REVISION, 7)
+AC_SUBST(LT_REVISION, 8)
 AC_SUBST(LT_AGE, 3)
 
-#
-# Generate version defines for the include file
-#
-AC_SUBST([IDN2_VERSION_MAJOR], [`echo $PACKAGE_VERSION|cut -d'.' -f1`])
-AC_SUBST([IDN2_VERSION_MINOR], [`echo $PACKAGE_VERSION|cut -d'.' -f2`])
-AC_SUBST([IDN2_VERSION_PATCH], [`echo $PACKAGE_VERSION|cut -d'.' -f3`])
-AC_SUBST([IDN2_VERSION_NUMBER], [`printf '0x%02x%02x%04x' $IDN2_VERSION_MAJOR $IDN2_VERSION_MINOR $IDN2_VERSION_PATCH`])
+DLL_VERSION=`expr ${LT_CURRENT} - ${LT_AGE}`
+AC_SUBST(DLL_VERSION)
+
+AC_SUBST([MAJOR_VERSION], [`echo $PACKAGE_VERSION|cut -d'.' -f1`])
+AC_SUBST([MINOR_VERSION], [`echo $PACKAGE_VERSION|cut -d'.' -f2`])
+AC_SUBST([PATCH_VERSION], [`echo $PACKAGE_VERSION|cut -d'.' -f3`])
+AC_SUBST([NUMBER_VERSION], [`printf '0x%02x%02x%04x' $MAJOR_VERSION $MINOR_VERSION $PATCH_VERSION`])
+
+AC_MSG_NOTICE([$PACKAGE_NAME $PACKAGE_VERSION $PACKAGE_TARNAME $MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION $NUMBER_VERSION $LT_CURRENT:$LT_REVISION:$LT_AGE $DLL_VERSION])
 
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([foreign -Wall -Wno-portability subdir-objects])
-AC_CANONICAL_HOST
+AC_CONFIG_HEADERS([config.h])
+
+AM_INIT_AUTOMAKE([1.14 -Wall -Wno-portability subdir-objects])
+AM_SILENT_RULES([yes])
 
 AC_PROG_CC
-AM_CONDITIONAL(cross_compiling,[test "$cross_compiling" = yes])
-AX_PROG_CC_FOR_BUILD
 AC_USE_SYSTEM_EXTENSIONS
 gl_EARLY
 unistring_EARLY
-m4_ifdef([AM_PROG_AR], [AM_PROG_AR])
+AM_MISSING_PROG(HELP2MAN, help2man, $missing_dir)
 LT_INIT([win32-dll])
 gl_INIT
 unistring_INIT
+AC_DEFINE([GNULIB_NO_VLA], 1, [Disable VLA usage in gettext.h.])
 
 # Detect the target system
 case "${host_os}" in
@@ -84,13 +88,10 @@ m4_ifdef([GTK_DOC_USE_LIBTOOL], [], [
 AM_CONDITIONAL([GTK_DOC_USE_LIBTOOL], false)
 ])
 
-AM_GNU_GETTEXT(external)
-AM_GNU_GETTEXT_VERSION(0.19.3)
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.19.3])
 
 AX_CODE_COVERAGE
-
-# Non-verbose make
-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 AC_ARG_ENABLE([gcc-warnings],
   [AS_HELP_STRING([--enable-gcc-warnings],
@@ -140,12 +141,6 @@ if test "$enable_doc" = "yes";then
   ])
 fi
 
-if test "$ac_cv_libunistring" = "yes";then
-  AC_SEARCH_LIBS(uc_joining_type, unistring, [], [ac_cv_libunistring=no])
-fi
-
-AM_CONDITIONAL(HAVE_LIBUNISTRING, test "$ac_cv_libunistring" = "yes")
-
 AC_CONFIG_FILES([
   Makefile
   examples/Makefile
@@ -163,8 +158,11 @@ AC_OUTPUT
 
 AC_MSG_NOTICE([Summary of build options:
 
-  Version:           ${PACKAGE_VERSION}
-  Host OS:           ${host_os}
+  Version:           ${VERSION}
+  Libtool version    $LT_CURRENT:$LT_REVISION:$LT_AGE
+  DLL version:       $DLL_VERSION
+  Header version:    major $MAJOR_VERSION minor $MINOR_VERSION patch $PATCH_VERSION number $NUMBER_VERSION
+  Build/host system: ${build} / ${host}
   Install prefix:    ${prefix}
   Compiler:          ${CC}
   Warning flags:     ${WARN_CFLAGS}
@@ -172,8 +170,8 @@ AC_MSG_NOTICE([Summary of build options:
   LDFlags:           ${LDFLAGS}
   Documentation:     ${enable_doc}
   Library types:     Shared=${enable_shared}, Static=${enable_static}
-  Libiconv:          $am_cv_func_iconv $LTLIBICONV
+  iconv:             $am_cv_func_iconv_summary $LTLIBICONV
   Libunistring:      $ac_cv_libunistring $LIBUNISTRING_VERSION $LTLIBUNISTRING
-  Valgrind:          ${VALGRIND}
+  Valgrind:          $gl_cv_prog_valgrind_works $VALGRIND_PROGRAM $DEFAULT_VALGRINDFLAGS $VALGRINDFLAGS
   Version script:    $have_ld_version_script
 ])

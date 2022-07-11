@@ -1,5 +1,6 @@
 /* lookup.c - implementation of IDNA2008 lookup functions
-   Copyright (C) 2011-2017 Simon Josefsson
+   Copyright (C) 2011-2022 Simon Josefsson
+   Copyright (C) 2017-2022 Tim Ruehsen
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -30,23 +31,23 @@
 
 #include "idn2.h"
 
-#include <errno.h>      /* errno */
-#include <stdlib.h>     /* malloc, free */
+#include <errno.h>		/* errno */
+#include <stdlib.h>		/* malloc, free */
 
 #include "punycode.h"
 
 #include <unitypes.h>
-#include <uniconv.h>    /* u8_strconv_from_locale */
-#include <uninorm.h>    /* u32_normalize */
-#include <unistr.h>     /* u8_to_u32 */
+#include <uniconv.h>		/* u8_strconv_from_locale */
+#include <uninorm.h>		/* u32_normalize */
+#include <unistr.h>		/* u8_to_u32 */
 
-#include "idna.h"       /* _idn2_label_test */
-#include "tr46map.h"    /* definition for tr46map.c */
+#include "idna.h"		/* _idn2_label_test */
+#include "tr46map.h"		/* definition for tr46map.c */
 
 #ifdef HAVE_LIBUNISTRING
 /* copied from gnulib */
-#include <limits.h>
-#define _C_CTYPE_LOWER_N(N) \
+# include <limits.h>
+# define _C_CTYPE_LOWER_N(N) \
    case 'a' + (N): case 'b' + (N): case 'c' + (N): case 'd' + (N): \
    case 'e' + (N): case 'f' + (N): \
    case 'g' + (N): case 'h' + (N): case 'i' + (N): case 'j' + (N): \
@@ -54,7 +55,7 @@
    case 'o' + (N): case 'p' + (N): case 'q' + (N): case 'r' + (N): \
    case 's' + (N): case 't' + (N): case 'u' + (N): case 'v' + (N): \
    case 'w' + (N): case 'x' + (N): case 'y' + (N): case 'z' + (N)
-#define _C_CTYPE_UPPER _C_CTYPE_LOWER_N ('A' - 'a')
+# define _C_CTYPE_UPPER _C_CTYPE_LOWER_N ('A' - 'a')
 static inline int
 c_tolower (int c)
 {
@@ -66,6 +67,7 @@ c_tolower (int c)
       return c;
     }
 }
+
 static int
 c_strncasecmp (const char *s1, const char *s2, size_t n)
 {
@@ -82,7 +84,7 @@ c_strncasecmp (const char *s1, const char *s2, size_t n)
       c2 = c_tolower (*p2);
 
       if (--n == 0 || c1 == '\0')
-        break;
+	break;
 
       ++p1;
       ++p2;
@@ -98,32 +100,35 @@ c_strncasecmp (const char *s1, const char *s2, size_t n)
     return (c1 > c2 ? 1 : c1 < c2 ? -1 : 0);
 }
 #else
-#include <c-strcase.h>
+# include <c-strcase.h>
 #endif
 
-static int set_default_flags(int *flags)
+static int
+set_default_flags (int *flags)
 {
   if (((*flags) & IDN2_TRANSITIONAL) && ((*flags) & IDN2_NONTRANSITIONAL))
     return IDN2_INVALID_FLAGS;
 
-  if (((*flags) & (IDN2_TRANSITIONAL|IDN2_NONTRANSITIONAL)) && ((*flags) & IDN2_NO_TR46))
+  if (((*flags) & (IDN2_TRANSITIONAL | IDN2_NONTRANSITIONAL))
+      && ((*flags) & IDN2_NO_TR46))
     return IDN2_INVALID_FLAGS;
 
-  if (((*flags) & IDN2_ALABEL_ROUNDTRIP) && ((*flags) & IDN2_NO_ALABEL_ROUNDTRIP))
+  if (((*flags) & IDN2_ALABEL_ROUNDTRIP)
+      && ((*flags) & IDN2_NO_ALABEL_ROUNDTRIP))
     return IDN2_INVALID_FLAGS;
 
-  if (!((*flags) & (IDN2_NO_TR46|IDN2_TRANSITIONAL)))
+  if (!((*flags) & (IDN2_NO_TR46 | IDN2_TRANSITIONAL)))
     *flags |= IDN2_NONTRANSITIONAL;
 
   return IDN2_OK;
 }
 
 static int
-label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t * dstlen,
+label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t *dstlen,
        int flags)
 {
   size_t plen;
-  uint32_t *p;
+  uint32_t *p = NULL;
   const uint8_t *src_org = NULL;
   uint8_t *src_allocated = NULL;
   int rc, check_roundtrip = 0;
@@ -131,42 +136,51 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t * dstlen,
   uint32_t label_u32[IDN2_LABEL_MAX_LENGTH];
   size_t label32_len = IDN2_LABEL_MAX_LENGTH;
 
-  if (_idn2_ascii_p (src, srclen)) {
-    if (!(flags & IDN2_NO_ALABEL_ROUNDTRIP) && srclen >= 4 && memcmp (src, "xn--", 4) == 0) {
-      /*
-	 If the input to this procedure appears to be an A-label
-	 (i.e., it starts in "xn--", interpreted
-	 case-insensitively), the lookup application MAY attempt to
-	 convert it to a U-label, first ensuring that the A-label is
-	 entirely in lowercase (converting it to lowercase if
-	 necessary), and apply the tests of Section 5.4 and the
-	 conversion of Section 5.5 to that form. */
-      rc = _idn2_punycode_decode_internal (srclen - 4, (char *) src + 4, &label32_len, label_u32);
-      if (rc)
-	return rc;
+  if (_idn2_ascii_p (src, srclen))
+    {
+      if (!(flags & IDN2_NO_ALABEL_ROUNDTRIP) && srclen >= 4
+	  && memcmp (src, "xn--", 4) == 0)
+	{
+	  /*
+	     If the input to this procedure appears to be an A-label
+	     (i.e., it starts in "xn--", interpreted
+	     case-insensitively), the lookup application MAY attempt to
+	     convert it to a U-label, first ensuring that the A-label is
+	     entirely in lowercase (converting it to lowercase if
+	     necessary), and apply the tests of Section 5.4 and the
+	     conversion of Section 5.5 to that form. */
+	  rc =
+	    _idn2_punycode_decode_internal (srclen - 4, (char *) src + 4,
+					    &label32_len, label_u32);
+	  if (rc)
+	    return rc;
 
-      check_roundtrip = 1;
-      src_org = src;
-      srclen_org = srclen;
+	  check_roundtrip = 1;
+	  src_org = src;
+	  srclen_org = srclen;
 
-      srclen = IDN2_LABEL_MAX_LENGTH;
-      src = src_allocated = u32_to_u8 (label_u32, label32_len, NULL, &srclen);
-      if (!src) {
-	if (errno == ENOMEM)
-	  return IDN2_MALLOC;
-	return IDN2_ENCODING_ERROR;
-      }
-    } else {
-      if (srclen > IDN2_LABEL_MAX_LENGTH)
-	return IDN2_TOO_BIG_LABEL;
-      if (srclen > *dstlen)
-	return IDN2_TOO_BIG_DOMAIN;
+	  srclen = IDN2_LABEL_MAX_LENGTH;
+	  src = src_allocated =
+	    u32_to_u8 (label_u32, label32_len, NULL, &srclen);
+	  if (!src)
+	    {
+	      if (errno == ENOMEM)
+		return IDN2_MALLOC;
+	      return IDN2_ENCODING_ERROR;
+	    }
+	}
+      else
+	{
+	  if (srclen > IDN2_LABEL_MAX_LENGTH)
+	    return IDN2_TOO_BIG_LABEL;
+	  if (srclen > *dstlen)
+	    return IDN2_TOO_BIG_DOMAIN;
 
-      memcpy (dst, src, srclen);
-      *dstlen = srclen;
-      return IDN2_OK;
+	  memcpy (dst, src, srclen);
+	  *dstlen = srclen;
+	  return IDN2_OK;
+	}
     }
-  }
 
   rc = _idn2_u8_to_u32_nfc (src, srclen, &p, &plen, flags & IDN2_NFC_INPUT);
   if (rc != IDN2_OK)
@@ -174,23 +188,22 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t * dstlen,
 
   if (!(flags & IDN2_TRANSITIONAL))
     {
-      rc = _idn2_label_test(
-	TEST_NFC |
-	TEST_2HYPHEN |
-	TEST_LEADING_COMBINING |
-	TEST_DISALLOWED |
-	TEST_CONTEXTJ_RULE |
-	TEST_CONTEXTO_WITH_RULE |
-	TEST_UNASSIGNED | TEST_BIDI |
-	((flags & IDN2_NONTRANSITIONAL) ? TEST_NONTRANSITIONAL : 0) |
-	((flags & IDN2_USE_STD3_ASCII_RULES) ? 0 : TEST_ALLOW_STD3_DISALLOWED),
-	p, plen);
+      rc = _idn2_label_test (TEST_NFC |
+			     TEST_2HYPHEN |
+			     TEST_LEADING_COMBINING |
+			     TEST_DISALLOWED |
+			     TEST_CONTEXTJ_RULE |
+			     TEST_CONTEXTO_WITH_RULE |
+			     TEST_UNASSIGNED | TEST_BIDI |
+			     ((flags & IDN2_NONTRANSITIONAL) ?
+			      TEST_NONTRANSITIONAL : 0) | ((flags &
+							    IDN2_USE_STD3_ASCII_RULES)
+							   ? 0 :
+							   TEST_ALLOW_STD3_DISALLOWED),
+			     p, plen);
 
       if (rc != IDN2_OK)
-	{
-	  free (p);
-	  goto out;
-	}
+	goto out;
     }
 
   dst[0] = 'x';
@@ -200,7 +213,6 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t * dstlen,
 
   tmpl = *dstlen - 4;
   rc = _idn2_punycode_encode_internal (plen, p, &tmpl, (char *) dst + 4);
-  free (p);
   if (rc != IDN2_OK)
     goto out;
 
@@ -209,16 +221,35 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t * dstlen,
 
   if (check_roundtrip)
     {
-      if (srclen_org != *dstlen || c_strncasecmp ((char *) src_org, (char *) dst, srclen_org))
-      {
-        rc = IDN2_ALABEL_ROUNDTRIP_FAILED;
-	goto out;
-      }
+      if (srclen_org != *dstlen
+	  || c_strncasecmp ((char *) src_org, (char *) dst, srclen_org))
+	{
+	  rc = IDN2_ALABEL_ROUNDTRIP_FAILED;
+	  goto out;
+	}
+    }
+  else if (!(flags & IDN2_NO_ALABEL_ROUNDTRIP))
+    {
+      rc =
+	_idn2_punycode_decode_internal (*dstlen - 4, (char *) dst + 4,
+					&label32_len, label_u32);
+      if (rc)
+	{
+	  rc = IDN2_ALABEL_ROUNDTRIP_FAILED;
+	  goto out;
+	}
+
+      if (plen != label32_len || u32_cmp (p, label_u32, label32_len))
+	{
+	  rc = IDN2_ALABEL_ROUNDTRIP_FAILED;
+	  goto out;
+	}
     }
 
   rc = IDN2_OK;
 
 out:
+  free (p);
   free (src_allocated);
   return rc;
 }
@@ -242,7 +273,7 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
 
   /* convert UTF-8 to UTF-32 */
   if (!(domain_u32 =
-       u8_to_u32 (domain_u8, u8_strlen (domain_u8) + 1, NULL, &len)))
+	u8_to_u32 (domain_u8, u8_strlen (domain_u8) + 1, NULL, &len)))
     {
       if (errno == ENOMEM)
 	return IDN2_MALLOC;
@@ -287,7 +318,7 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
 	    len2++;
 	}
       else if (!(flags & IDN2_USE_STD3_ASCII_RULES))
-        {
+	{
 	  if (map_is (&map, TR46_FLG_DISALLOWED_STD3_VALID))
 	    {
 	      /* valid because UseSTD3ASCIIRules=false, see #TR46 5 */
@@ -298,7 +329,7 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
 	      /* mapped because UseSTD3ASCIIRules=false, see #TR46 5 */
 	      len2 += map.nmappings;
 	    }
-        }
+	}
     }
 
   /* Exit early if result is too long.
@@ -350,7 +381,7 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
 	    tmp[len2++] = c;
 	}
       else if (!(flags & IDN2_USE_STD3_ASCII_RULES))
-        {
+	{
 	  if (map_is (&map, TR46_FLG_DISALLOWED_STD3_VALID))
 	    {
 	      tmp[len2++] = c;
@@ -359,7 +390,7 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
 	    {
 	      len2 += get_map_data (tmp + len2, &map);
 	    }
-        }
+	}
     }
   free (domain_u32);
 
@@ -417,20 +448,19 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
 	  if (!(flags & IDN2_USE_STD3_ASCII_RULES))
 	    test_flags |= TEST_ALLOW_STD3_DISALLOWED;
 
-	  if ((rc =
-	       _idn2_label_test (test_flags, name_u32,
-				 name_len)))
+	  if ((rc = _idn2_label_test (test_flags, name_u32, name_len)))
 	    err = rc;
 	}
       else
 	{
-	  test_flags = transitional ? TR46_TRANSITIONAL_CHECK : TR46_NONTRANSITIONAL_CHECK;
+	  test_flags =
+	    transitional ? TR46_TRANSITIONAL_CHECK :
+	    TR46_NONTRANSITIONAL_CHECK;
 
 	  if (!(flags & IDN2_USE_STD3_ASCII_RULES))
 	    test_flags |= TEST_ALLOW_STD3_DISALLOWED;
 
-	  if ((rc =
-	       _idn2_label_test (test_flags, s, e - s)))
+	  if ((rc = _idn2_label_test (test_flags, s, e - s)))
 	    err = rc;
 	}
 
@@ -505,7 +535,7 @@ idn2_lookup_u8 (const uint8_t * src, uint8_t ** lookupname, int flags)
 {
   size_t lookupnamelen = 0;
   uint8_t _lookupname[IDN2_DOMAIN_MAX_LENGTH + 1];
-  uint8_t _mapped[IDN2_DOMAIN_MAX_LENGTH + 1];
+  uint8_t *src_allocated = NULL;
   int rc;
 
   if (src == NULL)
@@ -515,29 +545,19 @@ idn2_lookup_u8 (const uint8_t * src, uint8_t ** lookupname, int flags)
       return IDN2_OK;
     }
 
-  rc = set_default_flags(&flags);
+  rc = set_default_flags (&flags);
   if (rc != IDN2_OK)
     return rc;
 
   if (!(flags & IDN2_NO_TR46))
     {
       uint8_t *out;
-      size_t outlen;
 
       rc = _tr46 (src, &out, flags);
       if (rc != IDN2_OK)
 	return rc;
 
-      outlen = u8_strlen (out);
-      if (outlen >= sizeof (_mapped))
-	{
-	  free (out);
-	  return IDN2_TOO_BIG_DOMAIN;
-	}
-
-      memcpy (_mapped, out, outlen + 1);
-      src = _mapped;
-      free (out);
+      src = src_allocated = out;
     }
 
   do
@@ -551,11 +571,17 @@ idn2_lookup_u8 (const uint8_t * src, uint8_t ** lookupname, int flags)
 
       rc = label (src, labellen, tmp, &tmplen, flags);
       if (rc != IDN2_OK)
-	return rc;
+	{
+	  free (src_allocated);
+	  return rc;
+	}
 
       if (lookupnamelen + tmplen
 	  > IDN2_DOMAIN_MAX_LENGTH - (tmplen == 0 && *end == '\0' ? 1 : 2))
-	return IDN2_TOO_BIG_DOMAIN;
+	{
+	  free (src_allocated);
+	  return IDN2_TOO_BIG_DOMAIN;
+	}
 
       memcpy (_lookupname + lookupnamelen, tmp, tmplen);
       lookupnamelen += tmplen;
@@ -563,7 +589,10 @@ idn2_lookup_u8 (const uint8_t * src, uint8_t ** lookupname, int flags)
       if (*end == '.')
 	{
 	  if (lookupnamelen + 1 > IDN2_DOMAIN_MAX_LENGTH)
-	    return IDN2_TOO_BIG_DOMAIN;
+	    {
+	      free (src_allocated);
+	      return IDN2_TOO_BIG_DOMAIN;
+	    }
 
 	  _lookupname[lookupnamelen] = '.';
 	  lookupnamelen++;
@@ -573,6 +602,8 @@ idn2_lookup_u8 (const uint8_t * src, uint8_t ** lookupname, int flags)
       src = end;
     }
   while (*src++);
+
+  free (src_allocated);
 
   if (lookupname)
     {
@@ -625,7 +656,7 @@ idn2_lookup_u8 (const uint8_t * src, uint8_t ** lookupname, int flags)
  * Since: 0.1
  **/
 int
-idn2_lookup_ul (const char * src, char ** lookupname, int flags)
+idn2_lookup_ul (const char *src, char **lookupname, int flags)
 {
   uint8_t *utf8src = NULL;
   int rc;
@@ -687,9 +718,12 @@ idn2_lookup_ul (const char * src, char ** lookupname, int flags)
  * Return value: Returns %IDN2_OK on success, or error code.
  *
  * Since: 2.0.0
+ *
+ * Deprecated: 2.1.1: Use idn2_to_ascii_4i2().
  **/
 int
-idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char * output, int flags)
+idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char *output,
+		  int flags)
 {
   char *out;
   int rc;
@@ -703,22 +737,22 @@ idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char * output, int flags
 
   rc = idn2_to_ascii_4i2 (input, inlen, &out, flags);
   if (rc == IDN2_OK)
-  {
-	  size_t len = strlen(out);
+    {
+      size_t len = strlen (out);
 
-	  if (len > 63)
-		  rc = IDN2_TOO_BIG_DOMAIN;
-	  else if (output)
-		  memcpy (output, out, len);
+      if (len > 63)
+	rc = IDN2_TOO_BIG_DOMAIN;
+      else if (output)
+	memcpy (output, out, len);
 
-	  free (out);
-  }
+      free (out);
+    }
 
   return rc;
 }
 
 /**
- * idn2_to_ascii_4i:
+ * idn2_to_ascii_4i2:
  * @input: zero terminated input Unicode (UCS-4) string.
  * @inlen: number of elements in @input.
  * @output: pointer to newly allocated zero-terminated output string.
@@ -752,7 +786,8 @@ idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char * output, int flags
  * Since: 2.1.1
  **/
 int
-idn2_to_ascii_4i2 (const uint32_t * input, size_t inlen, char ** output, int flags)
+idn2_to_ascii_4i2 (const uint32_t * input, size_t inlen, char **output,
+		   int flags)
 {
   uint32_t *input_u32;
   uint8_t *input_u8, *output_u8;
@@ -766,7 +801,7 @@ idn2_to_ascii_4i2 (const uint32_t * input, size_t inlen, char ** output, int fla
       return IDN2_OK;
     }
 
-  input_u32 = (uint32_t *) malloc ((inlen + 1) * sizeof(uint32_t));
+  input_u32 = (uint32_t *) malloc ((inlen + 1) * sizeof (uint32_t));
   if (!input_u32)
     return IDN2_MALLOC;
 
@@ -789,7 +824,7 @@ idn2_to_ascii_4i2 (const uint32_t * input, size_t inlen, char ** output, int fla
     {
       if (output)
 	*output = (char *) output_u8;
-		else
+      else
 	free (output_u8);
     }
 
@@ -817,7 +852,7 @@ idn2_to_ascii_4i2 (const uint32_t * input, size_t inlen, char ** output, int fla
  * Since: 2.0.0
  **/
 int
-idn2_to_ascii_4z (const uint32_t * input, char ** output, int flags)
+idn2_to_ascii_4z (const uint32_t * input, char **output, int flags)
 {
   uint8_t *input_u8;
   size_t length;
@@ -830,7 +865,7 @@ idn2_to_ascii_4z (const uint32_t * input, char ** output, int flags)
       return IDN2_OK;
     }
 
-  input_u8 = u32_to_u8 (input, u32_strlen(input) + 1, NULL, &length);
+  input_u8 = u32_to_u8 (input, u32_strlen (input) + 1, NULL, &length);
   if (!input_u8)
     {
       if (errno == ENOMEM)
@@ -865,7 +900,7 @@ idn2_to_ascii_4z (const uint32_t * input, char ** output, int flags)
  * Since: 2.0.0
  **/
 int
-idn2_to_ascii_8z (const char * input, char ** output, int flags)
+idn2_to_ascii_8z (const char *input, char **output, int flags)
 {
   return idn2_lookup_u8 ((const uint8_t *) input, (uint8_t **) output, flags);
 }
@@ -892,7 +927,7 @@ idn2_to_ascii_8z (const char * input, char ** output, int flags)
  * Since: 2.0.0
  **/
 int
-idn2_to_ascii_lz (const char * input, char ** output, int flags)
+idn2_to_ascii_lz (const char *input, char **output, int flags)
 {
   return idn2_lookup_ul (input, output, flags);
 }

@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2017 Simon Josefsson
+# Copyright (C) 2011-2022 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,25 +16,31 @@
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/lib -I$(top_builddir)/lib -I$(srcdir) -I$(top_builddir)
 AM_CPPFLAGS += -I$(top_builddir)/gl -I$(top_srcdir)/gl
 AM_CPPFLAGS += -DSRCDIR=\"$(srcdir)\"
+AM_CPPFLAGS += -I$(top_srcdir)/unistring/ -I$(top_builddir)/unistring/
 AM_CFLAGS = $(WARN_CFLAGS)
 AM_LDFLAGS = -no-install
 
-if !HAVE_LIBUNISTRING
-AM_CPPFLAGS += -I$(top_srcdir)/unistring/ -I$(top_builddir)/unistring/
-endif
+AM_VALGRINDFLAGS = --suppressions=$(top_srcdir)/unistring/libunistring.valgrind
 
-LDADD = ../lib/libidn2.la ../gl/libgnu.la $(LTLIBUNISTRING)
+LDADD = ../lib/libidn2.la
+LDADD += ../unistring/libunistring.la $(LTLIBUNISTRING)
+LDADD += ../gl/libgnu.la
 
-if !HAVE_LIBUNISTRING
-LDADD += ../unistring/libunistring.la
-endif
-
-TESTS = test-punycode test-lookup test-register test-strerror test-tounicode
+ctests = test-punycode test-lookup test-register test-strerror test-tounicode
+ctests += test-locale
 if TEST_GLIBC
-TESTS += test-glibc
+ctests += test-glibc
 endif
+check_PROGRAMS = $(ctests)
 
-check_PROGRAMS = $(TESTS)
+dist_check_SCRIPTS = test-idn2.sh
+
+TESTS = $(dist_check_SCRIPTS) $(ctests)
+TEST_EXTENSIONS = .sh
+LOG_COMPILER = $(LOG_VALGRIND)
+SH_LOG_COMPILER= $(SHELL) -x
+
+AM_TESTS_ENVIRONMENT = EXEEXT="$(EXEEXT)" LOG_VALGRIND="$(LOG_VALGRIND)" LIBTOOL="$(LIBTOOL)"
 
 test_punycode_LDADD = ../lib/puny_decode.o ../lib/puny_encode.o $(LDADD) $(CODE_COVERAGE_LIBS)
 
@@ -44,14 +50,12 @@ test_lookup_SOURCES = test-lookup.c
 
 BUILT_SOURCES = $(IDNA_TXT) $(IDNA_INC)
 MAINTAINERCLEANFILES = $(BUILT_SOURCES)
-EXTRA_DIST = gen-utc-test.pl $(IDNA_TXT) $(IDNA_INC) suppressions.valgrind
+EXTRA_DIST = gen-utc-test.pl $(IDNA_TXT) $(IDNA_INC)
 
 $(IDNA_TXT):
 	rm -f $(IDNA_TXT)
-	wget http://www.unicode.org/Public/idna/6.3.0/IdnaTest.txt
-	echo "d3690c2bb64ea003ac481bbd50c3330eaf1cf691 IdnaTest.txt" | sha1sum -c -
+	wget https://www.unicode.org/Public/idna/10.0.0/IdnaTest.txt
+	echo "35f344b624f9978ee5c484ab0182038e92a9f41c IdnaTest.txt" | sha1sum -c -
 
 $(IDNA_INC): $(IDNA_TXT) $(srcdir)/gen-utc-test.pl
 	$(srcdir)/gen-utc-test.pl < $< > $@
-
-LOG_COMPILER = $(VALGRIND)

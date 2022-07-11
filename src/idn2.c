@@ -1,5 +1,5 @@
 /* idn2.c - command line interface to libidn2
-   Copyright (C) 2011-2019 Simon Josefsson, Tim Ruehsen
+   Copyright (C) 2011-2022 Simon Josefsson, Tim Ruehsen
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -41,16 +41,14 @@
 
 #include "idn2_cmd.h"
 
-#include "blurbs.h"
-
 #ifdef __cplusplus
-extern // define a global const variable in C++, C doesn't need it.
+extern				// define a global const variable in C++, C doesn't need it.
 #endif
 const char version_etc_copyright[] =
   /* Do *not* mark this string for translation.  %s is a copyright
      symbol suitable for this locale, and %d is the copyright
      year.  */
-  "Copyright 2011-%s %d Simon Josefsson, Tim Ruehsen.";
+  "Copyright %s 2011-%d Simon Josefsson, Tim Ruehsen.";
 
 static void
 usage (int status)
@@ -93,7 +91,7 @@ Mandatory arguments to long options are mandatory for short options too.\n\
 "), stdout);
       fputs (_("\
       --usestd3asciirules   Enable STD3 ASCII rules\n\
-      --no-alabelroundtrip  Disable ALabel rountrip for lookups\n\
+      --no-alabelroundtrip  Disable A-label roundtrip for lookups\n\
       --debug               Print debugging information\n\
       --quiet               Silent operation\n\
 "), stdout);
@@ -128,6 +126,9 @@ hexdump (const char *prefix, const char *str)
     for (i = 0; i < u32len; i++)
       fprintf (stderr, "UCS-4 %s[%lu] = U+%04x\n",
 	       prefix, (unsigned long) i, u32[i]);
+
+  free (u8);
+  free (u32);
 }
 
 static struct gengetopt_args_info args_info;
@@ -143,23 +144,12 @@ process_input (char *readbuf, int flags)
   if (len && readbuf[len - 1] == '\n')
     readbuf[len - 1] = '\0';
 
-  if (strcmp (readbuf, "show w") == 0)
-    {
-      puts (WARRANTY);
-      return;
-    }
-  else if (strcmp (readbuf, "show c") == 0)
-    {
-      puts (CONDITIONS);
-      return;
-    }
-
   if (args_info.debug_given)
     hexdump ("input", readbuf);
 
   if (args_info.register_given)
     {
-      rc = idn2_register_ul(readbuf, NULL, &output, flags);
+      rc = idn2_register_ul (readbuf, NULL, &output, flags);
       tag = "register";
     }
   else if (args_info.decode_given)
@@ -211,10 +201,16 @@ main (int argc, char *argv[])
 
   if (!args_info.quiet_given
       && args_info.inputs_num == 0 && isatty (fileno (stdin)))
-    fprintf (stderr, "%s %s\n" GREETING, PACKAGE, VERSION);
+    version_etc (stderr, NULL, PACKAGE, VERSION, (char *) NULL);
 
   if (args_info.debug_given)
     fprintf (stderr, _("Charset: %s\n"), locale_charset ());
+
+#if !HAVE_ICONV
+  if (strcmp (locale_charset (), "UTF-8") != 0)
+    error (77, 0, _("libiconv required for non-UTF-8 character encoding: %s"),
+	   locale_charset ());
+#endif
 
   if (!args_info.quiet_given
       && args_info.inputs_num == 0 && isatty (fileno (stdin)))

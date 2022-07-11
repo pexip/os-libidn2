@@ -1,5 +1,5 @@
 /* punycode.h - prototypes for internal punycode functions
-   Copyright (C) 2011-2017 Simon Josefsson
+   Copyright (C) 2011-2022 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -27,20 +27,19 @@
 */
 
 #ifndef LIBIDN2_PUNYCODE_H
-#define LIBIDN2_PUNYCODE_H
+# define LIBIDN2_PUNYCODE_H
 
-#include <stddef.h>
-#include <stdint.h>
+# include <stddef.h>
+# include <stdint.h>
 
 extern int
 _idn2_punycode_encode_internal (size_t input_length,
 				const uint32_t input[],
-				size_t * output_length, char output[]);
+				size_t *output_length, char output[]);
 
 extern int
 _idn2_punycode_decode_internal (size_t input_length,
 				const char input[],
-				size_t * output_length,
-				uint32_t output[]);
+				size_t *output_length, uint32_t output[]);
 
 #endif /* LIBIDN2_PUNYCODE_H */

@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2017 Simon Josefsson
+# Copyright (C) 2011-2022 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,22 +15,16 @@
 
 DISTCHECK_CONFIGURE_FLAGS ?= --enable-gtk-doc --enable-gtk-doc-pdf --disable-gcc-warnings
 
-SUBDIRS =
-
-if !HAVE_LIBUNISTRING
-SUBDIRS += unistring
-endif
-
-SUBDIRS += gl lib src examples tests fuzz po
-ACLOCAL_AMFLAGS = -I m4 -I unistring/m4
-EXTRA_DIST = m4/gnulib-cache.m4
+SUBDIRS = gl unistring lib src examples tests fuzz po
+ACLOCAL_AMFLAGS = -I m4 -I gl/m4 -I unistring/m4
+EXTRA_DIST = gl/m4/gnulib-cache.m4
 
 if ENABLE_DOC
 SUBDIRS += doc
 endif
 
-EXTRA_DIST += cfg.mk maint.mk CONTRIBUTING.md README.md COPYING COPYING.LESSERv3 \
-	COPYING.unicode COPYINGv2 AUTHORS NEWS ChangeLog INSTALL
+EXTRA_DIST += cfg.mk maint.mk CONTRIBUTING.md README.md
+EXTRA_DIST += COPYING COPYING.LESSERv3 COPYING.unicode COPYINGv2
 
 check-valgrind:
 	$(MAKE) check LOG_COMPILER="valgrind --error-exitcode=301 --leak-check=yes --show-reachable=yes --track-origins=yes --suppressions=suppressions.valgrind"
@@ -41,10 +35,10 @@ clean-local:
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = libidn2.pc
 
-@CODE_COVERAGE_RULES@
+include $(top_srcdir)/aminclude_static.am
 
 local-code-coverage-output: code-coverage-capture
-	@cat libidn2-$(VERSION)-coverage/index.html|grep headerCovTableEntryHi|head -1|sed 's/^.*>\([0-9]\+\.[0-9]\+\s*%\)<.*$$/ coverage lines: \1/' || true
+	@cat $(PACKAGE_NAME)-$(VERSION)-coverage/index.html|grep headerCovTableEntryHi|head -1|sed 's/^.*>\([0-9]\+\.[0-9]\+\s*%\)<.*$$/ coverage lines: \1/' || true
 
 ABIDW_COMMON = --no-show-locs --no-corpus-path
 LIBIDN2_ABI_LAST_FILE = "$(top_srcdir)/contrib/libidn2-latest-$$(uname -m).abi"
@@ -92,12 +86,25 @@ abi-check: lib/libidn2.la
 	@echo "ABI checks completed"
 	@echo "********************"
 
-dist-hook:
+# git-version-gen
+EXTRA_DIST += $(top_srcdir)/.version
+BUILT_SOURCES = $(top_srcdir)/.version
+$(top_srcdir)/.version:
+	echo $(VERSION) > $@-t && mv $@-t $@
+dist-hook: gen-ChangeLog
+	echo $(VERSION) > $(distdir)/.tarball-version
 	if test -d "$(top_srcdir)/contrib";then \
-		$(MAKE) -C $(top_srcdir) abi-check-latest; \
+		$(MAKE) -C $(top_builddir) abi-check-latest; \
 	fi
-	rm -f ChangeLog
-	$(MAKE) ChangeLog
+
+.PHONY: gen-ChangeLog
+gen-ChangeLog:
+	$(AM_V_GEN)if test -d .git; then				\
+		$(top_srcdir)/build-aux/gitlog-to-changelog >		\
+			$(distdir)/cl-t &&				\
+		{ rm -f $(distdir)/ChangeLog &&				\
+		  mv $(distdir)/cl-t $(distdir)/ChangeLog; }		\
+	fi
 
 .PHONY: abi-dump abi-check
 
