@@ -6,11 +6,11 @@ XSBC-Pexip-Original-Uploaders: Simon Josefsson <simon@josefsson.org>,
            Ondřej Surý <ondrej@debian.org>
 Build-Depends: debhelper-compat (= 13),
                gengetopt,
+               help2man,
                libunistring-dev,
-               pkg-config,
-               ronn | ruby-ronn (<< 0.7.3-5.1~)
+               pkg-config
 Build-Depends-Indep: dblatex, gtk-doc-tools, libglib2.0-dev, texinfo, texlive
-Standards-Version: 4.5.1
+Standards-Version: 4.6.1
 Priority: optional
 Homepage: https://www.gnu.org/software/libidn/#libidn2
 Vcs-Browser: https://salsa.debian.org/debian/libidn2
@@ -34,8 +34,6 @@ Section: doc
 Architecture: all
 Multi-Arch: foreign
 Depends: ${misc:Depends}
-Replaces: libidn2-0-dev (<< 2.0.3-1~), libidn2-dev (<< 2.0.3-1~)
-Breaks: libidn2-0-dev (<< 2.0.3-1~), libidn2-dev (<< 2.0.3-1~)
 Recommends: libidn2-dev
 Description: Internationalized domain names (IDNA2008/TR46) documentation
  Libidn2 implements the revised algorithm for internationalized domain
@@ -48,25 +46,12 @@ Section: libdevel
 Architecture: any
 Multi-Arch: same
 Provides: libidn2-0-dev
-Replaces: libidn2-0-dev (<< 2.0.3-1~)
-Breaks: libidn2-0-dev (<< 2.0.3-1~)
 Depends: libidn2-0 (= ${binary:Version}), ${misc:Depends}
 Description: Internationalized domain names (IDNA2008/TR46) development files
  Libidn2 implements the revised algorithm for internationalized domain
  names called IDNA2008/TR46.
  .
  This package contains header files and libraries for static linking.
-
-Package: libidn2-0-dev
-Section: oldlibs
-Architecture: any
-Multi-Arch: same
-Depends: libidn2-dev, ${misc:Depends}
-Description: Internationalized domain names (IDNA2008/TR46) development files [dummy]
- Libidn2 implements the revised algorithm for internationalized domain
- names called IDNA2008/TR46.
- .
- This is a dummy transitional package.
 
 Package: idn2
 Section: devel

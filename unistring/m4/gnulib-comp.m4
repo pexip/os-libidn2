@@ -1,9 +1,9 @@
 # DO NOT EDIT! GENERATED AUTOMATICALLY!
-# Copyright (C) 2002-2019 Free Software Foundation, Inc.
+# Copyright (C) 2002-2022 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This file is distributed in the hope that it will be useful,
@@ -42,15 +42,16 @@ AC_DEFUN([unistring_EARLY],
   AC_REQUIRE([gl_USE_SYSTEM_EXTENSIONS])
   AC_REQUIRE([gl_PROG_AR_RANLIB])
 
-  AC_REQUIRE([AM_PROG_CC_C_O])
   # Code from module absolute-header:
-  # Code from module alloca-opt:
   # Code from module array-mergesort:
+  # Code from module attribute:
   # Code from module c-ctype:
   # Code from module c-strcase:
   # Code from module c-strcaseeq:
   # Code from module extensions:
   # Code from module extern-inline:
+  # Code from module free-posix:
+  # Code from module gen-header:
   # Code from module gperf:
   # Code from module havelib:
   # Code from module iconv:
@@ -58,20 +59,23 @@ AC_DEFUN([unistring_EARLY],
   # Code from module iconv_open:
   # Code from module include_next:
   # Code from module inline:
+  # Code from module inttypes-incomplete:
   # Code from module libunistring:
   # Code from module limits-h:
   # Code from module localcharset:
-  # Code from module malloca:
   # Code from module multiarch:
+  # Code from module snippet/_Noreturn:
   # Code from module snippet/arg-nonnull:
   # Code from module snippet/c++defs:
-  # Code from module snippet/unused-parameter:
   # Code from module snippet/warn-on-use:
   # Code from module ssize_t:
   # Code from module stdbool:
+  # Code from module stddef:
   # Code from module stdint:
+  # Code from module stdlib:
   # Code from module striconveh:
   # Code from module striconveha:
+  # Code from module string:
   # Code from module sys_types:
   # Code from module uniconv/base:
   # Code from module uniconv/u8-conv-from-enc:
@@ -97,7 +101,9 @@ AC_DEFUN([unistring_EARLY],
   # Code from module uninorm/nfc:
   # Code from module uninorm/nfd:
   # Code from module uninorm/u32-normalize:
+  # Code from module unistd:
   # Code from module unistr/base:
+  # Code from module unistr/u32-cmp:
   # Code from module unistr/u32-cpy:
   # Code from module unistr/u32-cpy-alloc:
   # Code from module unistr/u32-mbtouc-unsafe:
@@ -114,8 +120,7 @@ AC_DEFUN([unistring_EARLY],
   # Code from module unistr/u8-to-u32:
   # Code from module unistr/u8-uctomb:
   # Code from module unitypes:
-  # Code from module verify:
-  # Code from module xalloc-oversized:
+  # Code from module wchar:
 ])
 
 # This macro should be invoked from ./configure.ac, in the section
@@ -130,66 +135,104 @@ AC_DEFUN([unistring_INIT],
   m4_pushdef([AC_LIBSOURCES], m4_defn([unistring_LIBSOURCES]))
   m4_pushdef([unistring_LIBSOURCES_LIST], [])
   m4_pushdef([unistring_LIBSOURCES_DIR], [])
+  m4_pushdef([GL_MACRO_PREFIX], [unistring])
+  m4_pushdef([GL_MODULE_INDICATOR_PREFIX], [GL_UNISTRING])
   gl_COMMON
   gl_source_base='unistring'
-  gl_FUNC_ALLOCA
+  gl_source_base_prefix=
   AC_REQUIRE([gl_EXTERN_INLINE])
+  gl_FUNC_FREE
+  gl_CONDITIONAL([GL_COND_OBJ_FREE], [test $REPLACE_FREE = 1])
+  AM_COND_IF([GL_COND_OBJ_FREE], [
+    gl_PREREQ_FREE
+  ])
+  gl_STDLIB_MODULE_INDICATOR([free-posix])
+  AC_DEFUN([gl_HAVE_MODULE_HAVELIB])
   AM_ICONV
   m4_ifdef([gl_ICONV_MODULE_INDICATOR],
     [gl_ICONV_MODULE_INDICATOR([iconv])])
   gl_ICONV_H
+  gl_ICONV_H_REQUIRE_DEFAULTS
+  gl_CONDITIONAL_HEADER([iconv.h])
+  AC_PROG_MKDIR_P
   gl_FUNC_ICONV_OPEN
-  if test $REPLACE_ICONV_OPEN = 1; then
-    AC_LIBOBJ([iconv_open])
-  fi
-  if test $REPLACE_ICONV = 1; then
-    AC_LIBOBJ([iconv])
-    AC_LIBOBJ([iconv_close])
-  fi
+  dnl Because of gl_REPLACE_ICONV_H:
+  gl_CONDITIONAL_HEADER([iconv.h])
+  gl_CONDITIONAL([GL_COND_OBJ_ICONV_OPEN], [test $REPLACE_ICONV_OPEN = 1])
+  gl_CONDITIONAL([GL_COND_OBJ_ICONV], [test $REPLACE_ICONV = 1])
   gl_INLINE
+  gl_INTTYPES_INCOMPLETE
+  gl_INTTYPES_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
   gl_LIBUNISTRING
   gl_LIMITS_H
+  gl_CONDITIONAL_HEADER([limits.h])
+  AC_PROG_MKDIR_P
   gl_LOCALCHARSET
   dnl For backward compatibility. Some packages still use this.
   LOCALCHARSET_TESTS_ENVIRONMENT=
   AC_SUBST([LOCALCHARSET_TESTS_ENVIRONMENT])
-  gl_MALLOCA
   gl_MULTIARCH
   gt_TYPE_SSIZE_T
-  AM_STDBOOL_H
+  gl_STDBOOL_H
+  gl_CONDITIONAL_HEADER([stdbool.h])
+  AC_PROG_MKDIR_P
+  gl_STDDEF_H
+  gl_STDDEF_H_REQUIRE_DEFAULTS
+  gl_CONDITIONAL_HEADER([stddef.h])
+  AC_PROG_MKDIR_P
   gl_STDINT_H
+  gl_CONDITIONAL_HEADER([stdint.h])
+  dnl Because of gl_REPLACE_LIMITS_H:
+  gl_CONDITIONAL_HEADER([limits.h])
+  AC_PROG_MKDIR_P
+  gl_STDLIB_H
+  gl_STDLIB_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
   if test $gl_cond_libtool = false; then
     gl_ltlibdeps="$gl_ltlibdeps $LTLIBICONV"
     gl_libdeps="$gl_libdeps $LIBICONV"
   fi
-  gl_SYS_TYPES_H
+  gl_STRING_H
+  gl_STRING_H_REQUIRE_DEFAULTS
   AC_PROG_MKDIR_P
-  gl_LIBUNISTRING_LIBHEADER([0.9.4], [uniconv.h])
+  gl_SYS_TYPES_H
+  gl_SYS_TYPES_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
+  gl_LIBUNISTRING_LIBHEADER([0.9.11], [uniconv.h])
+  AC_PROG_MKDIR_P
   gl_LIBUNISTRING_MODULE([0.9], [uniconv/u8-conv-from-enc])
   gl_LIBUNISTRING_MODULE([0.9], [uniconv/u8-strconv-from-enc])
   gl_LIBUNISTRING_MODULE([0.9], [uniconv/u8-strconv-from-locale])
   gl_LIBUNISTRING_MODULE([0.9], [uniconv/u8-strconv-to-enc])
   gl_LIBUNISTRING_MODULE([0.9], [uniconv/u8-strconv-to-locale])
-  gl_LIBUNISTRING_LIBHEADER([0.9.4], [unictype.h])
-  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/bidiclass-of])
-  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/category-M])
+  gl_LIBUNISTRING_LIBHEADER([0.9.11], [unictype.h])
+  AC_PROG_MKDIR_P
+  gl_LIBUNISTRING_MODULE([0.9.11], [unictype/bidiclass-of])
+  gl_LIBUNISTRING_MODULE([0.9.11], [unictype/category-M])
   gl_LIBUNISTRING_MODULE([0.9.8], [unictype/category-none])
   AC_REQUIRE([AC_C_INLINE])
-  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/category-of])
+  gl_LIBUNISTRING_MODULE([0.9.11], [unictype/category-of])
   AC_REQUIRE([AC_C_INLINE])
   gl_LIBUNISTRING_MODULE([0.9.8], [unictype/category-test])
-  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/combining-class])
-  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/joiningtype-of])
-  gl_LIBUNISTRING_MODULE([0.9.8], [unictype/scripts])
-  gl_LIBUNISTRING_LIBHEADER([0.9.4], [uninorm.h])
-  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/canonical-decomposition])
-  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/composition])
+  gl_LIBUNISTRING_MODULE([0.9.11], [unictype/combining-class])
+  gl_LIBUNISTRING_MODULE([0.9.11], [unictype/joiningtype-of])
+  gl_LIBUNISTRING_MODULE([0.9.11], [unictype/scripts])
+  gl_LIBUNISTRING_LIBHEADER([0.9.11], [uninorm.h])
+  AC_PROG_MKDIR_P
+  gl_LIBUNISTRING_MODULE([0.9.11], [uninorm/canonical-decomposition])
+  gl_LIBUNISTRING_MODULE([0.9.11], [uninorm/composition])
   AC_REQUIRE([AC_C_INLINE])
-  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/nfc])
-  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/nfd])
+  gl_LIBUNISTRING_MODULE([0.9.11], [uninorm/nfc])
+  gl_LIBUNISTRING_MODULE([0.9.11], [uninorm/nfd])
   gl_MODULE_INDICATOR_FOR_TESTS([uninorm/u32-normalize])
-  gl_LIBUNISTRING_MODULE([0.9.8], [uninorm/u32-normalize])
-  gl_LIBUNISTRING_LIBHEADER([0.9.4], [unistr.h])
+  gl_LIBUNISTRING_MODULE([0.9.11], [uninorm/u32-normalize])
+  gl_UNISTD_H
+  gl_UNISTD_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
+  gl_LIBUNISTRING_LIBHEADER([0.9.11], [unistr.h])
+  AC_PROG_MKDIR_P
+  gl_LIBUNISTRING_MODULE([0.9], [unistr/u32-cmp])
   gl_LIBUNISTRING_MODULE([0.9], [unistr/u32-cpy])
   gl_LIBUNISTRING_MODULE([0.9], [unistr/u32-cpy-alloc])
   gl_MODULE_INDICATOR([unistr/u32-mbtouc-unsafe])
@@ -211,7 +254,26 @@ AC_DEFUN([unistring_INIT],
   gl_LIBUNISTRING_MODULE([0.9.3], [unistr/u8-to-u32])
   gl_MODULE_INDICATOR([unistr/u8-uctomb])
   gl_LIBUNISTRING_MODULE([0.9], [unistr/u8-uctomb])
-  gl_LIBUNISTRING_LIBHEADER([0.9.4], [unitypes.h])
+  gl_LIBUNISTRING_LIBHEADER([0.9.11], [unitypes.h])
+  AC_PROG_MKDIR_P
+  AH_VERBATIM([unitypes_restrict], [
+  /* This definition is a duplicate of the one in unitypes.h.
+     It is here so that we can cope with an older version of unitypes.h
+     that does not contain this definition and that is pre-installed among
+     the public header files.  */
+  # if defined __restrict \
+       || 2 < __GNUC__ + (95 <= __GNUC_MINOR__) \
+       || __clang_major__ >= 3
+  #  define _UC_RESTRICT __restrict
+  # elif 199901L <= __STDC_VERSION__ || defined restrict
+  #  define _UC_RESTRICT restrict
+  # else
+  #  define _UC_RESTRICT
+  # endif
+  ])
+  gl_WCHAR_H
+  gl_WCHAR_H_REQUIRE_DEFAULTS
+  AC_PROG_MKDIR_P
   # End of code from modules
   m4_ifval(unistring_LIBSOURCES_LIST, [
     m4_syscmd([test ! -d ]m4_defn([unistring_LIBSOURCES_DIR])[ ||
@@ -224,6 +286,8 @@ AC_DEFUN([unistring_INIT],
       m4_if(m4_sysval, [0], [],
         [AC_FATAL([expected source file, required through AC_LIBSOURCES, not found])])
   ])
+  m4_popdef([GL_MODULE_INDICATOR_PREFIX])
+  m4_popdef([GL_MACRO_PREFIX])
   m4_popdef([unistring_LIBSOURCES_DIR])
   m4_popdef([unistring_LIBSOURCES_LIST])
   m4_popdef([AC_LIBSOURCES])
@@ -232,16 +296,28 @@ AC_DEFUN([unistring_INIT],
   AC_CONFIG_COMMANDS_PRE([
     unistring_libobjs=
     unistring_ltlibobjs=
+    unistring_libobjdeps=
     if test -n "$unistring_LIBOBJS"; then
       # Remove the extension.
+changequote(,)dnl
       sed_drop_objext='s/\.o$//;s/\.obj$//'
+      sed_dirname1='s,//*,/,g'
+      sed_dirname2='s,\(.\)/$,\1,'
+      sed_dirname3='s,^[^/]*$,.,'
+      sed_dirname4='s,\(.\)/[^/]*$,\1,'
+      sed_basename1='s,.*/,,'
+changequote([, ])dnl
       for i in `for i in $unistring_LIBOBJS; do echo "$i"; done | sed -e "$sed_drop_objext" | sort | uniq`; do
         unistring_libobjs="$unistring_libobjs $i.$ac_objext"
         unistring_ltlibobjs="$unistring_ltlibobjs $i.lo"
+        i_dir=`echo "$i" | sed -e "$sed_dirname1" -e "$sed_dirname2" -e "$sed_dirname3" -e "$sed_dirname4"`
+        i_base=`echo "$i" | sed -e "$sed_basename1"`
+        unistring_libobjdeps="$unistring_libobjdeps $i_dir/\$(DEPDIR)/$i_base.Plo"
       done
     fi
     AC_SUBST([unistring_LIBOBJS], [$unistring_libobjs])
     AC_SUBST([unistring_LTLIBOBJS], [$unistring_ltlibobjs])
+    AC_SUBST([unistring_LIBOBJDEPS], [$unistring_libobjdeps])
   ])
   gltests_libdeps=
   gltests_ltlibdeps=
@@ -250,8 +326,11 @@ AC_DEFUN([unistring_INIT],
   m4_pushdef([AC_LIBSOURCES], m4_defn([unistringtests_LIBSOURCES]))
   m4_pushdef([unistringtests_LIBSOURCES_LIST], [])
   m4_pushdef([unistringtests_LIBSOURCES_DIR], [])
+  m4_pushdef([GL_MACRO_PREFIX], [unistringtests])
+  m4_pushdef([GL_MODULE_INDICATOR_PREFIX], [GL_UNISTRING])
   gl_COMMON
   gl_source_base='tests'
+  gl_source_base_prefix=
 changequote(,)dnl
   unistringtests_WITNESS=IN_`echo "${PACKAGE-$PACKAGE_TARNAME}" | LC_ALL=C tr abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ | LC_ALL=C sed -e 's/[^A-Z0-9_]/_/g'`_GNULIB_TESTS
 changequote([, ])dnl
@@ -270,6 +349,8 @@ changequote([, ])dnl
       m4_if(m4_sysval, [0], [],
         [AC_FATAL([expected source file, required through AC_LIBSOURCES, not found])])
   ])
+  m4_popdef([GL_MODULE_INDICATOR_PREFIX])
+  m4_popdef([GL_MACRO_PREFIX])
   m4_popdef([unistringtests_LIBSOURCES_DIR])
   m4_popdef([unistringtests_LIBSOURCES_LIST])
   m4_popdef([AC_LIBSOURCES])
@@ -278,17 +359,30 @@ changequote([, ])dnl
   AC_CONFIG_COMMANDS_PRE([
     unistringtests_libobjs=
     unistringtests_ltlibobjs=
+    unistringtests_libobjdeps=
     if test -n "$unistringtests_LIBOBJS"; then
       # Remove the extension.
+changequote(,)dnl
       sed_drop_objext='s/\.o$//;s/\.obj$//'
+      sed_dirname1='s,//*,/,g'
+      sed_dirname2='s,\(.\)/$,\1,'
+      sed_dirname3='s,^[^/]*$,.,'
+      sed_dirname4='s,\(.\)/[^/]*$,\1,'
+      sed_basename1='s,.*/,,'
+changequote([, ])dnl
       for i in `for i in $unistringtests_LIBOBJS; do echo "$i"; done | sed -e "$sed_drop_objext" | sort | uniq`; do
         unistringtests_libobjs="$unistringtests_libobjs $i.$ac_objext"
         unistringtests_ltlibobjs="$unistringtests_ltlibobjs $i.lo"
+        i_dir=`echo "$i" | sed -e "$sed_dirname1" -e "$sed_dirname2" -e "$sed_dirname3" -e "$sed_dirname4"`
+        i_base=`echo "$i" | sed -e "$sed_basename1"`
+        unistringtests_libobjdeps="$unistringtests_libobjdeps $i_dir/\$(DEPDIR)/$i_base.Plo"
       done
     fi
     AC_SUBST([unistringtests_LIBOBJS], [$unistringtests_libobjs])
     AC_SUBST([unistringtests_LTLIBOBJS], [$unistringtests_ltlibobjs])
+    AC_SUBST([unistringtests_LIBOBJDEPS], [$unistringtests_libobjdeps])
   ])
+  AC_REQUIRE([gl_CC_GNULIB_WARNINGS])
 ])
 
 # Like AC_LIBOBJ, except that the module name goes
@@ -349,9 +443,10 @@ AC_DEFUN([unistringtests_LIBSOURCES], [
 # gnulib-tool and may be removed by future gnulib-tool invocations.
 AC_DEFUN([unistring_FILE_LIST], [
   build-aux/config.rpath
-  lib/alloca.in.h
+  lib/_Noreturn.h
   lib/arg-nonnull.h
   lib/array-mergesort.h
+  lib/attribute.h
   lib/c++defs.h
   lib/c-ctype.c
   lib/c-ctype.h
@@ -359,6 +454,7 @@ AC_DEFUN([unistring_FILE_LIST], [
   lib/c-strcasecmp.c
   lib/c-strcaseeq.h
   lib/c-strncasecmp.c
+  lib/free.c
   lib/iconv.c
   lib/iconv.in.h
   lib/iconv_close.c
@@ -367,20 +463,23 @@ AC_DEFUN([unistring_FILE_LIST], [
   lib/iconv_open-irix.gperf
   lib/iconv_open-osf.gperf
   lib/iconv_open-solaris.gperf
+  lib/iconv_open-zos.gperf
   lib/iconv_open.c
   lib/iconveh.h
+  lib/inttypes.in.h
   lib/libunistring.valgrind
   lib/limits.in.h
   lib/localcharset.c
   lib/localcharset.h
-  lib/malloca.c
-  lib/malloca.h
   lib/stdbool.in.h
+  lib/stddef.in.h
   lib/stdint.in.h
+  lib/stdlib.in.h
   lib/striconveh.c
   lib/striconveh.h
   lib/striconveha.c
   lib/striconveha.h
+  lib/string.in.h
   lib/sys_types.in.h
   lib/uniconv.in.h
   lib/uniconv/u-strconv-from-enc.h
@@ -421,10 +520,13 @@ AC_DEFUN([unistring_FILE_LIST], [
   lib/uninorm/normalize-internal.h
   lib/uninorm/u-normalize-internal.h
   lib/uninorm/u32-normalize.c
+  lib/unistd.c
+  lib/unistd.in.h
   lib/unistr.in.h
   lib/unistr/u-cpy-alloc.h
   lib/unistr/u-cpy.h
   lib/unistr/u-strlen.h
+  lib/unistr/u32-cmp.c
   lib/unistr/u32-cpy-alloc.c
   lib/unistr/u32-cpy.c
   lib/unistr/u32-mbtouc-unsafe.c
@@ -444,17 +546,14 @@ AC_DEFUN([unistring_FILE_LIST], [
   lib/unistr/u8-uctomb-aux.c
   lib/unistr/u8-uctomb.c
   lib/unitypes.in.h
-  lib/unused-parameter.h
-  lib/verify.h
   lib/warn-on-use.h
-  lib/xalloc-oversized.h
+  lib/wchar.in.h
   m4/00gnulib.m4
   m4/absolute-header.m4
-  m4/alloca.m4
   m4/codeset.m4
-  m4/eealloc.m4
   m4/extensions.m4
   m4/extern-inline.m4
+  m4/free.m4
   m4/gnulib-common.m4
   m4/host-cpu-c-abi.m4
   m4/iconv.m4
@@ -462,6 +561,7 @@ AC_DEFUN([unistring_FILE_LIST], [
   m4/iconv_open.m4
   m4/include_next.m4
   m4/inline.m4
+  m4/inttypes.m4
   m4/lib-ld.m4
   m4/lib-link.m4
   m4/lib-prefix.m4
@@ -469,14 +569,20 @@ AC_DEFUN([unistring_FILE_LIST], [
   m4/libunistring.m4
   m4/limits-h.m4
   m4/localcharset.m4
-  m4/longlong.m4
-  m4/malloca.m4
   m4/multiarch.m4
   m4/off_t.m4
+  m4/pid_t.m4
   m4/ssize_t.m4
   m4/stdbool.m4
+  m4/stddef_h.m4
   m4/stdint.m4
+  m4/stdlib_h.m4
+  m4/string_h.m4
   m4/sys_types_h.m4
+  m4/unistd_h.m4
   m4/warn-on-use.m4
+  m4/wchar_h.m4
+  m4/wchar_t.m4
   m4/wint_t.m4
+  m4/zzgnulib.m4
 ])

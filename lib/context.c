@@ -1,5 +1,5 @@
 /* context.c - check contextual rule on label
-   Copyright (C) 2011-2017 Simon Josefsson
+   Copyright (C) 2011-2022 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -115,7 +115,7 @@ _idn2_contextj_rule (const uint32_t * label, size_t llen, size_t pos)
 static const char *
 _uc_script_name (ucs4_t uc)
 {
-  const uc_script_t *ucs = uc_script(uc);
+  const uc_script_t *ucs = uc_script (uc);
 
   if (!ucs)
     return "";

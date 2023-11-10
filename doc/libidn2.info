@@ -1,10 +1,10 @@
 This is libidn2.info, produced by makeinfo version 6.7 from
 libidn2.texi.
 
-This manual is for Libidn2 (version 2.3.0, 24 July 2019), an
+This manual is for Libidn2 (version 2.3.3, 11 July 2022), an
 implementation of IDNA2008/TR46 internationalized domain names.
 
-   Copyright © 2011-2017 Simon Josefsson
+   Copyright © 2011–2022 Simon Josefsson
 INFO-DIR-SECTION Software libraries
 START-INFO-DIR-ENTRY
 * libidn2: (libidn2).	Internationalized domain names (IDNA2008/TR46) processing.
@@ -21,10 +21,10 @@ File: libidn2.info,  Node: Top,  Next: Introduction,  Up: (dir)
 Libidn2
 *******
 
-This manual is for Libidn2 (version 2.3.0, 24 July 2019), an
+This manual is for Libidn2 (version 2.3.3, 11 July 2022), an
 implementation of IDNA2008/TR46 internationalized domain names.
 
-   Copyright © 2011-2017 Simon Josefsson
+   Copyright © 2011–2022 Simon Josefsson
 
 * Menu:
 
@@ -43,22 +43,22 @@ File: libidn2.info,  Node: Introduction,  Next: Library Functions,  Prev: Top,  
 1 Introduction
 **************
 
-Libidn2 is a free software implementation of IDNA2008, Punycode and TR46
-in the form a library.  It contains functionality to convert
-internationalized domain names to and from ASCII Compatible Encoding
-(ACE), following the IDNA2008 and TR46 standards.  It is available at
-<https://gitlab.com/libidn/libidn2>.
+Libidn2 is a free software implementation of IDNA2008, Punycode and
+Unicode TR46.  Its purpose is to encode and decode internationalized
+domain names.
 
    The library is a rewrite of the popular but legacy libidn library,
 and is backwards (API) compatible with it.  See *note Converting from
 libidn:: for more information.
 
-   For technical reference on IDNA protocols, see
-   • RFC 5890 (<https://tools.ietf.org/html/rfc5890>),
-   • RFC 5891 (<https://tools.ietf.org/html/rfc5891>),
-   • RFC 5892 (<https://tools.ietf.org/html/rfc5892>),
-   • RFC 5893 (<https://tools.ietf.org/html/rfc5893>),
-   • TR46 (<http://www.unicode.org/reports/tr46/>).
+   For technical reference, see:
+   • IDNA2008 Framework (<https://tools.ietf.org/html/rfc5890>)
+   • IDNA2008 Protocol (<https://tools.ietf.org/html/rfc5891>)
+   • IDNA2008 Unicode tables (<https://tools.ietf.org/html/rfc5892>)
+   • IDNA2008 Bidi rule (<https://tools.ietf.org/html/rfc5893>)
+   • Punycode (<https://tools.ietf.org/html/rfc3492>)
+   • Unicode IDNA Compatibility Processing
+     (<http://www.unicode.org/reports/tr46/>)
 
    Libidn2 uses GNU libunistring
 (<https://www.gnu.org/software/libunistring/>) for Unicode processing
@@ -741,7 +741,7 @@ main (void)
 
   printf ("ACE label (length %ld): '%s'\n", (long int) strlen (p), p);
 
-  free (p); /* or idn2_free() */
+  free (p);			/* or idn2_free() */
 
   return 0;
 }
@@ -804,7 +804,7 @@ main (void)
 
   printf ("ACE label (length %ld): '%s'\n", (long int) strlen (p), p);
 
-  free (p); /* or idn2_free() */
+  free (p);			/* or idn2_free() */
 
   return 0;
 }
@@ -818,11 +818,11 @@ File: libidn2.info,  Node: Lookup,  Next: Register,  Prev: ToUnicode,  Up: Examp
 This example demonstrates how a domain name is processed before it is
 lookup in the DNS. The input expected is in the locale encoding.
 
-#include <stdio.h> /* printf, fflush, fgets, stdin, perror, fprintf */
-#include <string.h> /* strlen */
-#include <locale.h> /* setlocale */
-#include <stdlib.h> /* free */
-#include <idn2.h> /* idn2_lookup_ul, IDN2_OK, idn2_strerror, idn2_strerror_name */
+#include <stdio.h>		/* printf, fflush, fgets, stdin, perror, fprintf */
+#include <string.h>		/* strlen */
+#include <locale.h>		/* setlocale */
+#include <stdlib.h>		/* free */
+#include <idn2.h>		/* idn2_lookup_ul, IDN2_OK, idn2_strerror, idn2_strerror_name */
 
 int
 main (int argc, char *argv[])
@@ -866,11 +866,11 @@ File: libidn2.info,  Node: Register,  Prev: Lookup,  Up: Examples
 This example demonstrates how a domain label is processed before it is
 registered in the DNS. The input expected is in the locale encoding.
 
-#include <stdio.h> /* printf, fflush, fgets, stdin, perror, fprintf */
-#include <string.h> /* strlen */
-#include <locale.h> /* setlocale */
-#include <stdlib.h> /* free */
-#include <idn2.h> /* idn2_register_ul, IDN2_OK, idn2_strerror, idn2_strerror_name */
+#include <stdio.h>		/* printf, fflush, fgets, stdin, perror, fprintf */
+#include <string.h>		/* strlen */
+#include <locale.h>		/* setlocale */
+#include <stdlib.h>		/* free */
+#include <idn2.h>		/* idn2_register_ul, IDN2_OK, idn2_strerror, idn2_strerror_name */
 
 int
 main (int argc, char *argv[])
@@ -935,27 +935,18 @@ different locale.
 
 ‘idn2’ recognizes these commands:
 
-  -h, --help               Print help and exit
-
-  -V, --version            Print version and exit
-
-  -d, --decode             Decode (punycode) domain name
-
-  -l, --lookup             Lookup domain name (default)
-
-  -r, --register           Register label
-
-  -T, --tr46t              Enable TR46 transitional processing
-
-  -N, --tr46nt             Enable TR46 non-transitional processing (default)
-
-      --no-tr46            Disable TR46 processing
-
-      --usestd3asciirules  Enable STD3 ASCII rules
-
-      --debug              Print debugging information
-
-      --quiet              Silent operation
+  -h, --help                Print help and exit
+  -V, --version             Print version and exit
+  -d, --decode              Decode (punycode) domain name
+  -l, --lookup              Lookup domain name (default)
+  -r, --register            Register label
+  -T, --tr46t               Enable TR46 transitional processing
+  -N, --tr46nt              Enable TR46 non-transitional processing
+      --no-tr46             Disable TR46 processing
+      --usestd3asciirules   Enable STD3 ASCII rules
+      --no-alabelroundtrip  Disable A-label roundtrip for lookups
+      --debug               Print debugging information
+      --quiet               Silent operation
 
 5.2 Environment Variables
 =========================
@@ -1152,31 +1143,31 @@ Concept Index
 
 
 Tag Table:
-Node: Top562
-Node: Introduction1117
-Node: Library Functions2363
-Ref: idn2_to_ascii_8z2930
-Ref: idn2_to_unicode_8z8z3901
-Ref: idn2_lookup_u84473
-Ref: idn2_register_u86560
-Ref: idn2_to_ascii_lz8445
-Ref: idn2_to_unicode_8zlz9495
-Ref: idn2_to_unicode_lzlz10161
-Ref: idn2_lookup_ul10878
-Ref: idn2_register_ul12598
-Ref: idn2_strerror15130
-Ref: idn2_strerror_name15474
-Ref: idn2_free18530
-Ref: idn2_check_version19263
-Node: Converting from libidn20483
-Node: Examples24534
-Node: ToASCII24981
-Node: ToUnicode26509
-Node: Lookup28035
-Node: Register29168
-Node: Invoking idn230294
-Node: Interface Index37271
-Node: Concept Index38375
+Node: Top564
+Node: Introduction1121
+Node: Library Functions2324
+Ref: idn2_to_ascii_8z2891
+Ref: idn2_to_unicode_8z8z3862
+Ref: idn2_lookup_u84434
+Ref: idn2_register_u86521
+Ref: idn2_to_ascii_lz8406
+Ref: idn2_to_unicode_8zlz9456
+Ref: idn2_to_unicode_lzlz10122
+Ref: idn2_lookup_ul10839
+Ref: idn2_register_ul12559
+Ref: idn2_strerror15091
+Ref: idn2_strerror_name15435
+Ref: idn2_free18491
+Ref: idn2_check_version19224
+Node: Converting from libidn20444
+Node: Examples24495
+Node: ToASCII24942
+Node: ToUnicode26472
+Node: Lookup28000
+Node: Register29138
+Node: Invoking idn230269
+Node: Interface Index37303
+Node: Concept Index38407
 
 End Tag Table
 

@@ -1,5 +1,5 @@
 /* tables.c - IDNA table checking functions
-   Copyright (C) 2011-2017 Simon Josefsson
+   Copyright (C) 2011-2022 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -45,10 +45,10 @@ _compare (const struct idna_table *m1, const struct idna_table *m2)
 }
 
 static int
-property (uint32_t cp) _GL_ATTRIBUTE_CONST;
-
-static int
 property (uint32_t cp)
+  _GL_ATTRIBUTE_CONST;
+
+     static int property (uint32_t cp)
 {
   const struct idna_table *result;
   struct idna_table key;
@@ -56,9 +56,9 @@ property (uint32_t cp)
   key.start = cp;
 
   result = (struct idna_table *)
-	bsearch (&key, idna_table, idna_table_size,
-		 sizeof (struct idna_table),
-		 (int (*)(const void *, const void *)) _compare);
+    bsearch (&key, idna_table, idna_table_size,
+	     sizeof (struct idna_table),
+	     (int (*)(const void *, const void *)) _compare);
 
   return result ? result->state : UNASSIGNED;
 }

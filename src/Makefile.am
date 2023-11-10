@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2017 Simon Josefsson
+# Copyright (C) 2011-2022 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,34 +16,20 @@
 AM_CPPFLAGS = -I$(top_builddir)/gl -I$(top_srcdir)/gl
 AM_CPPFLAGS += -I$(top_srcdir) -I$(top_builddir) -I$(top_builddir)/lib -I$(srcdir)
 AM_CPPFLAGS += -DLOCALEDIR=\"$(localedir)\"
-AM_CFLAGS = $(WARN_CFLAGS)
-
-if !HAVE_LIBUNISTRING
 AM_CPPFLAGS += -I$(top_srcdir)/unistring/ -I$(top_builddir)/unistring/
-endif
+AM_CFLAGS = $(WARN_CFLAGS)
 
 bin_PROGRAMS = idn2
 
-idn2_SOURCES = idn2.c blurbs.h
-idn2_LDADD = libidn2_cmd.la ../lib/libidn2.la $(LTLIBUNISTRING) $(LIBS)
-
-# have idn2_noinstall linked with local libidn2 for testing
-# please do not remove !
-check_PROGRAMS = idn2_noinstall
-idn2_noinstall_SOURCES = $(idn2_SOURCES)
-idn2_noinstall_LDFLAGS = -no-install
-idn2_noinstall_LDADD = $(idn2_LDADD)
+idn2_SOURCES = idn2.c
+idn2_LDADD = libidn2_cmd.la ../lib/libidn2.la ../gl/libgnu.la ../unistring/libunistring.la $(LTLIBUNISTRING) $(LIBS)
 
 idn2.c: $(BUILT_SOURCES)
 
 noinst_LTLIBRARIES = libidn2_cmd.la
 libidn2_cmd_la_SOURCES =  idn2.ggo idn2_cmd.c idn2_cmd.h
-libidn2_cmd_la_LIBADD = ../gl/libgnu.la $(LTLIBUNISTRING)
+libidn2_cmd_la_LIBADD = ../gl/libgnu.la ../unistring/libunistring.la $(LTLIBUNISTRING)
 libidn2_cmd_la_CFLAGS =
-
-if !HAVE_LIBUNISTRING
-libidn2_cmd_la_LIBADD += ../unistring/libunistring.la
-endif
 
 # pattern rule (%) needed for parallel make (-j)
 idn2_cmd%c idn2_cmd%h: idn2.ggo

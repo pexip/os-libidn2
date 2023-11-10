@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2017 Simon Josefsson
+# Copyright (C) 2011-2022 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,12 +17,9 @@ AM_CPPFLAGS =
 
 AM_CPPFLAGS += -DIDN2_BUILDING -DSRCDIR=\"$(srcdir)\"
 AM_CPPFLAGS += -I$(top_builddir)/gl -I$(top_srcdir)/gl
+AM_CPPFLAGS += -I$(top_srcdir)/unistring/ -I$(top_builddir)/unistring/
 AM_CFLAGS = $(WARN_CFLAGS)
 AM_CFLAGS += $(CFLAG_VISIBILITY) $(CODE_COVERAGE_CFLAGS)
-
-if !HAVE_LIBUNISTRING
-AM_CPPFLAGS += -I$(top_srcdir)/unistring/ -I$(top_builddir)/unistring/
-endif
 
 lib_LTLIBRARIES = libidn2.la
 
@@ -41,48 +38,45 @@ libidn2_la_SOURCES += data.h data.c
 libidn2_la_SOURCES += tr46map.h tr46map.c
 libidn2_la_SOURCES += tables.h tables.c
 libidn2_la_SOURCES += context.h context.c
-libidn2_la_LIBADD = $(LTLIBICONV) $(LTLIBINTL) $(LTLIBUNISTRING) ../gl/libgnu.la
 
-if !HAVE_LIBUNISTRING
-libidn2_la_LIBADD += ../unistring/libunistring.la
-endif
+libidn2_la_LIBADD = $(LTLIBICONV) $(LTLIBINTL)
+libidn2_la_LIBADD += ../unistring/libunistring.la $(LTLIBUNISTRING)
+libidn2_la_LIBADD += ../gl/libgnu.la
 
-libidn2_la_LDFLAGS = \
-	-version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -no-undefined $(CODE_COVERAGE_LDFLAGS)
+libidn2_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) \
+	-no-undefined
+libidn2_la_LDFLAGS += $(CODE_COVERAGE_LDFLAGS)
 
-IDNA_TABLE = idna-tables-properties.csv
-IANA_URL = https://www.iana.org/assignments/idna-tables-11.0.0/idna-tables-properties.csv
-IDNA_TABLE_SHA1 = 6d224090e6b1d3bef6632e932d5f38fd7fb2356a
+IDNA_TABLE = $(srcdir)/idna-tables-properties.csv
+IANA_URL = https://www.iana.org/assignments/idna-tables-12.0.0/idna-tables-properties.csv
+IDNA_TABLE_SHA1 = 3d0eaac1d0c0a3e651d1a3a05e86cc1b587a1a80
 
-TR46MAP = IdnaMappingTable.txt
-TR46MAP_URL = http://www.unicode.org/Public/idna/11.0.0/IdnaMappingTable.txt
-TR46MAP_SHA1 = 9892c962ce97db7b7151427df675bd1ebd0eeb99
+TR46MAP = $(srcdir)/IdnaMappingTable.txt
+TR46MAP_URL = https://www.unicode.org/Public/idna/14.0.0/IdnaMappingTable.txt
+TR46MAP_SHA1 = 5be4d60c103a68158f8841fcd2b61c422283954c
 
-NFCQC = DerivedNormalizationProps.txt
-NFCQC_URL = http://www.unicode.org/Public/11.0.0/ucd/DerivedNormalizationProps.txt
-NFCQC_SHA1 = 4b1620b7a54ed761720345b5367932d5a029a279
+NFCQC = $(srcdir)/DerivedNormalizationProps.txt
+NFCQC_URL = https://www.unicode.org/Public/14.0.0/ucd/DerivedNormalizationProps.txt
+NFCQC_SHA1 = 2b6363537b9d94ff13d4258e1631c6cde073a6e1
 
 BUILT_SOURCES = data.c tr46map_data.c
 DISTCLEANFILES = $(BUILT_SOURCES)
-CLEANFILES = gendata$(BUILD_EXEEXT) gentr46map$(BUILD_EXEEXT)
+CLEANFILES = gendata$(EXEEXT) gentr46map$(EXEEXT)
 MAINTAINERCLEANFILES = $(IDNA_TABLE) $(TR46MAP) $(NFCQC)
 EXTRA_DIST = $(IDNA_TABLE) $(TR46MAP) $(NFCQC) data.c gendata.c tr46map_data.c gentr46map.c
 
-# Note: We do not want to list any gen* as a dep of *data.c because it will
-# cause it to be regenerated for every build.  We only need that when the real
-# source text files are updated.
-gendata$(BUILD_EXEEXT): gendata.c
-	$(CC_FOR_BUILD) $(AM_CPPFLAGS) $(CFLAGS_FOR_BUILD) $< -o $@
+gendata$(EXEEXT): gendata.c
+	$(CC) $(DEFAULT_INCLUDES) $(AM_CPPFLAGS) $(CFLAGS) $< -o $@
 data.c: $(srcdir)/gendata.c $(IDNA_TABLE)
-	$(MAKE) gendata$(BUILD_EXEEXT)
-	$(builddir)/gendata$(BUILD_EXEEXT) < $(IDNA_TABLE) > $@.new
+	$(MAKE) gendata$(EXEEXT)
+	$(builddir)/gendata$(EXEEXT) < $(IDNA_TABLE) > $@.new
 	mv $@.new $@
 
-gentr46map$(BUILD_EXEEXT): gentr46map.c
-	$(CC_FOR_BUILD) $(AM_CPPFLAGS) $(CFLAGS_FOR_BUILD) $< -o $@
+gentr46map$(EXEEXT): gentr46map.c
+	$(CC) $(DEFAULT_INCLUDES) $(AM_CPPFLAGS) $(CFLAGS) $< -o $@
 tr46map_data.c: $(srcdir)/gentr46map.c $(TR46MAP) $(NFCQC)
-	$(MAKE) gentr46map$(BUILD_EXEEXT)
-	$(builddir)/gentr46map$(BUILD_EXEEXT) > $@.new
+	$(MAKE) gentr46map$(EXEEXT)
+	$(builddir)/gentr46map$(EXEEXT) > $@.new
 	mv $@.new $@
 
 $(IDNA_TABLE):
@@ -95,14 +89,14 @@ $(IDNA_TABLE):
 $(TR46MAP):
 	if ! echo "$(TR46MAP_SHA1) $(TR46MAP)" | sha1sum -c -; then \
 	  rm -f $(TR46MAP); \
-	  wget $(TR46MAP_URL); \
+	  wget -O(TR46MAP) $(TR46MAP_URL); \
 	  echo "$(TR46MAP_SHA1) $(TR46MAP)" | sha1sum -c -; \
 	fi
 
 $(NFCQC):
 	if ! echo "$(NFCQC_SHA1) $(NFCQC)" | sha1sum -c -; then \
 	  rm -f $(NFCQC); \
-	  wget $(NFCQC_URL); \
+	  wget -O$(NFCQC) $(NFCQC_URL); \
 	  echo "$(NFCQC_SHA1) $(NFCQC)" | sha1sum -c -; \
 	fi
 
@@ -110,4 +104,12 @@ if HAVE_LD_VERSION_SCRIPT
 libidn2_la_LDFLAGS += -Wl,--version-script=$(srcdir)/idn2.map
 else
 libidn2_la_LDFLAGS += -export-symbols-regex '^idn2_.*'
+endif
+
+if HAVE_LD_OUTPUT_DEF
+libidn2_la_LDFLAGS += -Wl,--output-def,libidn2-$(DLL_VERSION).def
+libidn2-$(DLL_VERSION).def: libidn2.la
+defexecdir = $(libdir)
+defexec_DATA = libidn2-$(DLL_VERSION).def
+DISTCLEANFILES += $(defexec_DATA)
 endif

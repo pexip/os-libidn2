@@ -1,8 +1,8 @@
-# Copyright (C) 2002-2019 Free Software Foundation, Inc.
+# Copyright (C) 2002-2022 Free Software Foundation, Inc.
 #
 # This file is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This file is distributed in the hope that it will be useful,
@@ -27,7 +27,7 @@
 
 
 # Specification in the form of a command-line invocation:
-# gnulib-tool --import --local-dir=unistring/override \
+# gnulib-tool --import --local-dir=unistring \
 #  --lib=libunistring \
 #  --source-base=unistring \
 #  --m4-base=unistring/m4 \
@@ -35,10 +35,12 @@
 #  --tests-base=tests \
 #  --aux-dir=build-aux \
 #  --lgpl=3orGPLv2 \
+#  --makefile-name=gnulib.mk \
 #  --no-conditional-dependencies \
 #  --libtool \
 #  --macro-prefix=unistring \
-#  --avoid=posix-malloc \
+#  --avoid=malloc-posix \
+#  --avoid=malloca \
 #  libunistring \
 #  localcharset \
 #  uniconv/u8-strconv-from-locale \
@@ -51,13 +53,14 @@
 #  uninorm/base \
 #  uninorm/nfc \
 #  uninorm/u32-normalize \
+#  unistr/u32-cmp \
 #  unistr/u32-cpy-alloc \
 #  unistr/u32-strlen \
 #  unistr/u32-to-u8 \
 #  unistr/u8-to-u32
 
 # Specification in the form of a few gnulib-tool.m4 macro invocations:
-gl_LOCAL_DIR([unistring/override])
+gl_LOCAL_DIR([unistring])
 gl_MODULES([
   libunistring
   localcharset
@@ -71,12 +74,13 @@ gl_MODULES([
   uninorm/base
   uninorm/nfc
   uninorm/u32-normalize
+  unistr/u32-cmp
   unistr/u32-cpy-alloc
   unistr/u32-strlen
   unistr/u32-to-u8
   unistr/u8-to-u32
 ])
-gl_AVOID([ posix-malloc])
+gl_AVOID([ malloc-posix malloca])
 gl_SOURCE_BASE([unistring])
 gl_M4_BASE([unistring/m4])
 gl_PO_BASE([])
@@ -84,7 +88,7 @@ gl_DOC_BASE([doc])
 gl_TESTS_BASE([tests])
 gl_LIB([libunistring])
 gl_LGPL([3orGPLv2])
-gl_MAKEFILE_NAME([])
+gl_MAKEFILE_NAME([gnulib.mk])
 gl_LIBTOOL
 gl_MACRO_PREFIX([unistring])
 gl_PO_DOMAIN([])
