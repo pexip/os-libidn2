@@ -1,152 +1,153 @@
 # Swedish translation for libidn2
-# Copyright © 2016, 2018, 2019 Free Software Foundation, Inc.
+# Copyright © 2016, 2018, 2019, 2021 Free Software Foundation, Inc.
 # This file is distributed under the same license as the libidn2 package.
 # Josef Andersson <josef.andersson@fripost.org>, 2016.
 # Sebastian Rasmussen <sebras@gmail.com>, 2018, 2019.
+# Anders Jonsson <anders.jonsson@norsjovallen.se>, 2021.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: libidn2 2.1.1\n"
+"Project-Id-Version: libidn2 2.3.1\n"
 "Report-Msgid-Bugs-To: bug-libidn2@gnu.org\n"
-"POT-Creation-Date: 2019-11-14 09:45+0100\n"
-"PO-Revision-Date: 2019-02-13 22:51+0100\n"
-"Last-Translator: Sebastian Rasmussen <sebras@gmail.com>\n"
+"POT-Creation-Date: 2022-07-11 21:43+0200\n"
+"PO-Revision-Date: 2021-08-05 16:39+0200\n"
+"Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Bugs: Report translation errors to the Language-Team address.\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.4.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: lib/error.c:53
+#: lib/error.c:54
 msgid "success"
 msgstr "lyckades"
 
-#: lib/error.c:54
+#: lib/error.c:56
 msgid "out of memory"
 msgstr "kan inte allokera minne"
 
-#: lib/error.c:55
+#: lib/error.c:58
 msgid "could not determine locale encoding format"
 msgstr "det gick inte att avgöra lokalt kodningsformat"
 
-#: lib/error.c:56
+#: lib/error.c:60
 msgid "could not convert string to UTF-8"
 msgstr "kunde inte konvertera sträng till UTF-8"
 
-#: lib/error.c:57
+#: lib/error.c:62
 msgid "string encoding error"
 msgstr "strängkodningsfel"
 
-#: lib/error.c:58
+#: lib/error.c:64
 msgid "string could not be NFC normalized"
 msgstr "sträng kunde inte NFC-normaliseras"
 
-#: lib/error.c:59
+#: lib/error.c:66
 msgid "string contains invalid punycode data"
 msgstr "sträng innehåller ogiltig punycode-data"
 
-#: lib/error.c:60
+#: lib/error.c:68
 msgid "punycode encoded data will be too large"
 msgstr "punycode-kodad data kommer att bli för stor"
 
-#: lib/error.c:61
+#: lib/error.c:70
 msgid "punycode conversion resulted in overflow"
 msgstr "punycode-konvertering resulterade i överspill"
 
-#: lib/error.c:62
+#: lib/error.c:72
 msgid "domain name longer than 255 characters"
 msgstr "domännamn längre än 255 tecken"
 
-#: lib/error.c:63
+#: lib/error.c:74
 msgid "domain label longer than 63 characters"
 msgstr "domänetikett längre än 63 tecken"
 
-#: lib/error.c:64
+#: lib/error.c:76
 msgid "input A-label is not valid"
 msgstr "indata A-etikett är inte giltig"
 
-#: lib/error.c:65
+#: lib/error.c:78
 msgid "input A-label and U-label does not match"
 msgstr "indata A-etikett och U-etikett matchar inte"
 
-#: lib/error.c:66
+#: lib/error.c:80
 msgid "string is not in Unicode NFC format"
 msgstr "strängen är inte i Unicode NFC-format"
 
-#: lib/error.c:67
+#: lib/error.c:82
 msgid "string contains forbidden two hyphens pattern"
 msgstr "sträng innehåller förbjudet tvåstrecksmönster"
 
-#: lib/error.c:68
+#: lib/error.c:84
 msgid "string start/ends with forbidden hyphen"
 msgstr "sträng börjar/slutar med förbjudet bindestreck"
 
-#: lib/error.c:69
+#: lib/error.c:86
 msgid "string contains a forbidden leading combining character"
 msgstr "sträng innehåller ett förbjudet inledande kombineringstecken"
 
-#: lib/error.c:70
+#: lib/error.c:88
 msgid "string contains a disallowed character"
 msgstr "sträng innehåller ett otillåtet tecken"
 
-#: lib/error.c:71
+#: lib/error.c:90
 msgid "string contains a forbidden context-j character"
 msgstr "sträng innehåller ett förbjudet kontext-j-tecken"
 
-#: lib/error.c:72
+#: lib/error.c:92
 msgid "string contains a context-j character with null rule"
 msgstr "sträng innehåller ett kontext-j-tecken med nullregel"
 
-#: lib/error.c:73
+#: lib/error.c:94
 msgid "string contains a forbidden context-o character"
 msgstr "sträng innehåller ett förbjudet kontext-o-tecken"
 
-#: lib/error.c:74
+#: lib/error.c:96
 msgid "string contains a context-o character with null rule"
 msgstr "sträng innehåller ett kontext-o-tecken med nullregel"
 
-#: lib/error.c:75
+#: lib/error.c:98
 msgid "string contains unassigned code point"
 msgstr "sträng innehåller otilldelade kodpunkter"
 
-#: lib/error.c:76
+#: lib/error.c:100
 msgid "string has forbidden bi-directional properties"
 msgstr "sträng har förbjudna dubbelriktade egenskaper"
 
-#: lib/error.c:77
+#: lib/error.c:102
 msgid "domain label has forbidden dot (TR46)"
 msgstr "domänetikett har förbjuden punkt (TR46)"
 
-#: lib/error.c:78
+#: lib/error.c:105
 msgid "domain label has character forbidden in transitional mode (TR46)"
 msgstr "domänetikett har förbjudet tecken i övergångsläge (TR46)"
 
-#: lib/error.c:79
+#: lib/error.c:109
 msgid "domain label has character forbidden in non-transitional mode (TR46)"
 msgstr "domänetikett har förbjudet tecken i icke-övergångsläge (TR46)"
 
-#: lib/error.c:80
-msgid "Alabel roundtrip failed"
-msgstr ""
+#: lib/error.c:111
+msgid "A-label roundtrip failed"
+msgstr "A-etikettrundtur misslyckades"
 
-#: lib/error.c:81
+#: lib/error.c:113
 msgid "Unknown error"
 msgstr "Okänt fel"
 
-#: src/idn2.c:59
+#: src/idn2.c:57
 #, c-format
 msgid "Try `%s --help' for more information.\n"
 msgstr "Prova ”%s --help” för mer information.\n"
 
-#: src/idn2.c:63
+#: src/idn2.c:61
 #, c-format
 msgid "Usage: %s [OPTION]... [STRINGS]...\n"
 msgstr "Användning: %s [FLAGGA]… [STRÄNGAR]…\n"
 
-#: src/idn2.c:66
+#: src/idn2.c:64
 msgid ""
 "Internationalized Domain Name (IDNA2008) convert STRINGS, or standard "
 "input.\n"
@@ -156,7 +157,7 @@ msgstr ""
 "standard in.\n"
 "\n"
 
-#: src/idn2.c:70
+#: src/idn2.c:68
 msgid ""
 "Command line interface to the Libidn2 implementation of IDNA2008.\n"
 "\n"
@@ -173,67 +174,69 @@ msgstr ""
 "\n"
 "För att bearbeta en sträng som börjar med ”-”, till exempel ”-foo”, använd "
 "”--”\n"
-"för signalera slut på parametrar, som i ”idn --quiet -a -- -foo”.\n"
+"för att signalera slut på parametrar, som i ”idn2 --quiet -- -foo”.\n"
 "\n"
 "Obligatoriska argument för långa flaggor är obligatoriska också för korta "
 "flaggor.\n"
 
-#: src/idn2.c:80
-#, fuzzy
+#: src/idn2.c:78
 msgid ""
 "  -h, --help                Print help and exit\n"
 "  -V, --version             Print version and exit\n"
 msgstr ""
-"  -h, --help               Skriv ut hjälp och avsluta\n"
-"  -V, --version            Skriv ut version och avsluta\n"
+"  -h, --help                Skriv ut hjälp och avsluta\n"
+"  -V, --version             Skriv ut version och avsluta\n"
 
-#: src/idn2.c:84
-#, fuzzy
+#: src/idn2.c:82
 msgid ""
 "  -d, --decode              Decode (punycode) domain name\n"
 "  -l, --lookup              Lookup domain name (default)\n"
 "  -r, --register            Register label\n"
 msgstr ""
-"  -d, --decode             Avkoda (punycode) domännamn\n"
-"  -l, --lookup             Slå upp domännamn (standard)\n"
-"  -r, --register           Registrera etikett\n"
+"  -d, --decode              Avkoda (punycode) domännamn\n"
+"  -l, --lookup              Slå upp domännamn (standard)\n"
+"  -r, --register            Registrera etikett\n"
 
-#: src/idn2.c:89
-#, fuzzy
+#: src/idn2.c:87
 msgid ""
 "  -T, --tr46t               Enable TR46 transitional processing\n"
 "  -N, --tr46nt              Enable TR46 non-transitional processing\n"
 "      --no-tr46             Disable TR46 processing\n"
 msgstr ""
-"  -T, --tr46t              Aktivera TR46-övergångshantering\n"
-"  -N, --tr46nt             Aktivera TR46-ickeövergångshantering\n"
-"      --no-tr46            Inaktivera TR46-hantering\n"
+"  -T, --tr46t               Aktivera TR46-övergångshantering\n"
+"  -N, --tr46nt              Aktivera TR46-ickeövergångshantering\n"
+"      --no-tr46             Inaktivera TR46-hantering\n"
 
-#: src/idn2.c:94
-#, fuzzy
+#: src/idn2.c:92
 msgid ""
 "      --usestd3asciirules   Enable STD3 ASCII rules\n"
-"      --no-alabelroundtrip  Disable ALabel rountrip for lookups\n"
+"      --no-alabelroundtrip  Disable A-label roundtrip for lookups\n"
 "      --debug               Print debugging information\n"
 "      --quiet               Silent operation\n"
 msgstr ""
-"      --usestd3asciirules  Aktivera STD3 ASCII-regler\n"
-"      --debug              Skriv ut felsökningsinformation\n"
-"      --quiet              Tyst åtgärd\n"
+"      --usestd3asciirules   Aktivera STD3 ASCII-regler\n"
+"      --no-alabelroundtrip  Inaktivera A-etikettrundtur för uppslag\n"
+"      --debug               Skriv ut felsökningsinformation\n"
+"      --quiet               Tyst åtgärd\n"
 
-#: src/idn2.c:217
+#: src/idn2.c:207
 #, c-format
 msgid "Charset: %s\n"
 msgstr "Teckenuppsättning: %s\n"
 
-#: src/idn2.c:221
+#: src/idn2.c:211
+#, c-format
+msgid "libiconv required for non-UTF-8 character encoding: %s"
+msgstr ""
+
+#: src/idn2.c:217
 msgid ""
 "Type each input string on a line by itself, terminated by a newline "
 "character.\n"
 msgstr ""
 "Skriv varje inmatningssträng på en egen rad, avslutad med nyradstecken.\n"
 
-#: src/idn2.c:252
+#: src/idn2.c:248
 msgid "input error"
 msgstr "indatafel"
 

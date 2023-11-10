@@ -37,5 +37,7 @@ and the @code{IDN2_NFC_INPUT}  flags for compatibility with other software.
 Return value: Returns @code{IDN2_OK}  on success, or error code.
 
 @strong{Since:} 2.0.0
+
+@strong{Deprecated:} 2.1.1: Use @code{idn2_to_ascii_4i2()} .
 @end deftypefun
 

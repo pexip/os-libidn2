@@ -1,5 +1,5 @@
 /* bidi.h - IDNA right to left checking functions
-   Copyright (C) 2011-2017 Simon Josefsson
+   Copyright (C) 2011-2022 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -27,12 +27,12 @@
 */
 
 #ifndef LIBIDN2_BIDI_H
-#define LIBIDN2_BIDI_H
+# define LIBIDN2_BIDI_H
 
-#include <stdint.h>
-#include "idn2.h"
+# include <stdint.h>
+# include "idn2.h"
 
 int G_GNUC_IDN2_ATTRIBUTE_PURE
-	_idn2_bidi (const uint32_t * label, size_t llen);
+_idn2_bidi (const uint32_t * label, size_t llen);
 
 #endif /* LIBIDN2_BIDI_H */

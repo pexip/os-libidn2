@@ -1,5 +1,5 @@
 /* tables.h - IDNA tables
-   Copyright (C) 2011-2017 Simon Josefsson
+   Copyright (C) 2011-2022 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -27,10 +27,10 @@
 */
 
 #ifndef LIBIDN2_DATA_H
-#define LIBIDN2_DATA_H
+# define LIBIDN2_DATA_H
 
-#include <stdint.h>
-#include <sys/types.h>
+# include <stdint.h>
+# include <sys/types.h>
 
 enum
 {

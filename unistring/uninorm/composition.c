@@ -1,25 +1,16 @@
 /* Canonical composition of Unicode characters.
-   Copyright (C) 2002, 2006, 2009, 2011-2019 Free Software Foundation, Inc.
+   Copyright (C) 2002, 2006, 2009, 2011-2022 Free Software Foundation, Inc.
    Written by Bruno Haible <bruno@clisp.org>, 2009.
 
-   This program is free software: you can redistribute it and/or
-   modify it under the terms of either:
+   This file is free software: you can redistribute it and/or modify
+   it under the terms of the GNU Lesser General Public License as
+   published by the Free Software Foundation; either version 2.1 of the
+   License, or (at your option) any later version.
 
-     * the GNU Lesser General Public License as published by the Free
-       Software Foundation; either version 3 of the License, or (at your
-       option) any later version.
-
-   or
-
-     * the GNU General Public License as published by the Free
-       Software Foundation; either version 2 of the License, or (at your
-       option) any later version.
-
-   or both in parallel, as here.
-   This program is distributed in the hope that it will be useful,
+   This file is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Lesser General Public License for more details.
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU Lesser General Public License for more details.
 
    You should have received a copy of the GNU Lesser General Public License
    along with this program.  If not, see <https://www.gnu.org/licenses/>.  */
@@ -79,12 +70,12 @@ uc_composition (ucs4_t uc1, ucs4_t uc2)
           char codes[6];
           const struct composition_rule *rule;
 
-          codes[0] = (uc1 >> 16) & 0xff;
-          codes[1] = (uc1 >> 8) & 0xff;
-          codes[2] = uc1 & 0xff;
-          codes[3] = (uc2 >> 16) & 0xff;
-          codes[4] = (uc2 >> 8) & 0xff;
-          codes[5] = uc2 & 0xff;
+          codes[0] = (char) ((uc1 >> 16) & 0xff);
+          codes[1] = (char) ((uc1 >> 8) & 0xff);
+          codes[2] = (char) (uc1 & 0xff);
+          codes[3] = (char) ((uc2 >> 16) & 0xff);
+          codes[4] = (char) ((uc2 >> 8) & 0xff);
+          codes[5] = (char) (uc2 & 0xff);
 
           rule = gl_uninorm_compose_lookup (codes, 6);
           if (rule != NULL)

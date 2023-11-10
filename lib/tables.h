@@ -1,5 +1,5 @@
 /* tables.h - IDNA table checking functions
-   Copyright (C) 2011-2017 Simon Josefsson
+   Copyright (C) 2011-2022 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -27,18 +27,14 @@
 */
 
 #ifndef LIBIDN2_TABLES_H
-#define LIBIDN2_TABLES_H
+# define LIBIDN2_TABLES_H
 
-#include <stdint.h>
-#include "idn2.h"
+# include <stdint.h>
+# include "idn2.h"
 
-int G_GNUC_IDN2_ATTRIBUTE_CONST
-	_idn2_disallowed_p (uint32_t cp);
-int G_GNUC_IDN2_ATTRIBUTE_CONST
-	_idn2_contextj_p (uint32_t cp);
-int G_GNUC_IDN2_ATTRIBUTE_CONST
-	_idn2_contexto_p (uint32_t cp);
-int G_GNUC_IDN2_ATTRIBUTE_CONST
-	_idn2_unassigned_p (uint32_t cp);
+int G_GNUC_IDN2_ATTRIBUTE_CONST _idn2_disallowed_p (uint32_t cp);
+int G_GNUC_IDN2_ATTRIBUTE_CONST _idn2_contextj_p (uint32_t cp);
+int G_GNUC_IDN2_ATTRIBUTE_CONST _idn2_contexto_p (uint32_t cp);
+int G_GNUC_IDN2_ATTRIBUTE_CONST _idn2_unassigned_p (uint32_t cp);
 
 #endif /* LIBIDN2_TABLES_H */

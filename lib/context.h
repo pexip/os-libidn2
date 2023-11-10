@@ -1,5 +1,5 @@
 /* context.h - check contextual rule on label
-   Copyright (C) 2011-2017 Simon Josefsson
+   Copyright (C) 2011-2022 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -27,19 +27,18 @@
 */
 
 #ifndef LIBIDN2_CONTEXT_H
-#define LIBIDN2_CONTEXT_H
+# define LIBIDN2_CONTEXT_H
 
-#include <stdint.h>
-#include <stdbool.h>
-#include "idn2.h"
-
-int G_GNUC_IDN2_ATTRIBUTE_PURE
-	_idn2_contextj_rule (const uint32_t * label, size_t llen, size_t pos);
+# include <stdint.h>
+# include <stdbool.h>
+# include "idn2.h"
 
 int G_GNUC_IDN2_ATTRIBUTE_PURE
-	_idn2_contexto_rule (const uint32_t * label, size_t llen, size_t pos);
+_idn2_contextj_rule (const uint32_t * label, size_t llen, size_t pos);
 
-bool G_GNUC_IDN2_ATTRIBUTE_CONST
-	_idn2_contexto_with_rule (uint32_t cp);
+int G_GNUC_IDN2_ATTRIBUTE_PURE
+_idn2_contexto_rule (const uint32_t * label, size_t llen, size_t pos);
+
+bool G_GNUC_IDN2_ATTRIBUTE_CONST _idn2_contexto_with_rule (uint32_t cp);
 
 #endif /* LIBIDN2_CONTEXT_H */
