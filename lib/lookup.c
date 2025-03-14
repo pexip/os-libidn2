@@ -1,6 +1,6 @@
 /* lookup.c - implementation of IDNA2008 lookup functions
-   Copyright (C) 2011-2022 Simon Josefsson
-   Copyright (C) 2017-2022 Tim Ruehsen
+   Copyright (C) 2011-2025 Simon Josefsson
+   Copyright (C) 2017-2025 Tim Ruehsen
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -33,8 +33,6 @@
 
 #include <errno.h>		/* errno */
 #include <stdlib.h>		/* malloc, free */
-
-#include "punycode.h"
 
 #include <unitypes.h>
 #include <uniconv.h>		/* u8_strconv_from_locale */
@@ -124,7 +122,7 @@ set_default_flags (int *flags)
 }
 
 static int
-label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t *dstlen,
+label (const uint8_t *src, size_t srclen, uint8_t *dst, size_t *dstlen,
        int flags)
 {
   size_t plen;
@@ -149,9 +147,8 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t *dstlen,
 	     entirely in lowercase (converting it to lowercase if
 	     necessary), and apply the tests of Section 5.4 and the
 	     conversion of Section 5.5 to that form. */
-	  rc =
-	    _idn2_punycode_decode_internal (srclen - 4, (char *) src + 4,
-					    &label32_len, label_u32);
+	  rc = idn2_punycode_decode ((char *) src + 4, srclen - 4,
+				     label_u32, &label32_len);
 	  if (rc)
 	    return rc;
 
@@ -212,7 +209,7 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t *dstlen,
   dst[3] = '-';
 
   tmpl = *dstlen - 4;
-  rc = _idn2_punycode_encode_internal (plen, p, &tmpl, (char *) dst + 4);
+  rc = idn2_punycode_encode (p, plen, (char *) dst + 4, &tmpl);
   if (rc != IDN2_OK)
     goto out;
 
@@ -230,9 +227,8 @@ label (const uint8_t * src, size_t srclen, uint8_t * dst, size_t *dstlen,
     }
   else if (!(flags & IDN2_NO_ALABEL_ROUNDTRIP))
     {
-      rc =
-	_idn2_punycode_decode_internal (*dstlen - 4, (char *) dst + 4,
-					&label32_len, label_u32);
+      rc = idn2_punycode_decode ((char *) dst + 4, *dstlen - 4,
+				 label_u32, &label32_len);
       if (rc)
 	{
 	  rc = IDN2_ALABEL_ROUNDTRIP_FAILED;
@@ -260,7 +256,7 @@ out:
   (TEST_NFC | TEST_2HYPHEN | TEST_HYPHEN_STARTEND | TEST_LEADING_COMBINING | TEST_NONTRANSITIONAL)
 
 static int
-_tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
+_tr46 (const uint8_t *domain_u8, uint8_t **out, int flags)
 {
   size_t len, it;
   uint32_t *domain_u32;
@@ -432,8 +428,8 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
 	      return IDN2_ENCODING_ERROR;
 	    }
 
-	  rc = _idn2_punycode_decode_internal (ace_len, (char *) ace,
-					       &name_len, name_u32);
+	  rc = idn2_punycode_decode ((char *) ace, ace_len,
+				     name_u32, &name_len);
 
 	  free (ace);
 
@@ -531,7 +527,7 @@ _tr46 (const uint8_t * domain_u8, uint8_t ** out, int flags)
  * Since: 0.1
  **/
 int
-idn2_lookup_u8 (const uint8_t * src, uint8_t ** lookupname, int flags)
+idn2_lookup_u8 (const uint8_t *src, uint8_t **lookupname, int flags)
 {
   size_t lookupnamelen = 0;
   uint8_t _lookupname[IDN2_DOMAIN_MAX_LENGTH + 1];
@@ -551,7 +547,7 @@ idn2_lookup_u8 (const uint8_t * src, uint8_t ** lookupname, int flags)
 
   if (!(flags & IDN2_NO_TR46))
     {
-      uint8_t *out;
+      uint8_t *out = NULL;
 
       rc = _tr46 (src, &out, flags);
       if (rc != IDN2_OK)
@@ -687,10 +683,9 @@ idn2_lookup_ul (const char *src, char **lookupname, int flags)
  * idn2_to_ascii_4i:
  * @input: zero terminated input Unicode (UCS-4) string.
  * @inlen: number of elements in @input.
- * @output: output zero terminated string that must have room for at least 63 characters plus the terminating zero.
+ * @output: output zero terminated string that must have room for at
+ *       least 63 characters plus the terminating zero.
  * @flags: optional #idn2_flags to modify behaviour.
- *
- * THIS FUNCTION HAS BEEN DEPRECATED DUE TO A DESIGN FLAW. USE idn2_to_ascii_4i2() INSTEAD !
  *
  * The ToASCII operation takes a sequence of Unicode code points that make
  * up one domain label and transforms it into a sequence of code points in
@@ -715,14 +710,18 @@ idn2_lookup_ul (const char *src, char **lookupname, int flags)
  * recommended to call this function with the %IDN2_NONTRANSITIONAL
  * and the %IDN2_NFC_INPUT flags for compatibility with other software.
  *
- * Return value: Returns %IDN2_OK on success, or error code.
+ * Warning: With version 2.1.1 until before version 2.3.5 this
+ * function was deprecated in favor idn2_to_ascii_4i2().  We still
+ * encourage you to use idn2_to_ascii_4i2() when appropriate.
+ *
+ * Returns: On successful conversion %IDN2_OK is returned; if the
+ *   output label would have been too long %IDN2_TOO_BIG_LABEL is
+ *   returned, or another error code is returned.
  *
  * Since: 2.0.0
- *
- * Deprecated: 2.1.1: Use idn2_to_ascii_4i2().
  **/
 int
-idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char *output,
+idn2_to_ascii_4i (const uint32_t *input, size_t inlen, char *output,
 		  int flags)
 {
   char *out;
@@ -740,10 +739,10 @@ idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char *output,
     {
       size_t len = strlen (out);
 
-      if (len > 63)
-	rc = IDN2_TOO_BIG_DOMAIN;
+      if (len > IDN2_LABEL_MAX_LENGTH)
+	rc = IDN2_TOO_BIG_LABEL;
       else if (output)
-	memcpy (output, out, len);
+	strcpy (output, out);
 
       free (out);
     }
@@ -781,12 +780,14 @@ idn2_to_ascii_4i (const uint32_t * input, size_t inlen, char *output,
  * recommended to call this function with the %IDN2_NONTRANSITIONAL
  * and the %IDN2_NFC_INPUT flags for compatibility with other software.
  *
- * Return value: Returns %IDN2_OK on success, or error code.
+ * Returns: On successful conversion %IDN2_OK is returned; if the
+ *   output label would have been too long %IDN2_TOO_BIG_LABEL is
+ *   returned, or another error code is returned.
  *
  * Since: 2.1.1
  **/
 int
-idn2_to_ascii_4i2 (const uint32_t * input, size_t inlen, char **output,
+idn2_to_ascii_4i2 (const uint32_t *input, size_t inlen, char **output,
 		   int flags)
 {
   uint32_t *input_u32;
@@ -852,7 +853,7 @@ idn2_to_ascii_4i2 (const uint32_t * input, size_t inlen, char **output,
  * Since: 2.0.0
  **/
 int
-idn2_to_ascii_4z (const uint32_t * input, char **output, int flags)
+idn2_to_ascii_4z (const uint32_t *input, char **output, int flags)
 {
   uint8_t *input_u8;
   size_t length;

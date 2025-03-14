@@ -1,5 +1,5 @@
 /* bidi.c - IDNA right to left checking functions
-   Copyright (C) 2011-2022 Simon Josefsson
+   Copyright (C) 2011-2025 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -38,7 +38,7 @@
 #include <unictype.h>
 
 static bool
-_isBidi (const uint32_t * label, size_t llen)
+_isBidi (const uint32_t *label, size_t llen)
 {
   for (; (ssize_t) llen > 0; llen--)
     {
@@ -53,7 +53,7 @@ _isBidi (const uint32_t * label, size_t llen)
 
 /* IDNA2008 BIDI check (RFC 5893) */
 int
-_idn2_bidi (const uint32_t * label, size_t llen)
+_idn2_bidi (const uint32_t *label, size_t llen)
 {
   int bc;
   int endok = 1;

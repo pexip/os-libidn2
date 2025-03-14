@@ -19,5 +19,9 @@ echo "PASS: idn2 --version"
 man -P cat idn2
 echo "PASS: man idn2"
 
+# Make sure idn2 understands the locale is UTF-8, for the next test.
+LC_ALL=C.UTF-8
+export LC_ALL
+
 idn2 --decode xn--rksmrgs-5wao1o
 echo "PASS: idn2"

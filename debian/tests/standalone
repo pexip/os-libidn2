@@ -1,0 +1,5 @@
+#!/bin/sh
+
+tests/gen-utc-test.pl < tests/IdnaTest.txt > tests/IdnaTest.inc
+
+exec tests/standalone.sh

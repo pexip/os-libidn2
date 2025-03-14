@@ -1,0 +1,21 @@
+--- build-aux/gnu-web-doc-update.orig	2024-01-27 12:09:53.724199374 +0100
++++ build-aux/gnu-web-doc-update	2024-01-27 12:10:21.912199266 +0100
+@@ -139,8 +139,7 @@
+ 
+ prev=.prev-version
+ version=$(cat $prev) || die "no $prev file?"
+-pkg=$(sed -n 's/^PACKAGE = \(.*\)/\1/p' $builddir/Makefile) \
+-  || die "no Makefile?"
++pkg=libidn/libidn2
+ tmp_branch=web-doc-$version-$$
+ current_branch=$($GIT branch | sed -ne '/^\* /{s///;p;q;}')
+ 
+@@ -175,7 +174,7 @@
+ 
+ tmp=$(mktemp -d web-doc-update.XXXXXX) || exit 1
+ ( cd $tmp \
+-    && $CVS -d $cvs_user@cvs.savannah.gnu.org:/webcvs/$pkg co $pkg )
++    && $CVS -d $cvs_user@cvs.savannah.gnu.org:/webcvs/libidn co libidn )
+ $RSYNC -avP "$builddir"/doc/manual/ $tmp/$pkg/manual
+ 
+ (

@@ -29,23 +29,39 @@ library](https://www.gnu.org/software/libidn/).  Replacing the
 the application from IDNA2003 to IDNA2008 as supported by this
 library.
 
-Libidn2 is believed to be a complete IDNA2008 and TR46 implementation,
-it contains an extensive test-suite, and is included in the continuous
-fuzzing project
-[OSS-Fuzz](https://bugs.chromium.org/p/oss-fuzz/issues/list?q=libidn2).
+Libidn2 is believed to be a complete IDNA2008 and TR46 implementation
+and contains an extensive test-suite.
 
 You can check the current test code coverage
 [here](https://libidn.gitlab.io/libidn2/coverage/index.html) and the
 current fuzzing code coverage
-[here](https://libidn.gitlab.io/libidn2/fuzz-coverage/index.html).
+[here](https://libidn.gitlab.io/libidn2/fuzz-coverage/index.html) that
+is part of the continuous fuzzing project
+[OSS-Fuzz](https://issues.oss-fuzz.com/issues?q=is:open%20libidn2).
 
 
 # License
 
-The installed C library libidn2 is dual-licensed under LGPLv3+|GPLv2+,
-while the rest of the package is GPLv3+.  See the file
-[COPYING](COPYING) for detailed information.
+The source code for the C library (libidn2.a or libidn.so) are
+dual-licensed under the terms of either the GNU General Public License
+version 2.0 or later - see the file [COPYINGv2](COPYINGv2) - or the
+GNU Lesser General Public License version 3.0 or later - see the file
+[COPYING.LESSERv3](COPYING.LESSERv3) - or both in parallel as here.
 
+The command line tool, self tests, examples, and other auxiliary
+files, are licensed under the GNU General Public License version 3.0
+or later - see the file [COPYING](COPYING).
+
+The license of the Unicode character data files (which are parsed into
+static storage in the library) are documented in
+[COPYING.unicode](COPYING.unicode).
+
+Other files are licensed as indicated in each file.  There may be
+exceptions to these general rules, see each file for precise
+information.
+
+For any copyright year range specified as YYYY-ZZZZ in this package
+note that the range specifies every single year in that closed interval.
 
 # Online docs
 
@@ -64,29 +80,19 @@ website](https://gitlab.com/libidn/libidn2), and there is [an issue
 tracker for reporting bugs](https://gitlab.com/libidn/libidn2/issues).
 
 
-# Dependencies
+# Building & Dependencies
 
-To build Libidn2 you will need a POSIX shell to run ./configure, the
-Unix "make" tool, and a C compiler to build the library.
+Before building you should consider installing the
+[dependencies](DEPENDENCIES.md).
 
- * [Bash](https://www.gnu.org/software/bash/)
- * [Make](https://www.gnu.org/software/make/)
- * [C compiler](https://www.gnu.org/software/gcc/)
+When building from a release tarball archive, after unpacking you
+build the package like this:
 
-The shared libidn2 library may use GNU libunistring for Unicode
-processing and GNU libiconv for character set conversion.  It is
-recommended to install them before building and installing libidn2.
-See the following links for more information on these packages:
-
- * [Unistring](https://www.gnu.org/software/libunistring/)
- * [iconv](https://www.gnu.org/software/libiconv/)
-
-The iconv dependency is optional -- it is required for the functions
-involving locale to UTF8 conversions -- but is recommended.
-
-When the recommended libunistring is not available, libidn2 provides
-replacement functionality which increases the size of the library.
-
+```
+./configure
+make
+make check
+```
 
 # Contributing
 
@@ -95,13 +101,13 @@ See [the contributing document](CONTRIBUTING.md).
 
 # Estimating code coverage
 
-Dependencies:
- * [lcov](https://github.com/linux-test-project/lcov) (for code coverage)
+You need [LCOV](https://github.com/linux-test-project/lcov) installed.
 
 To test the code coverage of the test suite use the following:
+
 ```
-$ ./configure --enable-code-coverage
-$ make && make check && make code-coverage-capture
+./configure --enable-code-coverage
+make && make check && make code-coverage-capture
 ```
 
 The current coverage report can be found [here](https://libidn.gitlab.io/libidn2/coverage/).

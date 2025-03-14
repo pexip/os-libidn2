@@ -1,4 +1,12 @@
----
 include:
-  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/salsa-ci.yml
-  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/pipeline-jobs.yml
+- https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/recipes/debian.yml
+- https://salsa.debian.org/debian/licenserecon/raw/main/debian/licenserecon.yml
+
+variables:
+  SALSA_CI_AUTOPKGTEST_ALLOWED_EXIT_STATUS: '0'
+  SALSA_CI_DISABLE_APTLY: 0
+  SALSA_CI_DISABLE_CROSSBUILD_ARM64: 0
+  SALSA_CI_DISABLE_WRAP_AND_SORT: 0
+  SALSA_CI_REPROTEST_ARGS: --vary=+build_path
+  SALSA_CI_REPROTEST_ENABLE_DIFFOSCOPE: 1
+  SALSA_CI_WRAP_AND_SORT_ARGS: '-asbkt'

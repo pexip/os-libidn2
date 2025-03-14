@@ -1,5 +1,5 @@
-/* lookup.c - implementation of IDNA2008 lookup functions
-   Copyright (C) 2011-2022 Simon Josefsson
+/* decode.c - implementation of IDNA2008 decoding functions
+   Copyright (C) 2011-2025 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -33,8 +33,6 @@
 #include <errno.h>		/* errno */
 #include <stdlib.h>		/* malloc, free */
 
-#include "punycode.h"
-
 #include <unitypes.h>
 #include <uniconv.h>		/* u8_strconv_from_locale */
 #include <unistr.h>		/* u8_to_u32, u32_cpy, ... */
@@ -61,7 +59,7 @@
  * Since: 2.0.0
  **/
 int
-idn2_to_unicode_8z4z (const char *input, uint32_t ** output,
+idn2_to_unicode_8z4z (const char *input, uint32_t **output,
 		      G_GNUC_UNUSED int flags)
 {
   uint32_t *domain_u32;
@@ -92,8 +90,8 @@ idn2_to_unicode_8z4z (const char *input, uint32_t ** output,
 	{
 	  s += 4;
 
-	  rc = _idn2_punycode_decode_internal (e - s, (char *) s,
-					       &label_len, label_u32);
+	  rc = idn2_punycode_decode ((char *) s, e - s,
+				     label_u32, &label_len);
 	  if (rc)
 	    return rc;
 
@@ -180,7 +178,7 @@ idn2_to_unicode_8z4z (const char *input, uint32_t ** output,
  * Since: 2.0.0
  **/
 int
-idn2_to_unicode_4z4z (const uint32_t * input, uint32_t ** output, int flags)
+idn2_to_unicode_4z4z (const uint32_t *input, uint32_t **output, int flags)
 {
   uint8_t *input_u8;
   uint32_t *output_u32;
@@ -243,7 +241,7 @@ idn2_to_unicode_4z4z (const uint32_t * input, uint32_t ** output, int flags)
  * Since: 2.0.0
  **/
 int
-idn2_to_unicode_44i (const uint32_t * in, size_t inlen, uint32_t * out,
+idn2_to_unicode_44i (const uint32_t *in, size_t inlen, uint32_t *out,
 		     size_t *outlen, int flags)
 {
   uint32_t *input_u32;

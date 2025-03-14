@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2022 Simon Josefsson
+# Copyright (C) 2011-2025 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,7 +17,7 @@ AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/lib -I$(top_builddir)/lib -I$(srcd
 AM_CPPFLAGS += -I$(top_builddir)/gl -I$(top_srcdir)/gl
 AM_CPPFLAGS += -DSRCDIR=\"$(srcdir)\"
 AM_CPPFLAGS += -I$(top_srcdir)/unistring/ -I$(top_builddir)/unistring/
-AM_CFLAGS = $(WARN_CFLAGS)
+AM_CFLAGS = $(WERROR_CFLAGS) $(WERROR_TESTS_CFLAGS) $(WARN_CFLAGS)
 AM_LDFLAGS = -no-install
 
 AM_VALGRINDFLAGS = --suppressions=$(top_srcdir)/unistring/libunistring.valgrind
@@ -26,8 +26,11 @@ LDADD = ../lib/libidn2.la
 LDADD += ../unistring/libunistring.la $(LTLIBUNISTRING)
 LDADD += ../gl/libgnu.la
 
-ctests = test-punycode test-lookup test-register test-strerror test-tounicode
-ctests += test-locale
+EXTRA_DIST = standalone.sh
+
+ctests = test-version test-strerror test-locale test-tounicode
+ctests += test-punycode test-compat-punycode
+ctests += test-IdnaTest-inc test-IdnaTest-txt test-lookup test-register
 if TEST_GLIBC
 ctests += test-glibc
 endif
@@ -35,22 +38,19 @@ check_PROGRAMS = $(ctests)
 
 dist_check_SCRIPTS = test-idn2.sh
 
-TESTS = $(dist_check_SCRIPTS) $(ctests)
+TESTS = $(ctests) $(dist_check_SCRIPTS)
 TEST_EXTENSIONS = .sh
 LOG_COMPILER = $(LOG_VALGRIND)
 SH_LOG_COMPILER= $(SHELL) -x
 
 AM_TESTS_ENVIRONMENT = EXEEXT="$(EXEEXT)" LOG_VALGRIND="$(LOG_VALGRIND)" LIBTOOL="$(LIBTOOL)"
 
-test_punycode_LDADD = ../lib/puny_decode.o ../lib/puny_encode.o $(LDADD) $(CODE_COVERAGE_LIBS)
-
 IDNA_TXT = IdnaTest.txt
 IDNA_INC = IdnaTest.inc
-test_lookup_SOURCES = test-lookup.c
 
 BUILT_SOURCES = $(IDNA_TXT) $(IDNA_INC)
 MAINTAINERCLEANFILES = $(BUILT_SOURCES)
-EXTRA_DIST = gen-utc-test.pl $(IDNA_TXT) $(IDNA_INC)
+EXTRA_DIST += gen-utc-test.pl $(IDNA_TXT) $(IDNA_INC)
 
 $(IDNA_TXT):
 	rm -f $(IDNA_TXT)

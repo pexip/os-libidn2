@@ -1,6 +1,7 @@
-#!/usr/bin/perl
+#!/bin/sh
+#! -*-perl-*-
 
-# Copyright (C) 2011-2022 Simon Josefsson
+# Copyright (C) 2011-2025 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +18,9 @@
 
 # I consider the output of this program to be unrestricted.  Use it as
 # you will.
+
+eval 'exec perl -wSx "$0" "$@"'
+    if 0;
 
 use strict;
 
@@ -55,7 +59,7 @@ while (<>) {
 	$ustr = $1.'" "'.$escstr.'" "'.$3;
     }
 
-    next if ($ustr eq $last);
+    next if ($last && $ustr eq $last);
 
     print "/* lineno $lineno ctr $ctr source $source uni $ustr ace $astr nv8 $nv8 line $line */\n";
 
