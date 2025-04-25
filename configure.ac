@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2022 Simon Josefsson
+# Copyright (C) 2011-2025 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,9 +22,9 @@ AC_INIT([Libidn2],
 # Interfaces changed/added/removed:   CURRENT++       REVISION=0
 # Interfaces added:                             AGE++
 # Interfaces removed:                           AGE=0
-AC_SUBST(LT_CURRENT, 3)
-AC_SUBST(LT_REVISION, 8)
-AC_SUBST(LT_AGE, 3)
+AC_SUBST(LT_CURRENT, 4)
+AC_SUBST(LT_REVISION, 0)
+AC_SUBST(LT_AGE, 4)
 
 DLL_VERSION=`expr ${LT_CURRENT} - ${LT_AGE}`
 AC_SUBST(DLL_VERSION)
@@ -37,10 +37,10 @@ AC_SUBST([NUMBER_VERSION], [`printf '0x%02x%02x%04x' $MAJOR_VERSION $MINOR_VERSI
 AC_MSG_NOTICE([$PACKAGE_NAME $PACKAGE_VERSION $PACKAGE_TARNAME $MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION $NUMBER_VERSION $LT_CURRENT:$LT_REVISION:$LT_AGE $DLL_VERSION])
 
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_MACRO_DIR([m4])
+AC_CONFIG_MACRO_DIRS([m4 gl/m4 unistring/m4])
 AC_CONFIG_HEADERS([config.h])
 
-AM_INIT_AUTOMAKE([1.14 -Wall -Wno-portability subdir-objects])
+AM_INIT_AUTOMAKE([1.14 tar-ustar -Wall -Wno-portability subdir-objects])
 AM_SILENT_RULES([yes])
 
 AC_PROG_CC
@@ -89,44 +89,83 @@ AM_CONDITIONAL([GTK_DOC_USE_LIBTOOL], false)
 ])
 
 AM_GNU_GETTEXT([external])
-AM_GNU_GETTEXT_VERSION([0.19.3])
+AM_GNU_GETTEXT_VERSION([0.19.8])
 
 AX_CODE_COVERAGE
 
 AC_ARG_ENABLE([gcc-warnings],
-  [AS_HELP_STRING([--enable-gcc-warnings],
-		  [turn on lots of GCC warnings (for developers)])],
-  [case $enableval in
-     yes|no) ;;
-     *)      AC_MSG_ERROR([bad value $enableval for gcc-warnings option]) ;;
-   esac
-   gl_gcc_warnings=$enableval],
-  [gl_gcc_warnings=yes]
-)
+  [AS_HELP_STRING([[--enable-gcc-warnings[=TYPE]]],
+    [control generation of GCC warnings.  The TYPE 'no' disables
+     warnings; 'yes' (default) generates cheap warnings;
+     'expensive' in addition generates expensive warnings
+     and 'error' also turn warnings into errors.])])
 
-if test "$gl_gcc_warnings" = yes; then
-  gl_MANYWARN_ALL_GCC([warnings])
-  nw=
-  nw="$nw -Wsystem-headers"       # Don't let system headers trigger warnings
-  nw="$nw -Wundef"                # All compiler preprocessors support #if UNDEF
-  nw="$nw -Wtraditional"          # All compilers nowadays support ANSI C
-  nw="$nw -Wconversion"           # These warnings usually don't point to mistakes.
-  nw="$nw -Wpadded"               # Padding internal structs doesn't help.
-  nw="$nw -Wc++-compat"           # Compile using a C compiler.
-  nw="$nw -Wtraditional-conversion" # Too many complaints for now.
-  nw="$nw -Wunreachable-code"     # gcc bug 40412
-  nw="$nw -Wswitch-default"       # Nothing wrong with default-less switch?
-  nw="$nw -Wmissing-field-initializers" # Avoid spamming in tests/ directory
+# https://www.gnu.org/software/gnulib//manual/html_node/manywarnings.html
+AS_IF([test "$enable_gcc_warnings" != no],
+  [
+   # Set up the list of unwanted warning options.
+   nw=
+   if test "$enable_gcc_warnings" = yes; then
+     nw="$nw -fanalyzer"
+   fi
+   nw="$nw -Wbad-function-cast" # Casting a function's result is not more
+                                # dangerous than casting any other value.
+   nw="$nw -Winline"            # It's OK to not inline.
+   nw="$nw -Wsign-compare"      # Too many false alarms.
+   nw="$nw -Wstrict-overflow"   # It's OK to optimize strictly.
+   nw="$nw -Wsystem-headers"    # Don't warn in system headers.
 
-  gl_MANYWARN_COMPLEMENT([warnings], [$warnings], [$nw])
-  for w in $warnings; do
-    gl_WARN_ADD([$w])
-  done
+   # https://github.com/pi-hole/FTL/pull/1428
+   nw="$nw -Wsuggest-attribute=pure"
+   nw="$nw -Wsuggest-attribute=const"
 
-  gl_WARN_ADD([-fdiagnostics-show-option])
-  gl_WARN_ADD([-fdiagnostics-color=always])      # colors even when using ccache
-  gl_WARN_ADD([-Wno-missing-field-initializers]) # # Avoid spamming in tests/ directory
-fi
+  dnl nw="$nw -Wundef"                # All compiler preprocessors support #if UNDEF
+  dnl nw="$nw -Wtraditional"          # All compilers nowadays support ANSI C
+  dnl nw="$nw -Wconversion"           # These warnings usually don't point to mistakes.
+  dnl nw="$nw -Wpadded"               # Padding internal structs doesn't help.
+  dnl nw="$nw -Wc++-compat"           # Compile using a C compiler.
+  dnl nw="$nw -Wtraditional-conversion" # Too many complaints for now.
+  dnl nw="$nw -Wunreachable-code"     # gcc bug 40412
+  dnl nw="$nw -Wswitch-default"       # Nothing wrong with default-less switch?
+  dnl nw="$nw -Wmissing-field-initializers" # Avoid spamming in tests/ directory
+  dnl gl_WARN_ADD([-fdiagnostics-show-option])
+  dnl gl_WARN_ADD([-fdiagnostics-color=always])      # colors even when using ccache
+
+   if test "$enable_gcc_warnings" = error; then
+     gl_WARN_ADD([-Werror], [WERROR_CFLAGS])
+     gl_WARN_ADD([-Wno-error=analyzer-use-of-uninitialized-value], [WERROR_CFLAGS])
+     gl_WARN_ADD([-Wno-error=missing-field-initializers], [WERROR_TESTS_CFLAGS])
+     # GCC 11.4 false positive: test-glib.c: double-'free' of 'naemchen_bytes' [-Werror=analyzer-double-free]
+     gl_WARN_ADD([-Wno-error=analyzer-double-free], [WERROR_TESTS_CFLAGS])
+   fi
+
+   # Setup the list of meaningful warning options for the C compiler.
+   # The list comes from manywarnings.m4. Warning options that are not
+   # generally meaningful have already been filtered out (cf.
+   # build-aux/gcc-warning.spec).
+   gl_MANYWARN_ALL_GCC([possible_warning_options])
+
+   # Compute the list of warning options that are desired.
+   gl_MANYWARN_COMPLEMENT([desired_warning_options],
+                          [$possible_warning_options], [$nw])
+   # Compute the list of remaining undesired warning options.
+   # Namely those, that were not in manywarnings.m4 because they were
+   # already listed in build-aux/gcc-warning.spec; this includes those
+   # that are implied by -Wall.
+   gl_MANYWARN_COMPLEMENT([remaining_undesired_warning_options],
+                          [$nw], [$possible_warning_options])
+
+   # Add the desired warning options to WARN_CFLAGS.
+   for w in $desired_warning_options; do
+     gl_WARN_ADD([$w])
+   done
+
+   # Add the opposites of the remaining undesired warning options to
+   # WARN_CFLAGS.
+   for w in `echo "$remaining_undesired_warning_options" | sed -e 's/-W/-Wno-/g'`; do
+     gl_WARN_ADD([$w])
+   done
+])
 
 AC_ARG_ENABLE(doc,
   AS_HELP_STRING([--disable-doc], [don't generate any documentation]),
@@ -154,24 +193,39 @@ AC_CONFIG_FILES([
   tests/Makefile
   fuzz/Makefile
 ])
+gl_CONFIG_VERSION_STAMP
 AC_OUTPUT
 
-AC_MSG_NOTICE([Summary of build options:
+AC_MSG_NOTICE([summary of main build options:
 
-  Version:           ${VERSION}
-  Libtool version    $LT_CURRENT:$LT_REVISION:$LT_AGE
-  DLL version:       $DLL_VERSION
-  Header version:    major $MAJOR_VERSION minor $MINOR_VERSION patch $PATCH_VERSION number $NUMBER_VERSION
-  Build/host system: ${build} / ${host}
-  Install prefix:    ${prefix}
-  Compiler:          ${CC}
-  Warning flags:     ${WARN_CFLAGS}
-  CFLAGS:            ${CFLAGS} ${CPPFLAGS}
-  LDFlags:           ${LDFLAGS}
-  Documentation:     ${enable_doc}
-  Library types:     Shared=${enable_shared}, Static=${enable_static}
-  iconv:             $am_cv_func_iconv_summary $LTLIBICONV
-  Libunistring:      $ac_cv_libunistring $LIBUNISTRING_VERSION $LTLIBUNISTRING
-  Valgrind:          $gl_cv_prog_valgrind_works $VALGRIND_PROGRAM $DEFAULT_VALGRINDFLAGS $VALGRINDFLAGS
-  Version script:    $have_ld_version_script
+  Version:            ${VERSION}
+  Libtool version     $LT_CURRENT:$LT_REVISION:$LT_AGE
+  DLL version:        $DLL_VERSION
+  Header version:     major $MAJOR_VERSION minor $MINOR_VERSION patch $PATCH_VERSION number $NUMBER_VERSION
+  Build system:       ${build}
+  Host/Target system: ${host}
+  Install prefix:     ${prefix}
+  Compiler:           ${CC}
+  CFLAGS:             ${CFLAGS}
+  CPPFLAGS:           ${CPPFLAGS}
+  LDFLAGS:            ${LDFLAGS}
+  Library types:      Shared=${enable_shared}, Static=${enable_static}
+
+  Warning flags:      $enable_gcc_warnings
+      WERROR_CFLAGS:  $WERROR_CFLAGS
+WERROR_TESTS_CFLAGS:  $WERROR_TESTS_CFLAGS
+        WARN_CFLAGS:  $WARN_CFLAGS
+
+  Documentation:      ${enable_doc}
+
+  nl_langinfo:        $am_cv_langinfo_codeset
+  Libiconv:           $am_cv_func_iconv_summary
+         LTLIBICONV:  $LTLIBICONV
+  Libunistring:       $ac_cv_libunistring
+            VERSION:  $LIBUNISTRING_VERSION
+     LTLIBUNISTRING:  $LTLIBUNISTRING
+
+  Version script:     $have_ld_version_script
+
+  Valgrind:           $gl_cv_prog_valgrind_works $VALGRIND_PROGRAM $DEFAULT_VALGRINDFLAGS $VALGRINDFLAGS
 ])

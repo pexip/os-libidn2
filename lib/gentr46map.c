@@ -1,5 +1,5 @@
 /* gentr46map.c - generate TR46 lookup tables
-   Copyright (C) 2016-2022 Tim Ruehsen
+   Copyright (C) 2016-2025 Tim Ruehsen
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -25,6 +25,8 @@
    the GNU Lesser General Public License along with this program.  If
    not, see <http://www.gnu.org/licenses/>.
 */
+
+#include <config.h>
 
 #include <stdio.h>
 #include <string.h>
@@ -130,7 +132,7 @@ _scan_file (const char *fname, int (*scan) (char *))
 }
 
 static size_t
-_u32_stream_len (uint32_t * src, size_t len)
+_u32_stream_len (uint32_t *src, size_t len)
 {
   unsigned it;
   size_t n = 0;
@@ -162,12 +164,10 @@ _u32_stream_len (uint32_t * src, size_t len)
 }
 
 static size_t
-_u32_to_stream (uint8_t * dst, size_t dst_size, uint32_t * src, size_t len)
+_u32_to_stream (uint8_t *dst, size_t dst_size, uint32_t *src, size_t len)
 {
   unsigned it;
-  size_t n = 0;
-
-  n = _u32_stream_len (src, len);
+  size_t n = _u32_stream_len (src, len);
 
   if (!dst)
     return n;
@@ -214,7 +214,7 @@ _u32_to_stream (uint8_t * dst, size_t dst_size, uint32_t * src, size_t len)
 
 /* copy 'n' codepoints from stream 'src' to 'dst' */
 static void
-_copy_from_stream (uint32_t * dst, const uint8_t * src, size_t n)
+_copy_from_stream (uint32_t *dst, const uint8_t *src, size_t n)
 {
   uint32_t cp = 0;
 
@@ -288,7 +288,7 @@ read_IdnaMappings (char *linep)
       uint32_t cp, tmp[20] = { 0 }, tmp2[20] = { 0 };
       int pos;
 
-      while ((n = sscanf (mapping, " %X%n", &cp, &pos)) == 1)
+      while (sscanf (mapping, " %X%n", &cp, &pos) == 1)
 	{
 	  if (mapdata_pos >= countof (genmapdata))
 	    {
@@ -346,7 +346,7 @@ read_IdnaMappings (char *linep)
 }
 
 static int
-_compare_map (IDNAMap_gen * m1, IDNAMap_gen * m2)
+_compare_map (IDNAMap_gen *m1, IDNAMap_gen *m2)
 {
   if (m1->cp1 < m2->cp1)
     return -1;
@@ -405,7 +405,7 @@ read_NFCQC (char *linep)
 }
 
 static int
-_compare_map_by_maplen (IDNAMap_gen * m1, IDNAMap_gen * m2)
+_compare_map_by_maplen (IDNAMap_gen *m1, IDNAMap_gen *m2)
 {
   if (m1->nmappings != m2->nmappings)
     return m2->nmappings - m1->nmappings;
@@ -436,7 +436,7 @@ _u32_memmem(uint32_t *haystack, size_t hlen, uint32_t *needle, size_t nlen)
 */
 
 static uint8_t *
-_u8_memmem (uint8_t * haystack, size_t hlen, uint8_t * needle, size_t nlen)
+_u8_memmem (uint8_t *haystack, size_t hlen, uint8_t *needle, size_t nlen)
 {
   uint8_t *p;
 
@@ -453,7 +453,7 @@ _u8_memmem (uint8_t * haystack, size_t hlen, uint8_t * needle, size_t nlen)
 }
 
 static size_t
-_u32_cp_stream_len (const uint8_t * stream, size_t ncp)
+_u32_cp_stream_len (const uint8_t *stream, size_t ncp)
 {
   const uint8_t *end;
 

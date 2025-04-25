@@ -1,5 +1,5 @@
 /* idn2.c - command line interface to libidn2
-   Copyright (C) 2011-2022 Simon Josefsson, Tim Ruehsen
+   Copyright (C) 2011-2025 Simon Josefsson, Tim Ruehsen
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -33,11 +33,11 @@
 #include <unistring/localcharset.h>
 
 /* Gnulib headers. */
-#include "error.h"
-#include "gettext.h"
+#include <error.h>
+#include <gettext.h>
 #define _(String) dgettext (PACKAGE, String)
-#include "progname.h"
-#include "version-etc.h"
+#include <progname.h>
+#include <version-etc.h>
 
 #include "idn2_cmd.h"
 
@@ -120,7 +120,7 @@ hexdump (const char *prefix, const char *str)
   if (u8 && strcmp (str, (char *) u8) != 0)
     for (i = 0; i < strlen ((char *) u8); i++)
       fprintf (stderr, "UTF-8 %s[%lu] = 0x%02x\n",
-	       prefix, (unsigned long) i, u8[i] & 0xFF);
+	       prefix, (unsigned long) i, (unsigned) u8[i] & 0xFF);
 
   if (u8 && u32)
     for (i = 0; i < u32len; i++)
@@ -184,6 +184,7 @@ main (int argc, char *argv[])
   setlocale (LC_ALL, "");
   set_program_name (argv[0]);
   bindtextdomain (PACKAGE, LOCALEDIR);
+  bindtextdomain ("gnulib", GNULIB_LOCALEDIR);
   textdomain (PACKAGE);
 
   if (cmdline_parser (argc, argv, &args_info) != 0)
