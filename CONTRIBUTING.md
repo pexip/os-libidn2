@@ -1,9 +1,8 @@
 # Libidn2 CONTRIBUTING -- Information for developers
-Copyright (C) 2011-2022 Simon Josefsson
+Copyright (C) 2011-2025 Simon Josefsson
 See the end for copying conditions.
 
 This file contains instructions for developers and advanced users.
-See README for the additional tools you need to have installed.
 
 ## Obtaining sources
 
@@ -17,9 +16,10 @@ $ cd libidn2
 
 If you wish to build the project from version controlled sources,
 rebuild all generated files (e.g., run autoreconf), or modify some
-source code files, you will need to have additional tools installed.
-None of the following tools are necessary if you build Libidn2 in the
-usual way (i.e., ./configure && make).
+source code files, you will need to have additional tools installed
+beyond those mentioned in [DEPENDENCIES.md](DEPENDENCIES.md).  None of
+the following tools are necessary if you build Libidn2 in the usual
+way (i.e., ./configure && make).
 
  * [Automake](https://www.gnu.org/software/automake/)
  * [Autoconf](https://www.gnu.org/software/autoconf/)
@@ -41,21 +41,27 @@ usual way (i.e., ./configure && make).
 The software is typically distributed with your operating system, and
 the instructions for installing them differ.  Here are some hints:
 
-Debian 10.x, Debian 11.x, Ubuntu 20.04:
+APT/DPKG-based distributions:
 ```
 apt-get install make gcc
 apt-get install git autoconf automake libtool gettext autopoint gperf
 apt-get install libunistring-dev valgrind gengetopt help2man
-apt-get install texinfo texlive git2cl gtk-doc-tools
+apt-get install texinfo texlive gtk-doc-tools
 apt-get install abi-compliance-checker abigail-tools
 ```
 
-Fedora 35:
+DNF/RPM-based distributions:
 ```
 dnf install -y make gcc
 dnf install -y git autoconf automake libtool gettext-devel patch gperf
 dnf install -y libunistring-devel valgrind gengetopt help2man
 dnf install -y texinfo texinfo-tex texlive gtk-doc dblatex
+dnf install -y libabigail glibc-gconv-extra
+```
+
+On macOS with Xcode and Homebrew:
+```
+brew install autoconf automake libtool gengetopt help2man texinfo
 ```
 
 

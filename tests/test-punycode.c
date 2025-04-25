@@ -1,5 +1,5 @@
 /* test-punycode.c --- Self tests for Libidn2 punycode.
-   Copyright (C) 2002-2022 Simon Josefsson
+   Copyright (C) 2002-2025 Simon Josefsson
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -17,7 +17,9 @@
 
 /* Based on GNU Libidn tst_punycode.c */
 
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,7 +27,6 @@
 #include <string.h>
 
 #include <idn2.h>
-#include "punycode.h"
 
 struct punycode
 {
@@ -184,7 +185,7 @@ _GL_ATTRIBUTE_FORMAT_PRINTF_STANDARD (1, 2)
 }
 
 static void
-ucs4print (const uint32_t * str, size_t len)
+ucs4print (const uint32_t *str, size_t len)
 {
   size_t i;
 
@@ -200,8 +201,6 @@ ucs4print (const uint32_t * str, size_t len)
   puts ("");
 }
 
-#include "punycode.h"
-
 int
 main (void)
 {
@@ -209,15 +208,6 @@ main (void)
   uint32_t *q;
   int rc;
   size_t i, outlen;
-
-  if (!idn2_check_version (IDN2_VERSION))
-    fail ("idn2_check_version(%s) failed\n", IDN2_VERSION);
-
-  if (!idn2_check_version (NULL))
-    fail ("idn2_check_version(NULL) failed\n");
-
-  if (idn2_check_version ("100.100"))
-    fail ("idn2_check_version(\"100.100\") failed\n");
 
   p = (char *) malloc (sizeof (*p) * BUFSIZ);
   if (p == NULL)
@@ -239,8 +229,8 @@ main (void)
 	}
 
       outlen = BUFSIZ;
-      rc = _idn2_punycode_encode_internal (punycode[i].inlen, punycode[i].in,
-					   &outlen, p);
+      rc = idn2_punycode_encode (punycode[i].in, punycode[i].inlen,
+				 p, &outlen);
       if (rc != punycode[i].rc)
 	{
 	  fail ("punycode_encode() entry %d failed: %d\n", (int) i, rc);
@@ -281,8 +271,8 @@ main (void)
 	}
 
       outlen = BUFSIZ;
-      rc = _idn2_punycode_decode_internal (strlen (punycode[i].out),
-					   punycode[i].out, &outlen, q);
+      rc = idn2_punycode_decode (punycode[i].out, strlen (punycode[i].out),
+				 q, &outlen);
       if (rc != punycode[i].rc)
 	{
 	  fail ("punycode() entry %d failed: %d\n", (int) i, rc);

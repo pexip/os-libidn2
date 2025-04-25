@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2022 Simon Josefsson
+# Copyright (C) 2011-2025 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,17 +13,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-DISTCHECK_CONFIGURE_FLAGS ?= --enable-gtk-doc --enable-gtk-doc-pdf --disable-gcc-warnings
-
-SUBDIRS = gl unistring lib src examples tests fuzz po
-ACLOCAL_AMFLAGS = -I m4 -I gl/m4 -I unistring/m4
-EXTRA_DIST = gl/m4/gnulib-cache.m4
+SUBDIRS = gl unistring lib src examples fuzz po
 
 if ENABLE_DOC
 SUBDIRS += doc
 endif
 
-EXTRA_DIST += cfg.mk maint.mk CONTRIBUTING.md README.md
+SUBDIRS += tests
+
+EXTRA_DIST = cfg.mk maint.mk CONTRIBUTING.md DEPENDENCIES.md README.md
 EXTRA_DIST += COPYING COPYING.LESSERv3 COPYING.unicode COPYINGv2
 
 check-valgrind:
@@ -71,6 +69,7 @@ abi-check-latest: lib/libidn2.la
 
 # Checks the ABI stability between current git version and the previous tagged release.
 ABICHECK_COMMON = --no-added-syms
+.PHONY: abi-check
 abi-check: lib/libidn2.la
 	@for file in $$(eval echo $(srcdir)/contrib/libidn2-*-$$(uname -m).abi);do \
 		echo "Comparing libidn2 with $$file"; \
@@ -86,27 +85,74 @@ abi-check: lib/libidn2.la
 	@echo "ABI checks completed"
 	@echo "********************"
 
-# git-version-gen
+# version-stamp
 EXTRA_DIST += $(top_srcdir)/.version
 BUILT_SOURCES = $(top_srcdir)/.version
-$(top_srcdir)/.version:
-	echo $(VERSION) > $@-t && mv $@-t $@
-dist-hook: gen-ChangeLog
-	echo $(VERSION) > $(distdir)/.tarball-version
-	if test -d "$(top_srcdir)/contrib";then \
+
+# git-version-gen
+dist-hook: dist-tarball-version
+.PHONY: dist-tarball-version
+dist-tarball-version:
+	echo '$(VERSION)' > $(distdir)/.tarball-version
+
+dist-hook: maybe-abi-check
+.PHONY: maybe-abi-check
+maybe-abi-check:
+	if command -v abidiff > /dev/null && \
+		test -d "$(top_srcdir)/contrib"; then \
 		$(MAKE) -C $(top_builddir) abi-check-latest; \
 	fi
 
-.PHONY: gen-ChangeLog
-gen-ChangeLog:
-	$(AM_V_GEN)if test -d .git; then				\
-		$(top_srcdir)/build-aux/gitlog-to-changelog >		\
-			$(distdir)/cl-t &&				\
-		{ rm -f $(distdir)/ChangeLog &&				\
-		  mv $(distdir)/cl-t $(distdir)/ChangeLog; }		\
+dist-hook: po-CreationDate-to-mtime-NEWS
+.PHONY: po-CreationDate-to-mtime-NEWS
+po-CreationDate-to-mtime-NEWS: mtime-NEWS-to-git-HEAD
+	$(AM_V_GEN)for p in $(distdir)/po/*.po $(distdir)/po/$(PACKAGE).pot; do \
+	  if test -f "$$p"; then \
+	    $(SED) -e 's,POT-Creation-Date: .*\\n",POT-Creation-Date: '"$$(env LC_ALL=C TZ=UTC0 stat --format=%y $(srcdir)/NEWS | cut -c1-16,31-)"'\\n",' < $$p > $$p.tmp && \
+	    if cmp $$p $$p.tmp > /dev/null; then \
+	      rm -f $$p.tmp; \
+	    else \
+	      mv $$p.tmp $$p; \
+	    fi \
+	  fi \
+	done
+
+dist-hook: srcdist
+.PHONY: srcdist
+srcdist:
+	$(AM_V_GEN)if test -e $(srcdir)/.git \
+			&& command -v git > /dev/null; then \
+	 cd $(srcdir) && \
+	   git archive --prefix=$(PACKAGE)-v$(VERSION)/ \
+	       -o $(abs_builddir)/$(PACKAGE)-v$(VERSION)-src.tar.gz HEAD; \
 	fi
 
-.PHONY: abi-dump abi-check
+dist-hook: mtime-NEWS-to-git-HEAD
+.PHONY: mtime-NEWS-to-git-HEAD
+mtime-NEWS-to-git-HEAD:
+	$(AM_V_GEN)if test -e $(srcdir)/.git \
+			&& command -v git > /dev/null; then \
+		touch -m -t "$$(git log -1 --format=%cd --date=format-local:%Y%m%d%H%M.%S)" $(srcdir)/NEWS; \
+	fi
+
+dist-hook: texi-stamps-to-mtime-NEWS
+.PHONY: texi-stamps-to-mtime-NEWS
+texi-stamps-to-mtime-NEWS: mtime-NEWS-to-git-HEAD
+	$(AM_V_GEN)touch -m -r $(srcdir)/NEWS $(srcdir)/doc/$(PACKAGE).texi
+
+dist-hook: gen-ChangeLog
+.PHONY: gen-ChangeLog
+gen-ChangeLog:
+	$(AM_V_GEN)if test -e $(srcdir)/.git; then			\
+	  LC_ALL=en_US.UTF-8 TZ=UTC0					\
+	    $(top_srcdir)/build-aux/gitlog-to-changelog			\
+	      --srcdir=$(srcdir) --					\
+	      v$(PREV_VERSION)~.. > $(distdir)/cl-t &&			\
+	    { printf '\n\nSee the source repo for older entries\n'	\
+	      >> $(distdir)/cl-t &&					\
+	      rm -f $(distdir)/ChangeLog &&				\
+	      mv $(distdir)/cl-t $(distdir)/ChangeLog; }		\
+	fi
 
 LCOV_INFO=libidn2.info
 fuzz-coverage: clean

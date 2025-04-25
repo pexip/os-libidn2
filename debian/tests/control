@@ -1,5 +1,24 @@
-Tests: libidn2
-Depends: build-essential, libidn2-dev, man, pkg-config
+Tests:
+ libidn2,
+Depends:
+ build-essential,
+ libidn2-dev,
+ man,
+ pkg-config,
 
-Tests: idn2
-Depends: build-essential, idn2, man
+Tests:
+ idn2,
+Depends:
+ build-essential,
+ idn2,
+ man,
+
+Tests:
+ standalone,
+Depends:
+ build-essential,
+ idn2,
+ libidn2-dev,
+ libunistring-dev,
+ man,
+ pkg-config,

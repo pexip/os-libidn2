@@ -1,4 +1,4 @@
-# Copyright (C) 2011-2022 Simon Josefsson
+# Copyright (C) 2011-2025 Simon Josefsson
 
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,7 +45,8 @@ dist_man_MANS = $(gdoc_MANS)
 dist_man_MANS += idn2.1
 
 idn2.1: idn2.h2m $(top_srcdir)/src/idn2.c $(top_srcdir)/src/idn2.ggo \
-		$(top_srcdir)/configure.ac
+		$(top_srcdir)/configure.ac $(top_srcdir)/.version
+	$(MAKE) -C ../src idn2$(EXEEXT)
 	$(HELP2MAN) --include=$(srcdir)/idn2.h2m \
 		--output=$@ $(top_builddir)/src/idn2$(EXEEXT)
 
@@ -145,7 +146,7 @@ stamp-gdoc: $(top_srcdir)/.version $(GDOC_SRC)
 			-includefuncprefix \
 			-seeinfo $(PACKAGE) \
 			-verbatimcopying \
-			-copyright "2002-2022 Simon Josefsson" \
+			-copyright "2002-2025 Simon Josefsson" \
 			-function $$i \
 			$(GDOC_SRC) > man/$$i.3 && \
 		$(srcdir)/gdoc -texinfo -function $$i \

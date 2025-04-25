@@ -1,0 +1,26 @@
+From: Simon Josefsson <simon@josefsson.org>
+Date: Sun, 09 Mar 2025 14:30:31 +0100
+Subject: [PATCH] Fix blhc.
+Forwarded: https://gitlab.com/libidn/libidn2/-/commit/d988b0291139e4f345c1f46e350d2d099425d650?merge_request_iid=122
+
+diff --git a/lib/Makefile.am b/lib/Makefile.am
+index 85f2b41..67b307e 100644
+--- a/lib/Makefile.am
++++ b/lib/Makefile.am
+@@ -65,14 +65,14 @@ MAINTAINERCLEANFILES = $(IDNA_TABLE) $(TR46MAP) $(NFCQC)
+ EXTRA_DIST = $(IDNA_TABLE) $(TR46MAP) $(NFCQC) data.c gendata.c tr46map_data.c gentr46map.c
+ 
+ gendata$(EXEEXT): gendata.c
+-	$(CC) $(DEFAULT_INCLUDES) $(AM_CPPFLAGS) $(CFLAGS) $< -o $@
++	$(CC) $(DEFAULT_INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $< -o $@
+ data.c: $(srcdir)/gendata.c $(IDNA_TABLE)
+ 	$(MAKE) gendata$(EXEEXT)
+ 	$(builddir)/gendata$(EXEEXT) < $(IDNA_TABLE) > $@.new
+ 	mv $@.new $@
+ 
+ gentr46map$(EXEEXT): gentr46map.c
+-	$(CC) $(DEFAULT_INCLUDES) $(AM_CPPFLAGS) $(CFLAGS) $< -o $@
++	$(CC) $(DEFAULT_INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(CFLAGS) $(LDFLAGS) $< -o $@
+ tr46map_data.c: $(srcdir)/gentr46map.c $(TR46MAP) $(NFCQC)
+ 	$(MAKE) gentr46map$(EXEEXT)
+ 	$(builddir)/gentr46map$(EXEEXT) > $@.new

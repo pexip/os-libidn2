@@ -1,5 +1,5 @@
 /* version.c - implementation of version checking functions
-   Copyright (C) 2011-2022 Simon Josefsson
+   Copyright (C) 2011-2025 Simon Josefsson
 
    Libidn2 is free software: you can redistribute it and/or modify it
    under the terms of either:
@@ -31,13 +31,14 @@
 #include "idn2.h"
 
 #include <string.h>		/* strverscmp */
+#include <version-etc.h>	/* version_etc_copyright */
 
 #ifdef __cplusplus
 extern				// define a global const variable in C++, C doesn't need it.
 #endif
 const char version_etc_copyright[] =
   /* Do *not* mark this string for translation */
-  "Copyright (C) 2011-2022  Simon Josefsson";
+  "Copyright (C) 2011-2025 Simon Josefsson";
 
 /**
  * idn2_check_version:
